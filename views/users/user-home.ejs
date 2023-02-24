@@ -60,16 +60,20 @@
     <!-- Header Section End -->
 
     <!-- Categories Section Begin -->
+    <% if ( banners.length >  0) { %>
     <section class="categories">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-6 p-0">
+                   
                     <div class="categories__item categories__large__item set-bg"
                     style="background-image: url('/static/uploads/banners/<%= banners[0].image %>');">
                         <div class="categories__text">
+                           
                             <h1><%= banners[0].title %></h1>
                             <p><%= banners[0].description %></p>
                             <a href="<%= banners[0].actionLink %>"><%= banners[0].actionText %></a>
+                            
                         </div>
                     </div>
                 </div>
@@ -116,6 +120,7 @@
             </div>
         </div>
     </section>
+    <% } %>
     <!-- Categories Section End -->
     <div id="kankuna">
 
@@ -160,7 +165,7 @@
         </div>
     </section>
     <!-- Product Section End -->
-
+    <% if ( banners.length >  0) { %>
     <!-- Banner Section Begin -->
     <section class="banner set-bg" style="background-image: url('/static/uploads/banners/<%= banners[6].image %>');">
         <div class="container">
@@ -208,8 +213,9 @@
         </div>
     </section>
     <!-- Banner Section End -->
+    <% } %>
 
-
+    <% if ( banners.length >  0) { %>
     <!-- Discount Section Begin -->
     <section class="discount mt-5">
         <div class="container">
@@ -251,6 +257,8 @@
         </div>
     </section>
     <!-- Discount Section End -->
+    <% } %>
+
 
     <!-- Services Section Begin -->
     <section class="services spad">
