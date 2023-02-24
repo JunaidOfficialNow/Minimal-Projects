@@ -1,0 +1,385 @@
+
+<div class="content" id="category-content" style="display: none;">
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+        <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+            <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+        </a>
+        <a href="#" class="sidebar-toggler flex-shrink-0">
+            <i class="fa fa-bars"></i>
+        </a>
+        <form class="d-none d-md-flex ms-4">
+            <input class="form-control bg-dark border-0" type="search" placeholder="category">
+        </form>
+        <div class="navbar-nav align-items-center ms-auto">
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fa fa-envelope me-lg-2"></i>
+                    <span class="d-none d-lg-inline-flex">Message</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                    <a href="#" class="dropdown-item">
+                        <div class="d-flex align-items-center">
+                            <img class="rounded-circle" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <div class="ms-2">
+                                <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                <small>15 minutes ago</small>
+                            </div>
+                        </div>
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a href="#" class="dropdown-item">
+                        <div class="d-flex align-items-center">
+                            <img class="rounded-circle" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <div class="ms-2">
+                                <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                <small>15 minutes ago</small>
+                            </div>
+                        </div>
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a href="#" class="dropdown-item">
+                        <div class="d-flex align-items-center">
+                            <img class="rounded-circle" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <div class="ms-2">
+                                <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                <small>15 minutes ago</small>
+                            </div>
+                        </div>
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a href="#" class="dropdown-item text-center">See all message</a>
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fa fa-bell me-lg-2"></i>
+                    <span class="d-none d-lg-inline-flex">Notificatin</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                    <a href="#" class="dropdown-item">
+                        <h6 class="fw-normal mb-0">Profile updated</h6>
+                        <small>15 minutes ago</small>
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a href="#" class="dropdown-item">
+                        <h6 class="fw-normal mb-0">New user added</h6>
+                        <small>15 minutes ago</small>
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a href="#" class="dropdown-item">
+                        <h6 class="fw-normal mb-0">Password changed</h6>
+                        <small>15 minutes ago</small>
+                    </a>
+                    <hr class="dropdown-divider">
+                    <a href="#" class="dropdown-item text-center">See all notifications</a>
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <img class="rounded-circle me-lg-2" src="/static/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                    <span class="d-none d-lg-inline-flex">John Doe</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                    <a href="#" class="dropdown-item">My Profile</a>
+                    <a href="#" class="dropdown-item">Settings</a>
+                    <a href="#" class="dropdown-item">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <!-- category form -->
+
+    <div id="overlay-form" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);"></div>
+    <div class="col-sm-12 col-xl-6" id="category-form"
+        style="display: none;z-index: 4; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; transition: 1s;">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h6 class="mb-4">Add category</h6>
+            <div class="form-floating mb-3 addCatgoryFormInputs" style="display: block;" >
+                <input type="text" class="form-control" id="categoryNameInput" placeholder="name@example.com">
+                <label for="floatingInput">Name</label>
+            </div>
+
+
+            <div class="form-floating addCatgoryFormInputs" style="display: block;">
+                <textarea class="form-control" placeholder="Add description here" id="categoryDescriptionInput"
+                    style="height: 150px;"></textarea>
+                <label for="floatingTextarea">Description</label>
+            </div>
+            <div id="imageUploadDiv"
+                style="height: 100%;width: 100%;display: none; justify-content: center; align-items: center; flex-direction: column;">
+                <input type="file" style="display:none;" accept="image/*" class="form-control" name="file" id="file">
+                <div class="imageDiv">
+                    <img id="preview" src="" alt="">
+                </div>
+                <label for="file" id="uploadLabel">Upload Image</label>
+                <div id="categoryImageError" class="text-danger" style="display: none;">Upload an Image to continue</div>
+
+            </div>
+
+               <div id="categoryFormError" class="text-danger" style="display: none;">Every field is necessary</div>
+            <div id="btnDiv" style="width: 100%;height: 50px;display: flex; justify-content: end;padding-top: 10px;">
+                <button class="btn formBtn "  id="backBtn">Back</i></button>
+                <button class="btn formBtn " id="categoryBtn">Add picture</i></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- category form -->
+
+ <!-- Category update form -->
+ <div class="col-sm-12 col-xl-6" id="category-update-form"
+ style="display: none;z-index: 4; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; transition: 1s;">
+ <div class="bg-secondary rounded h-100 p-4">
+     <h6 class="mb-4">Add category</h6>
+     <div class="form-floating mb-3 addCatgoryFormInputs" style="display: block;" >
+         <input type="text" class="form-control" id="category-edit-name-input">
+         <label for="floatingInput">Name</label>
+     </div>
+
+     <input type="text" style="display:none;" id="idField">
+     <div class="form-floating addCatgoryFormInputs" style="display: block;">
+         <textarea class="form-control" placeholder="Add description here" id="category-edit-description-input"
+             style="height: 150px;"></textarea>
+         <label for="floatingTextarea">Description</label>
+     </div>
+     <div id="EditimageUploadDiv"
+         style="height: 100%;width: 100%;display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 10px;">
+         <input type="file" style="display:none;" accept="image/*" class="form-control" name="file-edit" id="file-edit">
+         <div class="imageDiv">
+             <img id="Editpreview" src="" alt="">
+         </div>
+         <label for="file-edit" id="category-edit-upload-label">Upload Image</label>
+         <!-- <div id="categoryImageError" class="text-danger" style="display: none;">Upload an Image to continue</div> -->
+
+     </div>
+
+        <div id="EditcategoryFormError" class="text-danger" style="display: none;">Every field is necessary</div>
+     <div id="EditbtnDiv" style="width: 100%;height: 50px;display: flex; justify-content: space-between;padding-top: 10px;">
+         <button class="btn formBtn "  id="EditCancelBtn">Cancel</i></button>
+         <button class="btn formBtn " id="EditUpdateBtn">Update</i></button>
+     </div>
+ </div>
+</div>
+
+
+    <!-- desing form  -->
+
+    <form class="form" id="design-form">
+        <div class="form-head">
+            <div class="designFormError">All fields are mandatory</div>
+           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="file-section">
+                <label for="design_code">Design Code:</label>
+                <input type="number" id="designCode" name="design_code" style="padding: .5rem;">
+                <label for="DesignFile" id="fileUploadDesign">Upload Photo</label>
+                <input type="file" accept="image/*" name="DesignFile" id="DesignFile" style="display:none">
+            </div>
+            <div style="width: 150px; height: 150px; background-color: transparent;border: 1px solid;">
+                <img src="" alt="" width="100%" id="DesignImage">
+            </div>
+           </div>
+            <div class="form-grid-wrap">
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" class="form-inp">
+                        <option value="men">Men's</option>
+                        <option value="women">Women's</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="categoryListDesign">Category:</label>
+                    <select id="categoryListDesign" name="category" class="form-inp">
+                        <!-- Add the list of categories here -->
+                    </select>
+                </div>
+                
+
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr;">
+            <div>
+                <label for="category">Expected price:</label>
+                <input type="number" style="padding: .5rem;">
+            </div>
+            <div>
+                <label for="category">Stock:</label>
+                <input type="number" style="padding: .5rem;">
+            </div>
+        </div>
+
+        </div>
+        <p>Size:</p>
+        <div class="sizes">
+            <div>
+                <input type="checkbox" id="xxs" name="size" value="xxs">
+                <label for="xxs">XXS</label>
+            </div>
+
+            <div class="sizes">
+                <input type="checkbox" id="xs" name="size" value="xs">
+                <label for="xs">XS</label>
+            </div>
+            <div>
+                <input type="checkbox" id="s" name="size" value="s">
+                <label for="s">S</label>
+            </div>
+            <div>
+                <input type="checkbox" id="m" name="size" value="m">
+                <label for="m">M</label>
+            </div>
+            <div>
+                <input type="checkbox" id="l" name="size" value="l">
+                <label for="l">L</label>
+            </div>
+            <div>
+                <input type="checkbox" id="xl" name="size" value="xl">
+                <label for="xl">XL</label>
+            </div>
+            <div>
+                <input type="checkbox" id="xxl" name="size" value="xxl">
+                <label for="xxl">XXL</label>
+            </div>
+
+        </div>
+        <div class="form-grid-wrap" style="margin-top: .5rem;">
+            <div style="display: flex; flex-direction: column;">
+                <label for="" style="padding: 10px 0;">Color</label><br>
+                <div class="" style="display: flex;">
+                <input type="text" name="" id="colorField" style="padding: .5rem;">
+                <!-- <input type="button" value="Add"> -->
+                <button id="addColorBtn">Add</button>
+            </div>
+            </div>
+            
+            <div  style="background-color: antiquewhite;" class="selected-color-wrap">
+                <h6 id="selectedClrsHeading">Selected colors</h6>
+                <div id="colorList">
+                </div>
+                <!-- <button>Remove</button> -->
+            
+            </div>
+        </div>
+        <button id="designFormSubmitBtn">Submit</button>
+    </form>
+
+
+    <!-- Navbar End -->
+
+    <div class="padding">
+
+        <!-- sub navbar -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class=" rounded d-flex align-items-center hover bgclr justify-content-between p-4"
+                        id="main-category">
+                        <i class="fa fa-chart-line fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Main</p>
+                            <h6 class="mb-0">Category</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 ">
+                    <div class="bg-secondary rounded d-flex align-items-center bgclr hover justify-content-between p-4"
+                        id="design-category">
+                        <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Design</p>
+                            <h6 class="mb-0">Category</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 " id="add-category-parent">
+                    <div class="bg-secondary rounded d-flex add-cat align-items-center hover justify-content-between p-4"
+                        id="add-category">
+                        <i class="fa fa-chart-area fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2"> Add</p>
+                            <h6 class="mb-0">Category</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 ">
+                    <div class="bg-secondary rounded add-cat align-items-center hover justify-content-between p-4"
+                        id="add-design" style="display: none;">
+                        <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Add</p>
+                            <h6 class="mb-0">Design</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- sub navbar ending -->
+        <!-- category table -->
+        <div class="col-12" style="width:100%; margin-top: 2rem;" id="category-table">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Categories</h6>
+                <div class="table-responsive text-center">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">last Edited</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Options</th>
+                            </tr>
+                        </thead>
+                        <tbody id="category-table-body">
+
+                        </tbody>
+
+                    </table>
+                    <div id="categoryNoContent">
+
+                        No categories
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design table -->
+        <div class="col-12" style="width:100%; margin-top: 2rem;display: none;" id="design-table">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Designs</h6>
+                <div class="table-responsive text-center">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Profile</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone No</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="design-table-body">
+
+
+                        </tbody>
+                    </table>
+                    <div class="noContent">
+
+                        No designs
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+</div>

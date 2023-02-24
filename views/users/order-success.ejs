@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Checkout | Minimal projects</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+</head>
+<style>
+.card-stepper {
+z-index: 0
+}
+
+#progressbar-2 {
+color: #455A64;
+}
+
+#progressbar-2 li {
+list-style-type: none;
+font-size: 13px;
+width: 33.33%;
+float: left;
+position: relative;
+}
+
+#progressbar-2 #step1:before {
+content: '\f058';
+font-family: "Font Awesome 5 Free";
+color: #fff;
+width: 37px;
+margin-left: 0px;
+padding-left: 0px;
+}
+
+#progressbar-2 #step2:before {
+content: '\f058';
+font-family: "Font Awesome 5 Free";
+color: #fff;
+width: 37px;
+}
+
+#progressbar-2 #step3:before {
+content: '\f058';
+font-family: "Font Awesome 5 Free";
+color: #fff;
+width: 37px;
+margin-right: 0;
+text-align: center;
+}
+
+#progressbar-2 #step4:before {
+content: '\f111';
+font-family: "Font Awesome 5 Free";
+color: #fff;
+width: 37px;
+margin-right: 0;
+text-align: center;
+}
+
+#progressbar-2 li:before {
+line-height: 37px;
+display: block;
+font-size: 12px;
+background: #c5cae9;
+border-radius: 50%;
+}
+
+#progressbar-2 li:after {
+content: '';
+width: 100%;
+height: 10px;
+background: #c5cae9;
+position: absolute;
+left: 0%;
+right: 0%;
+top: 15px;
+z-index: -1;
+}
+
+#progressbar-2 li:nth-child(1):after {
+left: 1%;
+width: 100%
+}
+
+#progressbar-2 li:nth-child(2):after {
+left: 1%;
+width: 100%;
+}
+
+#progressbar-2 li:nth-child(3):after {
+left: 1%;
+width: 100%;
+background: #c5cae9 !important;
+}
+
+#progressbar-2 li:nth-child(4) {
+left: 0;
+width: 37px;
+}
+
+#progressbar-2 li:nth-child(4):after {
+left: 0;
+width: 0;
+}
+
+#progressbar-2 li.active:before,
+#progressbar-2 li.active:after {
+background: #6520ff;
+}
+</style>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__close">+</div>
+        <ul class="offcanvas__widget">
+            <li><span class="icon_search search-switch"></span></li>
+            <li><a href="#"><span class="icon_heart_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+        </ul>
+        <div class="offcanvas__logo">
+            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__auth">
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <%- include('./partials/user-navbar') %>
+        <!-- Header Section End -->
+
+        <!-- Breadcrumb Begin -->
+        <div class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__links">
+                            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                            <span>Order confirmed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- Checkout Section Begin -->
+        <section class="checkout spad">
+            <div class="container">
+             <div class="row ">
+                <div class="col-sm-3 col-lg-3   text-center mb-3">
+                    
+                    
+                </div>
+                <div class="col-sm-6 col-lg-6 text-center mb-3 rounded">
+                    <h3 class="text-white bg-success">Thank you for Shopping with Us</h3>
+                </div>
+                
+             </div>
+
+                <!-- billing address -->
+                <form id="successForm">
+                    <div class="row ">
+
+                        <div class="col-lg-8 col-md-8 billLabel">
+                            <h5>Billing Address</h5>
+                            <div class="row">
+                            
+                                    <div class="col-md-6">
+                                        <label class="" for="name">Name</label>
+                                        <input type="text" placeholder="" name="name" value="<%= order.billingAddress.name %>"
+                                            readonly class="billInput">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="name">Country</label>
+                                        <input type="text" placeholder="name" name="country"
+                                            value="<%= order.billingAddress.country %>" readonly class="billInput">
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="name">Address</label>
+                                    <input type="text" placeholder="name" name="address" value="<%= order.billingAddress.address %>"
+                                        readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Town/City</label>
+                                    <input type="text" placeholder="name" name="city" value="<%= order.billingAddress.city %>"
+                                        readonly class="billInput">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="name">State</label>
+                                    <input type="text" placeholder="name" name="state" value="<%= order.billingAddress.state %>"
+                                        readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Zip Code</label>
+                                    <input type="text" placeholder="name" name="zip" value="<%= order.billingAddress.zip %>" readonly
+                                        class="billInput">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="name">Phone No</label>
+                                    <input type="text" placeholder="name" name="phone" value="<%= order.billingAddress.phone %>"
+                                        readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Email</label>
+                                    <input type="text" placeholder="name" name="email" value="<%= order.billingAddress.email %>"
+                                        readonly class="billInput">
+                                </div>
+                             </div>
+                      
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="checkout__order">
+                                        <h5>Ordered Products</h5>
+                                        <div class="checkout__order__product">
+                                            <ul>
+                                                <li class="row">
+                                                    <span class="col-md-3">Product</span>
+                                                    <span class="col-md-3">Size</span>
+                                                    <span class="col-md-3">Quantity</span>
+                                                    <span class="col-md-3">Total</span>
+                                                </li>
+                                                <% order.products.forEach((product, index)=> { %>
+                                                    <li class="row">
+                                                        <span class="col-md-3">
+                                                            <%= index + 1 %>.<%= product.product.name %>
+                                                        </span>
+                                                        <span class="col-md-3">
+                                                            <%= product.size %>
+                                                        </span>
+                                                        <span class="col-md-3">
+                                                            <%= product.quantity %>
+                                                        </span>
+                                                        <span class="col-md-3 prices">
+                                                            <%= product.price * product.quantity %>
+                                                        </span>
+                                                    </li>
+                                                    <% }) %>
+
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="checkout__order">
+
+                                <div class="checkout__order__total">
+                                    <ul>
+                                        <li>Order ID <input type="text" id="couponCode" name="coupon"
+                                            class="total couponInput" value="<%= order.orderId %>" readonly></li>
+                                        <li>Coupon Applied <input type="text" id="couponCode" name="coupon"
+                                                class="total couponInput" value="<%= order.coupon %>" readonly></li>
+                                        <li>Subtotal <input type="text" name="subTotal" id="subTotal"
+                                                class="total checkoutInput" value="<%= order.subTotal %>" readonly></li>
+                                        <li>Discount <input type="text" id="discount" name="discount"
+                                                class="total checkoutInput" value="<%= order.discount %>" readonly></li>
+                                        <li>Total <sup>(tax included*)</sup> <input name="total" type="text" id="total"
+                                                class="total checkoutInput" readonly value="<%= order.totalAmount %>"></li>
+                                        <li>Payment Mode <input name="total" type="text" id="total"
+                                                class="total checkoutInput" readonly value="<%= order.paymentMethod %>"></li>
+                                    </ul>
+                                </div>
+
+                                <button type="submit"  class="site-btn">Continue shopping</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- Checkout Section End -->
+
+
+
+        <!-- Footer Section Begin -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-7">
+                        <div class="footer__about">
+                            <div class="footer__logo">
+                                <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                cilisis.</p>
+                            <div class="footer__payment">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-5">
+                        <div class="footer__widget">
+                            <h6>Quick links</h6>
+                            <ul>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Blogs</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="footer__widget">
+                            <h6>Account</h6>
+                            <ul>
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="#">Orders Tracking</a></li>
+                                <li><a href="#">Checkout</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-8">
+                        <div class="footer__newslatter">
+                            <h6>NEWSLETTER</h6>
+                            <form action="#">
+                                <input type="text" placeholder="Email">
+                                <button type="submit" class="site-btn">Subscribe</button>
+                            </form>
+                            <div class="footer__social">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-youtube-play"></i></a>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <div class="footer__copyright__text">
+                            <p>Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                                template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
+                                    href="https://colorlib.com" target="_blank">Colorlib</a>
+                            </p>
+                        </div>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer Section End -->
+
+        <!-- Search Begin -->
+        <div class="search-model">
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                <div class="search-close-switch">+</div>
+                <form class="search-model-form">
+                    <input type="text" id="search-input" placeholder="Search here.....">
+                </form>
+            </div>
+        </div>
+        <!-- Search End -->
+
+        <!-- choose another modal -->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <section style="background-color: #eee;" class="mt-3" id="addressContainer">
+
+
+
+                    </section>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Js Plugins -->
+        <script src="/static/js/jquery-3.3.1.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.magnific-popup.min.js"></script>
+        <script src="/static/js/jquery-ui.min.js"></script>
+        <script src="/static/js/mixitup.min.js"></script>
+        <script src="/static/js/jquery.countdown.min.js"></script>
+        <script src="/static/js/jquery.slicknav.js"></script>
+        <script src="/static/js/owl.carousel.min.js"></script>
+        <script src="/static/js/jquery.nicescroll.min.js"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+        <script src="/static/js/main.js"></script>
+        <script>
+            const form = document.getElementById('successForm');
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                location.href = '/user/shop?page=1';
+            })
+        </script>
+</body>
+
+
+</html>

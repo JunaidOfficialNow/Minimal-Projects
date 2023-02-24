@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Checkout | Minimal projects</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__close">+</div>
+        <ul class="offcanvas__widget">
+            <li><span class="icon_search search-switch"></span></li>
+            <li><a href="#"><span class="icon_heart_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+        </ul>
+        <div class="offcanvas__logo">
+            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__auth">
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <%- include('./partials/user-navbar') %>
+        <!-- Header Section End -->
+
+        <!-- Breadcrumb Begin -->
+        <div class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__links">
+                            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                            <span>Shopping cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- Checkout Section Begin -->
+        <section class="checkout spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+
+                    </div>
+                    <div class="col-lg-4">
+                        <small class="text-white bg-danger px-5 rounded" style="display: none"> Coupon is not
+                            valid</small>
+                        <div class="discount__content mb-3">
+
+                            <h6>Discount codes</h6>
+                            <form action="#">
+                                <input type="text" id="coupon" placeholder="Enter your coupon code">
+                                <button onclick="addCoupon(event)" class="site-btn">Apply</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- billing address -->
+                <form action="/user/checkout" class="checkout__form" method="post" id="checkoutForm">
+                    <div class="row ">
+
+                        <div class="col-lg-8 col-md-8 billLabel">
+                            <h5>Billing Details</h5>
+                            <div class="row">
+                                <% if (address) { %>
+                                    <div class="col-md-6">
+                                        <label class="" for="name">Name</label>
+                                        <input type="text" placeholder="" name="name" value="<%= address.name %>"
+                                            readonly class="billInput">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="name">Country</label>
+                                        <input type="text" placeholder="name" name="country"
+                                            value="<%= address.country %>" readonly class="billInput">
+                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="name">Address</label>
+                                    <input type="text" placeholder="name" name="address" value="<%= address.address %>"
+                                        readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Town/City</label>
+                                    <input type="text" placeholder="name" name="city" value="<%= address.city %>"
+                                        readonly class="billInput">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="name">State</label>
+                                    <input type="text" placeholder="name" name="state" value="<%= address.state %>"
+                                        readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Zip Code</label>
+                                    <input type="text" placeholder="name" name="zip" value="<%= address.zip %>" readonly
+                                        class="billInput">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="name">Phone No</label>
+                                    <input type="text" placeholder="name" name="phone" value="<%= address.phone %>"
+                                        readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Email</label>
+                                    <input type="text" placeholder="name" name="email" value="<%= address.email %>"
+                                        readonly class="billInput">
+                                </div>
+                                <% } %>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="button" class="btn-sm btn text-primary"
+                                                data-target=".bd-example-modal-lg" data-toggle="modal"
+                                                value="Choose another" onclick="chooseAnother('<%= user._id %>')">
+                                        </div>
+                                    </div>
+                                    <!-- <button class="btn-sm btn text-primary">Add new</button> -->
+
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="checkout__order">
+                                        <h5>Order Products</h5>
+                                        <div class="checkout__order__product">
+                                            <ul>
+                                                <li class="row">
+                                                    <span class="col-md-3">Product</span>
+                                                    <span class="col-md-3">Size</span>
+                                                    <span class="col-md-3">Quantity</span>
+                                                    <span class="col-md-3">Total</span>
+                                                </li>
+                                                <% products.forEach((product, index)=> { %>
+                                                    <li class="row">
+                                                        <span class="col-md-3">
+                                                            <%= index + 1 %>.<%= product._id.name %>
+                                                        </span>
+                                                        <span class="col-md-3">
+                                                            <%= product.size %>
+                                                        </span>
+                                                        <span class="col-md-3">
+                                                            <%= product.quantity %>
+                                                        </span>
+                                                        <span class="col-md-3 prices">
+                                                            <%= product._id.price * product.quantity %>
+                                                        </span>
+                                                    </li>
+                                                    <% }) %>
+
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="checkout__order">
+
+                                <div class="checkout__order__total">
+                                    <ul>
+                                        <li>Coupon Applied <input type="text" id="couponCode" name="coupon"
+                                                class="total couponInput" value="No coupon applied" readonly></li>
+                                        <li>Subtotal <input type="text" name="subTotal" id="subTotal"
+                                                class="total checkoutInput" readonly></li>
+                                        <li>Discount <input type="text" id="discount" name="discount"
+                                                class="total checkoutInput" value="0" readonly></li>
+                                        <li>Total <sup>(tax included*)</sup> <input name="total" type="text" id="total"
+                                                class="total checkoutInput" readonly value=""></li>
+                                    </ul>
+                                </div>
+                                <div class="checkout__order__widget">
+                                    <label for="cod">
+                                        Cash on Delivery
+                                        <input type="radio" name="method" value="COD" id="cod">
+                                        <span class="checkmark"></span>
+                                    </label>
+
+                                    <label for="paypal">
+                                        Online payment
+                                        <input type="radio" name="method" checked value="ONLINE" id="paypal">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <button type="submit" class="site-btn">Place order</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- Checkout Section End -->
+
+
+
+        <!-- Footer Section Begin -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-7">
+                        <div class="footer__about">
+                            <div class="footer__logo">
+                                <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                cilisis.</p>
+                            <div class="footer__payment">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-5">
+                        <div class="footer__widget">
+                            <h6>Quick links</h6>
+                            <ul>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Blogs</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="footer__widget">
+                            <h6>Account</h6>
+                            <ul>
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="#">Orders Tracking</a></li>
+                                <li><a href="#">Checkout</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-8">
+                        <div class="footer__newslatter">
+                            <h6>NEWSLETTER</h6>
+                            <form action="#">
+                                <input type="text" placeholder="Email">
+                                <button type="submit" class="site-btn">Subscribe</button>
+                            </form>
+                            <div class="footer__social">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-youtube-play"></i></a>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <div class="footer__copyright__text">
+                            <p>Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                                template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
+                                    href="https://colorlib.com" target="_blank">Colorlib</a>
+                            </p>
+                        </div>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer Section End -->
+
+        <!-- Search Begin -->
+        <div class="search-model">
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                <div class="search-close-switch">+</div>
+                <form class="search-model-form">
+                    <input type="text" id="search-input" placeholder="Search here.....">
+                </form>
+            </div>
+        </div>
+        <!-- Search End -->
+
+        <!-- choose another modal -->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <section style="background-color: #eee;" class="mt-3" id="addressContainer">
+
+
+
+                    </section>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Js Plugins -->
+        <script src="/static/js/jquery-3.3.1.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.magnific-popup.min.js"></script>
+        <script src="/static/js/jquery-ui.min.js"></script>
+        <script src="/static/js/mixitup.min.js"></script>
+        <script src="/static/js/jquery.countdown.min.js"></script>
+        <script src="/static/js/jquery.slicknav.js"></script>
+        <script src="/static/js/owl.carousel.min.js"></script>
+        <script src="/static/js/jquery.nicescroll.min.js"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+        <script src="/static/js/main.js"></script>
+</body>
+<script>
+    function chooseAnother(id) {
+        fetch('/user/checkout/get/address', {
+            method: 'POST',
+            body: JSON.stringify({
+                id: id,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((response) => response.json()).then((data) => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                const addressContainer = document.getElementById('addressContainer');
+                addressContainer.innerHTML = '';
+                data.forEach((address) => {
+
+
+                    addressContainer.innerHTML += ` <div class="row d-flex  justify-content-center">
+        
+        <div class="col-lg-11" id=${address._id}>
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Name</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.name}
+                  </p>
+                </div>
+
+                <div class="col-sm-3">
+                  <p class="mb-0">Address</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.address}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">City</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                  ${address.city}
+                  </p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="mb-0">State/Province/Region</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                   ${address.state}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Zip/Postal Code</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.zip}
+                  </p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="mb-0">Country</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.country}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Phone Number</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                  ${address.phone}
+                  </p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="mb-0">Email Address</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                   ${address.email}
+                  </p>
+                </div>
+              </div>
+              <hr>
+
+
+
+
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-3">
+           
+                </div>
+                <div class="col-sm-3">
+                 
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-primary ms-1" onclick="selectAddress( '${address._id}', '${id}')" >Select</button>
+                  
+              
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+      </div>`
+                });
+            }
+        })
+    }
+    const Form = document.getElementById('checkoutForm');
+    const form = Form.elements;
+    const paymentMethodRadios = form['method'];
+
+    function selectAddress(address, userId) {
+        
+        fetch('/user/checkout/get/one/address', {
+            method: 'POST',
+            body: JSON.stringify({
+                address: address,
+                userId: userId
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((data) => data.json()).then((data) => {
+            console.log(data);
+            form.name.value = data.name;
+            form.email.value = data.email;
+            form.city.value = data.city;
+            form.state.value = data.state;
+            form.address.value = data.address;
+            form.zip.value = data.zip;
+            form.country.value = data.country;
+            form.phone.value = data.phone;
+            document.getElementsByClassName('bd-example-modal-lg')[0].classList.remove('show');
+            document.getElementsByClassName('bd-example-modal-lg')[0].style.display = 'none';
+            document.getElementsByClassName('modal-backdrop')[0].style.display = 'none';
+            document.querySelector('body').classList.remove('modal-open');
+        })
+    }
+    let totalAmount;
+    const prices = document.getElementsByClassName('prices');
+    const subTotal = document.getElementById('subTotal');
+    const total = document.getElementById('total');
+    document.addEventListener('DOMContentLoaded', function (event) {
+        let totalPrice = 0;
+        const array = Array.from(prices)
+        array.forEach((element) => {
+            totalPrice += Number(element.textContent);
+
+        })
+        subTotal.value = totalPrice;
+        totalAmount = totalPrice;
+        total.value = (totalPrice + (totalPrice * (12 / 100)));
+
+
+    });
+    const coupon = document.getElementById('coupon');
+    const couponCode = document.getElementById('couponCode');
+    const discount = document.getElementById('discount');
+    function addCoupon(event) {
+        event.preventDefault();
+        fetch('/user/checkout/add/coupon', {
+            method: 'POST',
+            body: JSON.stringify({
+                coupon: coupon.value,
+                total: subTotal.value,
+
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+
+            },
+        }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+                if (data.valid) {
+
+                } else if (data.expire) {
+
+                } else if (data.amount) {
+
+                } else if (data.usage) {
+
+                } else {
+
+                    couponCode.value = data.couponCode;
+                    discount.value = data.discount;
+                    const NewTotal = totalAmount - Number(data.discount);
+                    subTotal.value = NewTotal.toFixed(2);
+                    total.value = (NewTotal + (NewTotal * (12 / 100))).toFixed(2);
+
+                }
+            }
+        })
+    }
+    Form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        let paymentMethodSelected = false;
+
+        for (let i = 0; i < paymentMethodRadios.length; i++) {
+            if (paymentMethodRadios[i].checked) {
+                paymentMethodSelected = true;
+                break;
+            }
+        }
+        if (!paymentMethodSelected) {
+            alert('please select a payment method')
+            return false;
+        }
+        if (form.method.value == 'ONLINE') {
+            stockChecking().then(() => {
+                fetch('/user/checkout/payment/online', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        total: total.value,
+
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then((response) => response.json()).then((data) => {
+                    if (data.success) {
+
+                        razorpayPayment(data.order);
+
+
+                    } else {
+                        console.log(data.error);
+                    }
+                })
+            }).catch((error) => {
+                alert(error)
+            })
+
+        } else {
+            stockChecking().then(() => {
+                Form.submit();
+            }).catch((products) => {
+                alert('Error')
+            })
+        };
+    })
+    function razorpayPayment(order) {
+        var options = {
+            "key": "rzp_test_MfdcWpDFtI5Mf9", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Junaid",
+            "description": "Test Transaction",//
+            "image": "https://example.com/your_logo",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response) {
+                verifyPayment(response, order)
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9999999999"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+    function verifyPayment(payment, order) {
+        fetch('/user/checkout/verify/payment', {
+            method: 'POST',
+            body: JSON.stringify({
+                payment: payment,
+                order: order
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+                Form.submit();
+            }
+        })
+    }
+    async function stockChecking() {
+        return new Promise((resolve, reject) => {
+            fetch('/user/checkout/check/stock', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then((response) => response.json()).then((data) => {
+                console.log(data)
+                if (data.success) {
+                    resolve();
+                }
+                else {
+                    reject(data.products);
+                }
+            }).catch((err) => {
+
+                console.log(err);
+                reject(err)
+            })
+        })
+
+    }
+</script>
+
+</html>

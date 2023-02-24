@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Shop | Minimal projects</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__close">+</div>
+        <ul class="offcanvas__widget">
+            <li><span class="icon_search search-switch"></span></li>
+            <li><a href="#"><span class="icon_heart_alt"></span>
+                <div class="tip">2</div>
+            </a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span>
+                <div class="tip">2</div>
+            </a></li>
+        </ul>
+        <div class="offcanvas__logo">
+            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__auth">
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <%- include('./partials/user-navbar.ejs') %>
+    <!-- Header Section End -->
+
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Shop</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Shop Section Begin -->
+    <section class="shop spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="shop__sidebar">
+                        <div class="sidebar__categories">
+                            <div class="section-title">
+                                <h4>Categories</h4>
+                            </div>
+                            <div class="categories__accordion">
+                                <div class="accordion" id="CategoryList">
+                                    <div class="card">
+                                        <div class="card-heading ">
+                                            <a href="ALL"  class="categoryLinks">ALL</a>
+                                        </div>
+                                    </div>
+                                    <% categoryNames.forEach((name)=> { %> 
+                                    <div class="card">
+                                        <div class="card-heading ">
+                                            <a href="<%= name.name %>" id="<%= name.name %>" class="categoryLinks"><%= name.name %></a>
+                                        </div>
+                                    </div>
+                                    <% } ) %>
+                                 
+                               
+                              
+                                 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebar__filter">
+                            <div class="section-title">
+                                <h4>Shop by price</h4>
+                            </div>
+                            <div class="filter-range-wrap">
+                                <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                                data-min="399" data-max="999"></div>
+                                <div class="range-slider">
+                                    <div class="price-input">
+                                        <p>Price:</p>
+                                        <input type="text" readonly id="minamount">
+                                        <input type="text" readonly id="maxamount">
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" id="priceFilter">Filter</a>
+                        </div>
+                        <div class="sidebar__sizes">
+                            <div class="section-title">
+                                <h4>Shop by size</h4>
+                            </div>
+                            <div class="size__list">
+                                <label for="All">
+                                    ALL
+                                    <input type="radio" class="sizeList" value="ALL" name="size" id="All">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <% sizes.forEach((size)=> { %>
+
+                                
+                                <label for="<%= size %>">
+                                    <%= size %>
+                                    <input type="radio" class="sizeList" value="<%= size %>" name="size" id="<%= size %>">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <% }) %>
+                            
+                               
+                            </div>
+                        </div>
+                        <div class="sidebar__color">
+                            <div class="section-title">
+                                <h4>Shop by color</h4>
+                            </div>
+                            <div class="size__list color__list">
+                                <label for="AllColor">
+                                    ALL
+                                    <input type="radio" class="" value="ALL" name="color" id="AllColor">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <% colors.forEach((color)=> { %>
+                                <label for="<%= color %>">
+                                    <%= color %>
+                                    
+                                    <input type="radio" value="<%= color %>" name="color" id="<%= color %>">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <% }); %>
+                          
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product displays -->
+                <div class="col-lg-9 col-md-9">
+                    <div class="row" id="productContainer" style="justify-content: center;">
+                        <!-- <div class="label stockout stockblue">Out Of Stock</div> -->
+                        <!-- <div class="label new">New</div> -->
+                        <!-- data-setbg=""  -->
+                        <!-- each product -->
+                        <% products.forEach((product)=> {  %> 
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product__item">
+                                <div class="product__item__pic set-bg"
+                                 style="background-image: url('/static/uploads/<%= product.category %>/<%= product.designCode %>/<%= product.images[0] %>')">
+                                 <% if (user) { %>
+                                    <ul class="product__hover" >
+                                        <li><a href=""><span class="icon_heart_alt"></span></a></li>
+                                        
+                                        <li  class="add-to-cart">
+                                            
+                                            <a href="#" data-userId="<%= user._id %>" data-proId="<%= product._id %>" class="addToCart" >
+                                                <div class="">
+                                            <span class="icon_cart_alt"></span>
+                                        </div>
+                                      
+                                        </a>
+                                    </li>
+                                    </ul>
+                                    <% } %>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6><a href="/user/product/<%= product._id %>"><%= product.name %></a></h6>
+                                    <div class="rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                    <div class="product__price">₹ <%= product.price %></div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                        <!-- each product -->
+                    </div>
+                    <div class="col-lg-12 text-center">
+                        <div class="pagination__option" id="paginationContainer">
+                            <% for(i=1;i<=count/9;i++) { %>
+                            <a href="/user/<%= page %>?page=<%= i %>"><%= i %></a>
+                            <% } %>
+                            <% if (count % 9 > 0) { %>
+                                <a href="/user/<%= page %>?page=<%= (Math.floor(count/9) + 1) %>"><%= (Math.floor(count/9) + 1) %></a>
+                            <% } %>
+                            <!-- <a href="#"><i class="fa fa-angle-right"></i></a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section End -->
+
+
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-7">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        cilisis.</p>
+                        <div class="footer__payment">
+                    
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-5">
+                    <div class="footer__widget">
+                        <h6>Quick links</h6>
+                        <ul>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Blogs</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="footer__widget">
+                        <h6>Account</h6>
+                        <ul>
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">Orders Tracking</a></li>
+                            <li><a href="#">Checkout</a></li>
+                            <li><a href="#">Wishlist</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8 col-sm-8">
+                    <div class="footer__newslatter">
+                        <h6>NEWSLETTER</h6>
+                        <form action="#">
+                            <input type="text" placeholder="Email">
+                            <button type="submit" class="site-btn">Subscribe</button>
+                        </form>
+                        <div class="footer__social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <div class="footer__copyright__text">
+                        <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+                    </div>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+
+    <!-- Js Plugins -->
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.magnific-popup.min.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/js/mixitup.min.js"></script>
+    <script src="/static/js/jquery.countdown.min.js"></script>
+    <script src="/static/js/jquery.slicknav.js"></script>
+    <script src="/static/js/owl.carousel.min.js"></script>
+    <script src="/static/js/jquery.nicescroll.min.js"></script>
+    <script src="/static/js/shop.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    
+    <script src="/static/js/main.js"></script>
+</body>
+<script>
+    const productContainer = document.getElementById("productContainer");
+    const cartCount = document.getElementById("cartCount");
+    productContainer.addEventListener('click', function(event) {
+   
+  
+      if (event.target.matches('.icon_cart_alt')) {
+    event.preventDefault();
+    const productId = event.target.closest('.addToCart').getAttribute('data-proId');
+    const userId = event.target.closest('.addToCart').getAttribute('data-userId');
+          fetch('/user/add/to/cart', {
+                method: 'POST',
+                body: JSON.stringify({
+                    proId: productId,
+                    userId: userId,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+          }).then((response) => response.json()).then((data)=> {
+            if (data.success) {
+                if (data.product) {
+                    swal("Hey!", "Product is already in the cart", "success");
+
+                } else {
+                    const count = Number(cartCount.innerHTML);
+                    cartCount.innerHTML = count +1;
+                    swal("Good job", "Product added to the cart", "success");
+                }
+               
+            } else {
+                alert(data.error);
+            }
+          } )
+     }
+    })
+
+</script>
+
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Product | Minimal projects</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__close">+</div>
+        <ul class="offcanvas__widget">
+            <li><span class="icon_search search-switch"></span></li>
+            <li><a href="#"><span class="icon_heart_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+        </ul>
+        <div class="offcanvas__logo">
+            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__auth">
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <%- include('./partials/user-navbar') %>
+        <!-- Header Section End -->
+
+        <!-- Breadcrumb Begin -->
+        <div class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__links">
+                            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                            <a href="#">
+                                <%= product.category %>
+                            </a>
+                            <span>
+                                <%= product.name %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- Product Details Section Begin -->
+        <section class="product-details spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="product__details__pic">
+                            <div class="product__details__pic__left product__thumb nice-scroll">
+                                <% product.images.forEach(function(image) { %>
+                                    <a class="pt active" href="#product-1">
+                                        <img src="/static//uploads/<%= product.category %>/<%= product.designCode %>/<%= image %>"
+                                            alt="">
+                                    </a>
+                                    <% }); %>
+                            </div>
+                            <div class="product__details__slider__content">
+                                <div class="product__details__pic__slider owl-carousel">
+                                    <% product.images.forEach(function(image, value) { %>
+                                        <img data-hash="product-<%= value+1 %>" class="product__big__img"
+                                            src="/static/uploads/<%= product.category %>/<%= product.designCode %>/<%= image %>"
+                                            alt="">
+                                        <% }); %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="product__details__text">
+                            <!-- <h3>Essential structured blazer <span>Brand: SKMEIMore Men Watches from SKMEI</span></h3> -->
+                            <div class="rating">
+                                <% 
+                                function getMaxStar(rating) {
+                                    let maxKey = 0;
+                                    let maxValue = 0;
+                                  
+                                    for (const [key, value] of Object.entries(rating)) {
+                                      if (value > maxValue) {
+                                        maxValue = value;
+                                        maxKey = key;
+                                      }
+                                    }
+                                  
+                                    return maxKey;
+                                  }
+                                  
+                                  function areAllValuesZero(rating) {
+                                    for (const value of Object.values(rating)) {
+                                      if (value !== 0) {
+                                        return false;
+                                      }
+                                    }
+                                  
+                                    return true;
+                                  }
+                                  %>
+                                  <% if (areAllValuesZero(product.rating)) { %>
+                                         No rating
+                                   <%  } else { %>
+                                    <% const maxStar = Number(getMaxStar(product.rating)) ; %>
+                                    <% for (i=0;i < maxStar ;i++ ) { %>
+                                      <i class="fa fa-star"></i>
+                                      <% } %>
+                                     
+                                  <% } %>
+                             
+                                <span> Reviews( <%= product.reviews %> )</span>
+                            </div>
+                            <div class="product__details__price">
+                                <%= product.price-(product.price*(product.discount/100)) %>
+                                <!-- <span></span> -->
+                            </div>
+                            <p>
+                                <%= product.name %>
+                            </p>
+                            <% if(user) { %>
+                            <div class="product__details__button">
+                            
+                                <a  href="#" data-userId="<%= user._id %>" data-proId="<%= product._id %>" id="addToCart" class="cart-btn" ><span class="icon_cart_alt"></span> Add to cart</a>
+                                <ul>
+                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                </ul>
+                            </div>
+                            <% } %>
+                            <div class="product__details__widget">
+                                <ul>
+                                    <li>
+                                        <span>Availability:</span>
+                                        <div class="stock__checkbox">
+                                            <label for="stockin">
+                                                <% if (product.stock ==  0) { %>
+                                                    Out of stock
+                                                 <% } else { %>
+                                                    In Stock
+                                                <% } %>
+                                               
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>Available color:</span>
+                                        <div class="color__checkbox">
+                                            <% function setBackgroundColor(color) {
+                                                return `background-color: ${color};`;
+                                              } %>
+
+                                              <% colors.forEach(function(color) { %>
+                                                    <label for="<%= color %>">
+                                                        <input type="radio" style="<%= setBackgroundColor(color) %>"
+                                                            name="color__radio" id="<%= color %>" checked>
+                                                        <span style="<%= setBackgroundColor(color) %>"
+                                                            class="checkmark"></span>
+                                                    </label>
+                                                    <% }) %>
+                                   
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>Available size:</span>
+                                        <div class="size__btn">
+                                            <% product.sizes.forEach(function(size) { %>
+                                                <label for="<%= size.size %>-btn" class="active">
+                                                    <input type="radio" id="<%= size.size %>-btn">
+                                                    <%= size.size %>
+                                                </label>
+                                                <% }) %>
+
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <span>Promotions:</span>
+                                        <p>Free shipping</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="product__details__tab">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item active">
+                                    <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews (<%= product.reviews %> )</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tabs-3" role="tabpanel">
+                                    <h6>Reviews ( <%= product.reviews %> )</h6>
+                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit,
+                                        sed
+                                        quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
+                                        Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
+                                        voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
+                                        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
+                                        consequat massa quis enim.</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+                                        eget
+                                        dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+                                        montes,
+                                        nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+                                        pretium
+                                        quis, sem.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <div class="related__title">
+                            <h5>RELATED PRODUCTS</h5>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-1.jpg">
+                                <div class="label new">New</div>
+                                <ul class="product__hover">
+                                    <li><a href="/static/img/product/related/rp-1.jpg" class="image-popup"><span
+                                                class="arrow_expand"></span></a></li>
+                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6><a href="#">Buttons tweed blazer</a></h6>
+                                <div class="rating">
+                                 
+                                   
+                                   
+                                </div>
+                                <div class="product__price">$ 59.0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-2.jpg">
+                                <ul class="product__hover">
+                                    <li><a href="/static/img/product/related/rp-2.jpg" class="image-popup"><span
+                                                class="arrow_expand"></span></a></li>
+                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6><a href="#">Flowy striped skirt</a></h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">$ 49.0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-3.jpg">
+                                <div class="label stockout">out of stock</div>
+                                <ul class="product__hover">
+                                    <li><a href="/static/img/product/related/rp-3.jpg" class="image-popup"><span
+                                                class="arrow_expand"></span></a></li>
+                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6><a href="#">Cotton T-Shirt</a></h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">$ 59.0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-4.jpg">
+                                <ul class="product__hover">
+                                    <li><a href="/static/img/product/related/rp-4.jpg" class="image-popup"><span
+                                                class="arrow_expand"></span></a></li>
+                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6><a href="#">Slim striped pocket shirt</a></h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">$ 59.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Product Details Section End -->
+
+    
+        <!-- Footer Section Begin -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-7">
+                        <div class="footer__about">
+                            <div class="footer__logo">
+                                <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                cilisis.</p>
+                            <div class="footer__payment">
+                        
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-5">
+                        <div class="footer__widget">
+                            <h6>Quick links</h6>
+                            <ul>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Blogs</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="footer__widget">
+                            <h6>Account</h6>
+                            <ul>
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="#">Orders Tracking</a></li>
+                                <li><a href="#">Checkout</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-8">
+                        <div class="footer__newslatter">
+                            <h6>NEWSLETTER</h6>
+                            <form action="#">
+                                <input type="text" placeholder="Email">
+                                <button type="submit" class="site-btn">Subscribe</button>
+                            </form>
+                            <div class="footer__social">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-youtube-play"></i></a>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <div class="footer__copyright__text">
+                            <p>Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                                template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
+                                    href="https://colorlib.com" target="_blank">Colorlib</a>
+                            </p>
+                        </div>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer Section End -->
+
+        <!-- Search Begin -->
+        <div class="search-model">
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                <div class="search-close-switch">+</div>
+                <form class="search-model-form">
+                    <input type="text" id="search-input" placeholder="Search here.....">
+                </form>
+            </div>
+        </div>
+        <!-- Search End -->
+
+        <!-- Js Plugins -->
+        <script src="/static/js/jquery-3.3.1.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.magnific-popup.min.js"></script>
+        <script src="/static/js/jquery-ui.min.js"></script>
+        <script src="/static/js/mixitup.min.js"></script>
+        <script src="/static/js/jquery.countdown.min.js"></script>
+        <script src="/static/js/jquery.slicknav.js"></script>
+        <script src="/static/js/owl.carousel.min.js"></script>
+        <script src="/static/js/jquery.nicescroll.min.js"></script>
+        <script src="/static/js/main.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</body>
+<script>
+    const cartBtn = document.getElementById('addToCart');
+    const cartCount = document.getElementById("cartCount");
+      cartBtn.addEventListener('click', function(event) {
+   
+  
+ event.preventDefault();
+ const productId = event.target.getAttribute('data-proId');
+ const userId = event.target.getAttribute('data-userId');
+       fetch('/user/add/to/cart', {
+             method: 'POST',
+             body: JSON.stringify({
+                 proId: productId,
+                 userId: userId,
+             }),
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+       }).then((response) => response.json()).then((data)=> {
+         if (data.success) {
+             if (data.product) {
+                 swal("Hey!", "Product is already in the cart", "success");
+
+             } else {
+                 const count = Number(cartCount.innerHTML);
+                 cartCount.innerHTML = count +1;
+                 swal("Good job", "Product added to the cart", "success");
+             }
+            
+         } else {
+             alert(data.error);
+         }
+       } )
+  
+ })
+    
+</script>
+
+
+</html>
+

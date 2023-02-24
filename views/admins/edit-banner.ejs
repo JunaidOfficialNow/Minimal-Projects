@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Banner</title>
+    <style>
+          * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+
+    background-color: #222;
+	color: #fff;
+	font-family: Arial, sans-serif;
+}
+
+.FormContainer {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+    color: white;
+
+}
+
+#banner-form {
+	background-color: #333;
+	padding: 20px;
+	border-radius: 10px;
+}
+
+.form-group {
+	margin: 10px 0;
+}
+
+label {
+	display: block;
+	margin-bottom: 5px;
+}
+
+input[type="text"], textarea {
+	background-color: #444;
+	border: none;
+	border-radius: 5px;
+	padding: 10px;
+	color: #fff;
+	width: 100%;
+}
+
+input[type="file"] {
+	display: none;
+}
+
+.file-label {
+	background-color: #4CAF50;
+	color: #fff;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	display: inline-block;
+}
+
+#image-preview {
+	width: 20%;
+	height: 100px;
+	background-color: #555;
+	background-image: none;
+	background-size: cover;
+	background-position: center;
+	margin: 10px 0;
+}
+#image-preview  img{
+  height: 100%;
+  width: 100%;
+}
+
+button[type="submit"] {
+	background-color: #4CAF50;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	display: inline-block;
+}
+
+button[type="submit"]:hover {
+	background-color: #3e8e41;
+}
+
+@media (min-width: 768px) {
+	.container {
+		height: auto;
+	}
+	#banner-form {
+		width: 50%;
+	}
+}
+
+
+
+    </style>
+</head>
+<body>
+    
+	<div class="FormContainer">
+		<form id="banner-form" action="/admin/banners?_method=PUT" method="POST" enctype="multipart/form-data">
+			<h1>Banner Form</h1>
+			<div class="form-group">
+				<label for="banner-name">Banner Name:</label>
+				<input type="text" id="banner-name" name="name" value="<%= banner.name %>" required>
+                <input type="text" hidden name="id" value="<%= banner._id %>">
+			</div>
+			<div class="form-group">
+				<label for="banner-title">Banner Title:</label>
+				<input type="text" id="banner-title" name="title" value="<%= banner.title %>" required>
+			</div>
+			<div class="form-group">
+				<label for="action-link">Action Link:</label>
+				<input type="text" id="action-link" name="actionLink" value="<%= banner.actionLink %>" required>
+			</div>
+			<div class="form-group">
+				<label for="action-text">Action Text:</label>
+				<input type="text" id="action-text" name="actionText" value="<%= banner.actionText %>" required>
+			</div>
+			<div class="form-group">
+				<label for="description">Description:</label>
+				<textarea id="description" name="description" required><%= banner.description %></textarea>
+			</div>
+			<div class="form-group">
+				<label for="banner-image" class="file-label">Choose Image</label>
+				<input type="file" id="banner-image" name="image" accept="image/*">
+			</div>
+			<div class="form-group">
+				<label for="image-preview">Image Preview:</label>
+				<div id="image-preview"> <img id="Img" src="/static/uploads/banners/<%= banner.image %>" alt=""></div>
+			</div>
+			<div class="form-group">
+				<button type="submit" id="submit-btn">Submit</button>
+			</div>
+		</form>
+	</div>
+
+    <script src="/static/admin/js/banners.js"></script>
+</body>
+</html>

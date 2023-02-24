@@ -1,0 +1,541 @@
+/********** Template CSS **********/
+:root {
+    --primary: #EB1616;
+    --secondary: #191C24;
+    --light: #6C7293;
+    --dark: #000000;
+}
+
+.back-to-top {
+    position: fixed;
+    display: none;
+    right: 45px;
+    bottom: 45px;
+    z-index: 99;
+}
+#preview {
+    height: 100%;
+    width: 100%;
+}
+td{
+    vertical-align: middle;
+}
+#orderContainer {
+    background-color: #8282b229;
+    margin-left: 21%;
+    padding: 29px;
+   
+    
+}
+#orderContainer input {
+    border: none;
+    background: transparent;
+    color: rgba(187, 173, 173, 0.732)
+}
+
+.dropdownListMenu {
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 4;
+    justify-content: space-around;
+  }
+  .statusField{
+    background: transparent;
+    border: none;
+    color: white;
+  }
+  .statusField option{
+    color: black
+
+  }
+  
+  tr {
+    position: relative
+  }
+  .optionsBtn {
+    background: local;
+    border-color: grey;
+    color: grey;
+  }
+  .optionsBtn:hover .dropdownListMenu {
+    display: flex;
+  }
+
+  .dropdownListItem {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .dropdownListItem:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+
+.thumbnailImage {
+    height: 40px;
+    width: 40px;
+}
+.dropdown-menu {
+    visibility: hidden;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    height: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  .hoverRow:hover {
+    background-color: rgb(15, 15, 16);
+  }
+
+  #logout-menu:hover #logout-dropdown {
+    visibility: visible;
+  } 
+
+.bgclr{
+    background: #213978;
+}
+.imageDiv {
+    height: 190px;
+    width: 30%;
+    background-color: #f9f9f9;
+}
+#Editpreview {
+    height: 100%;
+    width: 100%;
+}
+#uploadLabel ,#category-edit-upload-label {
+    border: 1px solid;
+    margin: 10px;
+    width: 133px;
+    height: 28px;
+    text-align: center;
+    border-radius: 20px;
+    background: #17171c;
+}
+#uploadLabel:hover , #category-edit-upload-label:hover {
+    cursor: pointer;
+    color: white;
+}
+#design-form {
+    flex-direction: column;
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    position: fixed;
+    display: none;
+    z-index: 1021;
+     position: fixed;
+      top: 50%;
+       left: 50%;
+        transform: translate(-50%, -50%);
+         padding: 20px;
+          transition: 1s;
+}
+.form-inp {
+    width: 100%;
+    padding: .5rem;
+}
+.form-grid-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.form .form-head label {
+    display: block;
+    margin: 10px 0;
+
+}
+.form-head {
+   position: relative;
+}
+.designFormError {
+    position: absolute;
+    border-color: #EB1616;
+    background-color: white;
+    color: #EB1616;
+    padding: 1rem;
+    border: 1px solid;
+    width: 100%;
+    display: none;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+}
+.sizes {
+    display: flex;
+    justify-content: space-around;
+}.selected-color-wrap{
+    height: 100px;
+}
+@media screen and (max-width: 768px){
+    .form-grid-wrap{
+        grid-template-columns: 1fr;
+    }
+}.file-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#fileUploadDesign {
+    border: 1px solid;
+    width: 115px;
+    text-align: center;
+    height: 35px;
+    vertical-align: middle;
+    border-radius: 20px;
+    color: white;
+    background: #15a2d3;
+    padding-top: 3px;
+}
+#selectedClrsHeading {
+    color: grey;
+    font-size: 0.8rem;
+}
+#colorList {
+    display: flex;
+    color: black;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 80%;
+}
+.colorItem:hover::after {
+    content: " x";
+    position: absolute;
+    top: 0;
+    color: red
+}
+.colorItem:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+}
+.formBtn {
+    border: 1px solid;
+    background: darkgrey;
+    color: black;
+    border-radius: 20px
+}
+.hover:hover{
+    cursor: pointer;
+    transform: scale(1.04);
+}
+#designFormSubmitBtn {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.add-cat{
+    background-color: #2d2d2d !important;
+}
+
+  .blockButton , .unblockBtn {
+    border-radius: 20px;
+    background: transparent;
+    color: blueviolet;
+    border-color: #6c7293;
+    font-size: small;
+    width: 63px;
+  }
+  
+
+  .options:hover .dropdown-menu {
+    visibility: visible;
+  }
+
+/* sidebar navbar */
+#sidebar::-webkit-scrollbar {
+    display: none;
+}
+td ,th{
+    text-align: center;
+}
+.padding {
+    padding: 1rem;
+}
+/*** Spinner ***/
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+}
+
+#spinner.show {
+    transition: opacity .5s ease-out, visibility 0s linear 0s;
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/*** Button ***/
+.btn {
+    transition: .5s;
+}
+
+.btn-square {
+    width: 38px;
+    height: 38px;
+}
+
+.btn-sm-square {
+    width: 32px;
+    height: 32px;
+}
+
+.btn-lg-square {
+    width: 48px;
+    height: 48px;
+}
+
+.btn-square,
+.btn-sm-square,
+.btn-lg-square {
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+    border-radius: 50px;
+}
+
+
+/*** Layout ***/
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--secondary);
+    transition: 0.5s;
+    z-index: 999;
+}
+
+.content {
+    margin-left: 250px;
+    min-height: 100vh;
+    background: var(--dark);
+    transition: 0.5s;
+}
+
+@media (min-width: 992px) {
+    .sidebar {
+        margin-left: 0;
+    }
+
+    .sidebar.open {
+        margin-left: -250px;
+    }
+
+    .content {
+        width: calc(100% - 250px);
+    }
+
+    .content.open {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        margin-left: -250px;
+    }
+
+    .sidebar.open {
+        margin-left: 0;
+    }
+
+    .content {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+
+/*** Navbar ***/
+.sidebar .navbar .navbar-nav .nav-link {
+    padding: 7px 20px;
+    color: var(--light);
+    font-weight: 500;
+    border-left: 3px solid var(--secondary);
+    border-radius: 0 30px 30px 0;
+    outline: none;
+}
+
+.sidebar .navbar .navbar-nav .nav-link:hover,
+.sidebar .navbar .navbar-nav .nav-link.active {
+    color: var(--primary);
+    background: var(--dark);
+    border-color: var(--primary);
+}
+
+.sidebar .navbar .navbar-nav .nav-link i {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dark);
+    border-radius: 40px;
+}
+
+.sidebar .navbar .navbar-nav .nav-link:hover i,
+.sidebar .navbar .navbar-nav .nav-link.active i {
+    background: var(--secondary);
+}
+
+.sidebar .navbar .dropdown-toggle::after {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: .5s;
+}
+
+.sidebar .navbar .dropdown-toggle[aria-expanded=true]::after {
+    transform: rotate(-180deg);
+}
+
+.sidebar .navbar .dropdown-item {
+    padding-left: 25px;
+    border-radius: 0 30px 30px 0;
+    color: var(--light);
+}
+
+.sidebar .navbar .dropdown-item:hover,
+.sidebar .navbar .dropdown-item.active {
+    background: var(--dark);
+}
+
+.content .navbar .navbar-nav .nav-link {
+    margin-left: 25px;
+    padding: 12px 0;
+    color: var(--light);
+    outline: none;
+}
+
+.content .navbar .navbar-nav .nav-link:hover,
+.content .navbar .navbar-nav .nav-link.active {
+    color: var(--primary);
+}
+
+.content .navbar .sidebar-toggler,
+.content .navbar .navbar-nav .nav-link i {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dark);
+    border-radius: 40px;
+}
+
+.content .navbar .dropdown-item {
+    color: var(--light);
+}
+
+.content .navbar .dropdown-item:hover,
+.content .navbar .dropdown-item.active {
+    background: var(--dark);
+}
+
+.content .navbar .dropdown-toggle::after {
+    margin-left: 6px;
+    vertical-align: middle;
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: .5s;
+}
+
+.content .navbar .dropdown-toggle[aria-expanded=true]::after {
+    transform: rotate(-180deg);
+}
+
+@media (max-width: 575.98px) {
+    .content .navbar .navbar-nav .nav-link {
+        margin-left: 15px;
+    }
+}
+
+
+/*** Date Picker ***/
+.bootstrap-datetimepicker-widget.bottom {
+    top: auto !important;
+}
+
+.bootstrap-datetimepicker-widget .table * {
+    border-bottom-width: 0px;
+}
+
+.bootstrap-datetimepicker-widget .table th {
+    font-weight: 500;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.bootstrap-datetimepicker-widget table td.active,
+.bootstrap-datetimepicker-widget table td.active:hover {
+    background: var(--primary);
+}
+
+.bootstrap-datetimepicker-widget table td.today::before {
+    border-bottom-color: var(--primary);
+}
+
+
+/*** Testimonial ***/
+.progress .progress-bar {
+    width: 0px;
+    transition: 2s;
+}
+
+
+/*** Testimonial ***/
+.testimonial-carousel .owl-dots {
+    margin-top: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.testimonial-carousel .owl-dot {
+    position: relative;
+    display: inline-block;
+    margin: 0 5px;
+    width: 15px;
+    height: 15px;
+    border: 5px solid var(--primary);
+    border-radius: 15px;
+    transition: .5s;
+}
+
+.testimonial-carousel .owl-dot.active {
+    background: var(--dark);
+    border-color: var(--primary);
+}

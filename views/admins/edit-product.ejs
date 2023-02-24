@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add design</title>
+    <style>
+        body {
+            background-color: rgb(53, 52, 52);
+        }
+
+        .uploadLabel,
+        .category-edit-upload-label {
+            border: 1px solid;
+            margin: 10px;
+            width: 133px;
+            height: 28px;
+            text-align: center;
+            border-radius: 20px;
+            background: #17171c;
+        }
+
+        .uploadLabel:hover,
+        .category-edit-upload-label:hover {
+            cursor: pointer;
+            color: white;
+        }
+
+        .design-form {
+            flex-direction: column;
+            margin: 0 auto;
+            padding: 20px;
+            width: 29vw;
+            height: 90vh;
+            background-color: #cbc4c4;
+            border-radius: 10px;
+            display: flex;
+            z-index: 1021;
+
+            padding: 20px;
+            transition: 1s;
+        }
+
+        input {
+            width: 90%;
+        }
+
+        .form-inp {
+            width: 100%;
+            padding: .5rem;
+        }
+
+        .form-grid-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form .form-head label {
+            display: block;
+            margin: 10px 0;
+
+        }
+
+        .form-head {
+            position: relative;
+        }
+
+        .designFormError {
+            position: absolute;
+            border-color: #EB1616;
+            background-color: white;
+            color: #a73838;
+            padding: 1rem;
+            border: 1px solid;
+            width: 100%;
+            display: none;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sizes {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .sizes div {
+            padding-left: 10px;
+        }
+
+        .selected-color-wrap {
+            height: 100px;
+        }
+
+        .file-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .fileUploadDesign {
+            border: 1px solid;
+            width: 115px;
+            text-align: center;
+            height: 35px;
+            vertical-align: middle;
+            border-radius: 20px;
+            color: white;
+            background: #15a2d3;
+            padding-top: 3px;
+        }
+
+        .selectedClrsHeading {
+            color: grey;
+            font-size: 0.8rem;
+        }
+
+        .colorList {
+            display: flex;
+            color: black;
+            flex-direction: column;
+            flex-wrap: wrap;
+            width: 100%;
+            height: 80%;
+        }
+
+        .colorItem:hover::after {
+            content: " x";
+            position: absolute;
+            top: 0;
+            color: red
+        }
+
+        .colorItem {
+            width: 40px;
+            border: none
+        }
+
+        .colorItem:hover {
+            cursor: pointer;
+            transform: scale(1.02);
+        }
+
+        #designFormSubmitBtn {
+            background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 20vw;
+    margin-top: 20px;
+    position: fixed;
+    bottom: 37px;
+    right: 492px;
+    z-index: 1022;
+        }
+
+        .form-first-head {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .form-grid-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .form-first-head {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body style="display: grid; grid-template-columns: 1fr  ; gap: 10px;">
+        <form class="form design-form" action="" method="" enctype="">
+            <div class="form-head">
+                <div class="designFormError">All fields are mandatory</div>
+                <div class="form-first-head">
+                    <div class="file-section">
+                        <label for="design_code">Design Code:</label>
+                        <input type="text" hidden name="id" value="<%= product._id %>">
+                        <input type="number" class="designCode" name="designCode" disabled value="<%= product.designCode %>"
+                            style="padding: .5rem;">
+                            <input type="number" class="designCode" name="designCode" hidden value="<%= product.designCode %>"
+                            style="padding: .5rem;">
+
+                    </div>
+
+                    <div class="file-section">
+                        <label for="design_code">Name</label>
+                        <input type="text" class="designC" name="name" value="<%= product.name %>"
+                            style="padding: .5rem;">
+
+                    </div>
+                    <div class="file-section">
+                        <label for="design_code">
+                            Exact Color
+                        </label>
+                        <input type="text" class="designC" name="exactColor" disabled value="<%= product.exactColor  %>"
+                            style="padding: .5rem;">
+                            <input type="text" class="designC" name="exactColor" hidden value="<%= product.exactColor  %>"
+                            style="padding: .5rem;">
+
+                    </div>
+                    <div class="file-section">
+                        <label for="design_code">Broad Color</label>
+                        <input type="text" class="designC" name="broadColor" value="<%= product.broadColor %>"
+                            style="padding: .5rem;">
+
+                    </div>
+
+                </div>
+                <div class="form-grid-wrap">
+                    <div>
+                        <label for="gender">Gender:</label>
+                        <input class="" name="gender" disabled value="<%= product.gender %>" >
+                        <input class="" name="gender" hidden value="<%= product.gender %>" >
+                    </div>
+                    <div>
+                        <label for="categoryListDesign">Category:</label>
+                        <input class="" name="category" disabled value="<%= product.category %>"
+                            class=" categoryListDesign">
+                            <input class="" name="category" hidden value="<%= product.category %>"
+                            class=" categoryListDesign">
+                    </div>
+
+
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                    <div>
+                        <label for="category">price:</label>
+                        <input type="number" name="price" value="<%= product.price %>" style="padding: .5rem;">
+                    </div>
+                    <div>
+                        <label for="category">Stock:</label>
+                        <input type="number" name="stock" value="<%= product.stock %>"
+                            style="padding: .5rem;">
+                    </div>
+                    <% product.sizes.forEach((element)=> { %>
+                    <div>
+                        <label for="category"> Stock: <%= element.size %> </label>
+                        <input type="number" name="stockOf<%= element.size %>" value="<%= element.stock %>"
+                            style="padding: .5rem;">
+                    </div>
+                    <% }) %>
+                  
+
+                </div>
+
+            </div>
+            <p>Size:</p>
+            <div class="sizes">
+                <% product.sizes.forEach((element)=> { %>
+                    <div>
+                        <input type="checkbox" disabled checked name="sizes" value="<%= element.size %>">
+                        <input type="checkbox" hidden checked name="sizes" value="<%= element.size %>">
+                        <label for="xxs">
+                            <%= element.size %>
+                        </label>
+                    </div>
+                    <% }) %>
+
+            </div>
+            <div class="form-grid-wrap" style="margin-top: .5rem;">
+                <div style="display: flex; flex-direction: column;">
+                    <label for="<%= product.name  %>" class="fileUploadDesign">Upload Photo</label>
+                    <input type="file" accept="image/*" multiple name="<%= product.name  %>" id="<%= product.name  %>" style="display:none">
+                </div>
+                <!-- <div style="width: 50px; height: 50px; background-color: transparent;border: 1px solid;">
+                    <img src="" alt="" width="100%" class="">
+                </div> -->
+            </div>
+
+            
+        </form>
+        <button id="designFormSubmitBtn" type="submit">Submit</button>
+</body>
+<script>
+
+const form = document.querySelector('.form');
+const submit = document.getElementById('designFormSubmitBtn');
+submit.addEventListener('click', function () {
+    const formData = new FormData(form);
+    console.log(formData)
+    fetch('/admin/product', {
+      method: 'PUT',
+      body: formData,
+    }).then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+
+                location.href = '/admin/products'
+        }
+      }).catch((error)  => {
+        alert(error)
+      });
+  });
+
+</script>
+
+</html>

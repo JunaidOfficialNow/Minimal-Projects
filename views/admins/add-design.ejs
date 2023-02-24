@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add design</title>
+    <style>
+        body {
+            background-color: rgb(53, 52, 52);
+        }
+        #uploadLabel ,#category-edit-upload-label {
+    border: 1px solid;
+    margin: 10px;
+    width: 133px;
+    height: 28px;
+    text-align: center;
+    border-radius: 20px;
+    background: #17171c;
+}
+#uploadLabel:hover , #category-edit-upload-label:hover {
+    cursor: pointer;
+    color: white;
+}
+#design-form {
+    flex-direction: column;
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    position: fixed;
+    display: flex;
+    z-index: 1021;
+     position: fixed;
+      top: 50%;
+       left: 50%;
+        transform: translate(-50%, -50%);
+         padding: 20px;
+          transition: 1s;
+}
+.form-inp {
+    width: 100%;
+    padding: .5rem;
+}
+.form-grid-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.form .form-head label {
+    display: block;
+    margin: 10px 0;
+
+}
+.form-head {
+   position: relative;
+}
+.designFormError {
+    position: absolute;
+    border-color: #EB1616;
+    background-color: white;
+    color: #EB1616;
+    padding: 1rem;
+    border: 1px solid;
+    width: 100%;
+    display: none;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+}
+.sizes {
+    display: flex;
+    justify-content: space-around;
+}.selected-color-wrap{
+    height: 100px;
+}
+@media screen and (max-width: 768px){
+    .form-grid-wrap{
+        grid-template-columns: 1fr;
+    }
+}.file-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#fileUploadDesign {
+    border: 1px solid;
+    width: 115px;
+    text-align: center;
+    height: 35px;
+    vertical-align: middle;
+    border-radius: 20px;
+    color: white;
+    background: #15a2d3;
+    padding-top: 3px;
+}
+#selectedClrsHeading {
+    color: grey;
+    font-size: 0.8rem;
+}
+#colorList {
+    display: flex;
+    color: black;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 80%;
+}
+.colorItem:hover::after {
+    content: " x";
+    position: absolute;
+    top: 0;
+    color: red
+}
+.colorItem {
+    width:40px;
+    border: none
+}
+.colorItem:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+}
+#designFormSubmitBtn {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+    </style>
+</head>
+<body>
+    <form class="form" id="design-form" action="/admin/design/category/add" method="post" enctype="multipart/form-data">
+        <div class="form-head">
+            <div class="designFormError">All fields are mandatory</div>
+           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="file-section">
+                <label for="design_code">Design Code:</label>
+                <input type="number" id="designCode" name="designCode" style="padding: .5rem;">
+                <label for="DesignFile" id="fileUploadDesign">Upload Photo</label>
+                <input type="file" accept="image/*" name="DesignFile" id="DesignFile" style="display:none">
+            </div>
+            <div style="width: 150px; height: 150px; background-color: transparent;border: 1px solid;">
+                <img src="" alt="" width="100%" id="DesignImage">
+            </div>
+           </div>
+            <div class="form-grid-wrap">
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" class="form-inp">
+                        <option value="men">Men's</option>
+                        <option value="women">Women's</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="categoryListDesign">Category:</label>
+                    <select id="categoryListDesign" name="category" class="form-inp">
+                        <% category.forEach((element)=> { %>
+                            <option value="<%= element.name %>"> <%= element.name %></option>
+                            <% }) %>
+                    </select>
+                </div>
+                
+
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr;">
+            <div>
+                <label for="category">Expected price:</label>
+                <input type="number" name="expectedPrice" style="padding: .5rem;">
+            </div>
+            <div>
+                <label for="category">Stock:</label>
+                <input type="number" name="stock" style="padding: .5rem;">
+            </div>
+        </div>
+
+        </div>
+        <p>Size:</p>
+        <div class="sizes">
+            <div>
+                <input type="checkbox" id="XXS" name="sizes" value="XXS">
+                <label for="xxs">XXS</label>
+            </div>
+
+            <div class="sizes">
+                <input type="checkbox" id="Xs" name="sizes" value="XS">
+                <label for="xs">XS</label>
+            </div>
+            <div>
+                <input type="checkbox" id="S" name="sizes" value="S">
+                <label for="s">S</label>
+            </div>
+            <div>
+                <input type="checkbox" id="M" name="sizes" value="M">
+                <label for="m">M</label>
+            </div>
+            <div>
+                <input type="checkbox" id="L" name="sizes" value="L">
+                <label for="l">L</label>
+            </div>
+            <div>
+                <input type="checkbox" id="XL" name="sizes" value="XL">
+                <label for="xl">XL</label>
+            </div>
+            <div>
+                <input type="checkbox" id="XXL" name="sizes" value="XXL">
+                <label for="xxl">XXL</label>
+            </div>
+
+        </div>
+        <div class="form-grid-wrap" style="margin-top: .5rem;">
+            <div style="display: flex; flex-direction: column;">
+                <label for="" style="padding: 10px 0;">Color</label><br>
+                <div class="" style="display: flex;">
+                <input type="text" name="" id="colorField" style="padding: .5rem;">
+                <!-- <input type="button" value="Add"> -->
+                <button id="addColorBtn">Add</button>
+            </div>
+            </div>
+            
+            <div  style="background-color: antiquewhite;" class="selected-color-wrap">
+                <h6 id="selectedClrsHeading">Selected colors</h6>
+                <div id="colorList">
+                </div>
+                
+            
+            </div>
+        </div>
+        <button id="designFormSubmitBtn" type="submit">Submit</button>
+    </form>
+   
+</body>
+<script>
+    const colorField = document.getElementById('colorField');
+const addColorBtn = document.getElementById('addColorBtn');
+const colorList = document.getElementById('colorList');
+const designFormSubmitBtn = document.getElementById('designFormSubmitBtn');
+const designCode = document.getElementById('designCode');
+const DesignImage = document.getElementById('DesignImage');
+const DesignFile = document.getElementById('DesignFile');
+const designFormError = document.getElementsByClassName('designFormError')[0];
+
+
+DesignFile.addEventListener('change', function(event) {
+  const url = URL.createObjectURL(event.target.files[0]);
+  DesignImage.style.height = '100%';
+  DesignImage.style.width = '100%';
+  DesignImage.src = url;
+});
+
+addColorBtn.addEventListener('click', function(event) {
+  event.preventDefault();
+  const color = colorField.value;
+  const colorCell = document.createElement('input');
+  colorCell.value = color;
+  colorCell.name = 'colors'
+  colorCell.classList.add('colorItem');
+  colorCell.addEventListener('click', function(event) {
+    this.parentNode.removeChild(this);
+  });
+  colorList.appendChild(colorCell);
+  colorField.value = null;
+});
+
+designCode.addEventListener('keypress', function() {
+    designFormError.style.display = 'none';
+})
+
+designCode.addEventListener('change', function(event) {
+  const code = designCode.value;
+  fetch('/admin/design/code/unique', {
+    method: 'POST',
+    body: JSON.stringify({
+        code: code
+    }),
+    headers: {
+        'Content-Type': 'application/json',
+    },
+  }).then((data)=> data.json()).then((data)=> {
+    if (data.success) {
+    } else {
+        designFormError.innerHTML = 'Design code is already in use';
+        designFormError.style.display = 'flex';
+    }
+  });
+});
+
+
+</script>
+</html>

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Ashion Template">
+  <meta name="keywords" content="Ashion, unica, creative, html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Minimal projects</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Css Styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+</head>
+<style>
+  .form-container {
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+  }
+
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right;
+  }
+</style>
+
+<body style="background-color:#eee ;">
+
+  <%- include('./partials/user-navbar.ejs') %>
+    <section style="background-color: #eee;" class="mt-3">
+
+
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <% if (user.isProfilePictureAdded) { %>
+                <img src="/static/uploads/profiles/<%= user.profilePicture %>" id="profilePreview" alt="avatar"
+                  class="rounded-circle img-fluid" style="width: 150px; height: 200px;">
+                <% } else { %>
+                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                    id="profilePreview" alt="avatar" class="rounded-circle img-fluid"
+                    style="width: 150px; height: 200px;">
+                  <% } %>
+                    <h5 class="my-3">
+                      <%= user.firstName + ' ' + user.lastName %>
+                    </h5>
+                    <p class="text-muted mb-1">Customer</p>
+                    <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                    <div class="d-flex justify-content-center mb-2">
+                      <input type="file" id="profileImage" name="profileImage" style="display: none;">
+                      <label for='profileImage' class="btn btn-primary btn-sm">Upload image</label>
+                      <button onclick="clearError()" type="button" class="btn btn-outline-primary btn-sm ms-1"
+                        data-toggle="modal" data-target="#EditProfile">Edit profile</button>
+                      <button type="button" class="btn btn-danger btn-sm ms-1"
+                        onclick="deleteAccount('<%= user._id %>')">Delete Account</button>
+                    </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">First Name</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" id="firstName">
+                    <%= user.firstName %>
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Last Name</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" id="lastName">
+                    <% if(user.isLastNameAdded) { %>
+                      <%= user.lastName %>
+                        <%} else { %> Not added <% } %>
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" id="email">
+                    <%= user.email %>
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Phone</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0" id="phoneNo">
+                    <% if(user.phoneNo.length> 0) { %>
+                      <%= user.phoneNo %>
+
+                        <% } else { %>
+                          Not added
+                          <% } %>
+
+                  </p>
+                </div>
+              </div>
+              <hr>
+
+
+
+
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Address</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">
+                    <button id="addressCell" type="button" class="btn btn-primary" data-toggle="modal"
+                      onclick="clearFields()" data-target="#exampleModalCenter">
+                      Add address
+                    </button>
+                    <% if(user.isAddressAdded) { %>
+                      <button type="button" class="btn btn-outline-primary ms-1" data-toggle="modal"
+                        data-target=".bd-example-modal-lg" id="viewAddressBtn"
+                        onclick="viewAddress('<%= user._id %>')">View
+                        Address</button>
+                      <% } %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+      </div>
+    </section>
+
+
+    <!-- edit address modal -->
+    <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add address</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="editAddressContainer">
+
+            <!--Section: Design Block-->
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="editAddress()">Edit address</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add address</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <!--Section: Design Block-->
+            <div class="form-container">
+              <form id="addressForm">
+                <div class="form-group">
+                  <label for="name">Name:</label>
+                  <input type="text" id="name" name="name">
+                </div>
+
+                <div class="form-group">
+                  <label for="address">Address:</label>
+                  <input type="text" id="address" name="address">
+                </div>
+
+                <div class="form-group">
+                  <label for="city">City:</label>
+                  <input type="text" id="city" name="city">
+                </div>
+
+                <div class="form-group">
+                  <label for="state">State/Province/Region:</label>
+                  <input type="text" name="state">
+                </div>
+
+                <div class="form-group">
+                  <label for="zip">Zip/Postal Code:</label>
+                  <input type="text" id="zip" name="zip">
+                </div>
+
+                <div class="form-group">
+                  <label for="country">Country:</label>
+                  <input type="text" id="country" name="country">
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Phone Number:</label>
+                  <input type="text" id="phone" name="phone">
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email Address:</label>
+                  <input type="text" id="email" name="email">
+                </div>
+                <small id="addressFormError" class="text-danger" style="display: none;">Give a valid name</small>
+              </form>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="addAddress('<%= user._id %>')">Add address</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second modal -->
+
+    <div class="modal fade bd-example-modal-lg" id="addressModal" tabindex="-1" role="dialog"
+      aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <section style="background-color: #eee;" class="mt-3" id="addressContainer">
+
+
+
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Third modal -->
+    <div class="modal fade" id="EditProfile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add address</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <!--Section: Design Block-->
+            <div class="form-container">
+              <form id="profileForm">
+                <div class="form-group">
+                  <label for="name">First Name:</label>
+                  <input type="text" value="<%= user.firstName %>" name="firstName">
+                </div>
+
+                <div class="form-group">
+                  <label for="address">Last Name:</label>
+                  <input type="text" value="<%= user.lastName %>" name="lastName">
+                </div>
+
+                <div class="form-group">
+                  <label for="city">Email:</label>
+                  <input type="text" id="formEmail" value="<%= user.email %>" name="email">
+                </div>
+
+                <div class="form-group">
+                  <label for="state">Phone no:</label>
+                  <input type="text" value="<%= user.phoneNo %>" name="phoneNo">
+                </div>
+
+
+                <small id="profileFormError" class="text-danger" style="display: none;">Give a valid name</small>
+              </form>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" onclick="editProfile()">Edit profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.magnific-popup.min.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/js/mixitup.min.js"></script>
+    <script src="/static/js/jquery.countdown.min.js"></script>
+    <script src="/static/js/jquery.slicknav.js"></script>
+    <script src="/static/js/owl.carousel.min.js"></script>
+    <script src="/static/js/jquery.nicescroll.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
+      crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <script>
+      const profileForm = document.getElementById('profileForm');
+      const email = document.getElementById('email');
+      const phoneNo = document.getElementById('phoneNo');
+      const firstName = document.getElementById('firstName');
+      const lastName = document.getElementById('lastName');
+      const formEmail = document.getElementById('formEmail');
+      const oldValue = formEmail.value;
+      const profileFormError = document.getElementById('profileFormError');
+
+      function clearError() {
+        profileFormError.style.display = 'none';
+      };
+
+      function editProfile() {
+
+        const formData = new FormData(profileForm);
+        const formDataEntries = Array.from(formData.entries());
+        const formDataObject = formDataEntries.reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {});
+
+        if (!validateObject(formDataObject)) {
+          profileFormError.style.display = 'block';
+          return profileFormError.innerHTML = 'All fields are required';
+        } else if (!validateName(formDataObject.firstName)) {
+          profileFormError.style.display = 'block';
+          return profileFormError.innerHTML = 'Provide valid  first name';
+        } else if (!validateName(formDataObject.lastName)) {
+          profileFormError.style.display = 'block';
+          return profileFormError.innerHTML = 'Provide valid last name';
+        } else if (!isValidEmail(formDataObject.email)) {
+          profileFormError.style.display = 'block';
+          return profileFormError.innerHTML = 'Provide  a  valid email address';
+        } else if (!validatePhoneNumber(formDataObject.phoneNo)) {
+          profileFormError.style.display = 'block';
+          return profileFormError.innerHTML = 'Provide a valid phone number';
+        }
+        if (oldValue !== formDataObject.email) {
+          fetch(`/user/email-check?email=${formDataObject.email}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                fetch('/user/profile', {
+                  method: 'PUT',
+                  body: JSON.stringify(formDataObject),
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                }).then((response) => response.json()).then((data) => {
+                  if (data.success) {
+                    console.log(formDataObject)
+                    email.innerHTML = formDataObject.email;
+                    phoneNo.innerHTML = formDataObject.phoneNo;
+                    lastName.innerHTML = formDataObject.lastName;
+                    firstName.innerHTML = formDataObject.firstName;
+                    document.getElementById('EditProfile').classList.remove('show');
+                    document.getElementById('EditProfile').style.display = 'none';
+                    document.getElementsByClassName('modal-backdrop')[0].classList.toggle('modal-backdrop');
+                    document.querySelector('body').classList.toggle('modal-open');
+
+                  }
+                })
+              } else {
+                profileFormError.innerHTML = 'Email is already in use';
+                profileFormError.style.display = 'block';
+              }
+            })
+
+        } else {
+          fetch('/user/profile', {
+            method: 'PUT',
+            body: JSON.stringify(formDataObject),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+              console.log(formDataObject)
+              email.innerHTML = formDataObject.email;
+              phoneNo.innerHTML = formDataObject.phoneNo;
+              lastName.innerHTML = formDataObject.lastName;
+              firstName.innerHTML = formDataObject.firstName;
+              document.getElementById('EditProfile').classList.remove('show');
+              document.getElementById('EditProfile').style.display = 'none';
+              document.getElementsByClassName('modal-backdrop')[0].classList.toggle('modal-backdrop');
+              document.querySelector('body').classList.toggle('modal-open');
+
+            }
+          })
+
+        }
+
+
+
+
+      }
+
+
+      function clearFields() {
+        error.style.display = "none";
+        form.querySelectorAll('input').forEach((element) => {
+          element.value = '';
+        })
+      }
+      function isValidEmail(email) {
+        const re =
+          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+      function validatePhoneNumber(phoneNumber) {
+        const phoneNumberPattern = /^\d{10}$/;
+        return phoneNumberPattern.test(phoneNumber);
+      }
+      function validateName(name) {
+        if (!name || name.trim().length === 0) {
+          return false;
+        }
+        let nameRegExp = /^[A-Za-z\s']+$/;
+        return nameRegExp.test(name);
+
+      }
+      function validateObject(obj) {
+        for (const key in obj) {
+          if (!obj[key] || obj[key].trim().length === 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+      const form = document.getElementById('addressForm');
+      const error = document.getElementById('addressFormError');
+      const addressCell = document.getElementById('addressCell');
+
+      form.querySelectorAll('input').forEach((element) => {
+        element.addEventListener('keypress', () => {
+          error.style.display = 'none';
+        })
+      })
+      function addAddress(id) {
+        const formData = new FormData(form);
+        const formDataEntries = Array.from(formData.entries());
+        const formDataObject = formDataEntries.reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {});
+        if (!validateObject(formDataObject)) {
+          error.innerHTML = 'Provide all fields';
+          error.style.display = 'block';
+        } else if (!validateName(formDataObject.name)) {
+          error.innerHTML = 'Provide a valid name';
+          error.style.display = 'block';
+        } else if (!isValidEmail(formDataObject.email)) {
+          error.innerHTML = 'Provide a valid email address';
+          error.style.display = 'block';
+        } else if (!validatePhoneNumber(formDataObject.phone)) {
+          error.style.display = 'block';
+          error.innerHTML = 'Provide a valid phone number';
+        } else {
+          fetch(`/user/address/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: id,
+              address: formDataObject,
+            })
+          }).then((response) => {
+            return response.json();
+          }).then((data) => {
+            if (data.success) {
+              if (data.new) {
+                addressCell.insertAdjacentHTML('afterend', `<button type="button" class="btn btn-outline-primary ms-1" onclick="viewAddress('${id}')" data-toggle="modal" data-target=".bd-example-modal-lg" >View Address</button>`)
+              };
+
+              document.getElementById('exampleModalCenter').classList.remove('show');
+              document.getElementById('exampleModalCenter').style.display = 'none';
+              document.getElementsByClassName('modal-backdrop')[0].classList.toggle('modal-backdrop');
+              document.querySelector('body').classList.toggle('modal-open');
+
+              swal({
+                title: "Address Added!",
+                text: "",
+                icon: "success",
+                button: "Ok",
+              });
+            } else {
+              alert(data.error);
+            }
+
+          });
+        }
+      }
+
+      function viewAddress(id) {
+        fetch('/user/get/address', {
+          method: 'POST',
+          body: JSON.stringify({
+            id: id,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => response.json()).then((data) => {
+          if (data.error) {
+            alert(data.error);
+          } else {
+            const addressContainer = document.getElementById('addressContainer');
+            addressContainer.innerHTML = '';
+            data.forEach((address) => {
+
+
+
+              addressContainer.innerHTML += ` <div class="row d-flex  justify-content-center">
+        
+        <div class="col-lg-11" id=${address._id}>
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Name</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.name}
+                  </p>
+                </div>
+
+                <div class="col-sm-3">
+                  <p class="mb-0">Address</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.address}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">City</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                  ${address.city}
+                  </p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="mb-0">State/Province/Region</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                   ${address.state}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Zip/Postal Code</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.zip}
+                  </p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="mb-0">Country</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                    ${address.country}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Phone Number</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                  ${address.phone}
+                  </p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="mb-0">Email Address</p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="text-muted mb-0">
+                   ${address.email}
+                  </p>
+                </div>
+              </div>
+              <hr>
+
+
+
+
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-3">
+           
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target='#editAddressModal'  onclick="editAddressForm('${address._id}')" ms-1" >Edit Address</button>
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-danger ms-1" onclick="deleteAddress('${address._id}', '${id}')" >Delete</button>
+                  
+              
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+      </div>`
+            });
+          }
+        })
+      }
+      function deleteAddress(addressId, id) {
+        fetch('/user/delete/address', {
+          method: 'DELETE',
+          body: JSON.stringify({
+            id: id,
+            addressId: addressId,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then((response) => response.json()).then((data) => {
+          if (data.success) {
+            const addressDiv = document.getElementById(addressId);
+            addressDiv.parentNode.removeChild(addressDiv);
+          } else {
+            alert(data.error);
+          }
+        })
+
+      }
+      const file = document.getElementById('profileImage');
+      const preview = document.getElementById('profilePreview');
+      file.addEventListener('change', (event) => {
+        const url = URL.createObjectURL(event.target.files[0]);
+
+        preview.src = url;
+        const formData = new FormData();
+        formData.append('file', file.files[0]);
+        fetch('/user/add/image', {
+          method: 'PUT',
+          body: formData,
+        }).then((data) => data.json()).then((data) => {
+          if (data.success) {
+
+          } else {
+            console.log(data.error.message)
+          }
+        })
+
+      });
+
+      function editAddressForm(addressId) {
+        document.getElementById('addressModal').classList.remove('show');
+        document.getElementById('addressModal').style.display = 'none';
+        document.getElementsByClassName('modal-backdrop')[0].classList.toggle('modal-backdrop');
+        document.querySelector('body').classList.toggle('modal-open');
+
+        fetch(`/user/addresses/${addressId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+
+              document.getElementById('editAddressContainer').innerHTML = `   <div class="form-container">
+            <form id="editaddressForm">
+              <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" value=${data.address.name} name="name">
+                <input type="text" hidden value=${data.address._id} name="id">
+              </div>
+
+              <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" value=${data.address.address}  name="address">
+              </div>
+
+              <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" value=${data.address.city}  name="city">
+              </div>
+
+              <div class="form-group">
+                <label for="state">State/Province/Region:</label>
+                <input type="text" value=${data.address.state} name="state">
+              </div>
+
+              <div class="form-group">
+                <label for="zip">Zip/Postal Code:</label>
+                <input type="text" value=${data.address.zip}  name="zip">
+              </div>
+
+              <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" value=${data.address.country} name="country">
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" value=${data.address.phone} name="phone">
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="text" value=${data.address.email}  name="email">
+              </div>
+              <small id="editaddressFormError" class="text-danger" style="display: none;">Give a valid name</small>
+            </form>
+          </div>
+`
+            }
+
+          })
+
+
+      }
+
+      function editAddress(id) {
+        const error = document.getElementById('editaddressFormError');
+        const form = document.getElementById('editaddressForm');
+        const formData = new FormData(form);
+        const formDataEntries = Array.from(formData.entries());
+        const formDataObject = formDataEntries.reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {});
+        if (!validateObject(formDataObject)) {
+          error.innerHTML = 'Provide all fields';
+          return error.style.display = 'block';
+        } else if (!validateName(formDataObject.name)) {
+          error.innerHTML = 'Provide a valid name';
+          return error.style.display = 'block';
+        } else if (!isValidEmail(formDataObject.email)) {
+          error.innerHTML = 'Provide a valid email address';
+          return error.style.display = 'block';
+        } else if (!validatePhoneNumber(formDataObject.phone)) {
+          error.style.display = 'block';
+          return error.innerHTML = 'Provide a valid phone number';
+        } else {
+          fetch('/user/addresses', {
+            method: 'PUT',
+            body: JSON.stringify(formDataObject),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+              document.getElementById('editAddressModal').classList.remove('show');
+              document.getElementById('editAddressModal').style.display = 'none';
+              document.getElementsByClassName('modal-backdrop')[0].classList.toggle('modal-backdrop');
+              document.querySelector('body').classList.toggle('modal-open');
+            }
+          })
+
+
+        };
+
+
+
+      }
+
+      function deleteAccount(id) {
+        swal({
+          title: "Are you sure?",
+          text: "Once deleted, you will not be able to recover this account",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+          .then((willDelete) => {
+            if (willDelete) {
+              fetch('/user/delete/account', {
+                method: 'DELETE',
+                body: JSON.stringify({
+                  id: id,
+                }),
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              }).then((data) => data.json()).then((data) => {
+                console.log(data);
+                if (data.success) {
+                  swal("Your account  has been deleted", {
+                    icon: "success",
+                  });
+                  location.href = '/';
+                }
+              })
+
+            } else {
+              swal("Your account is safe");
+            }
+          });
+      }
+    </script>
+
+
+</body>
+
+</html>

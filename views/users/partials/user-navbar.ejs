@@ -1,0 +1,153 @@
+<header class="header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3">
+                <div class="header__logo">
+                    <!-- <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                     -->
+                    <h4
+                        style="font-family: 'Courier New', Courier, monospace; width: 300px; font-weight: 600;margin-top: 6px; font-size: 19px;">
+                        Minimal Projects</h4>
+
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3">
+                <nav class="header__menu">
+                    <ul>
+                        <li class="<% if(page=='home') { %> active <% } %>"><a href="/">Home</a></li>
+                      
+                        <li class="<% if(page=='shop') { %> active <% } %>"><a href="/user/shop?page=1">Shop</a></li>
+                     
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3 searchContainer">
+                <input type="text" class="search-box " id="searchInput" placeholder="Search...">
+                <div class="searchsuggestion">
+                    <div class="productSearchBox">
+                    </div>
+                    <div class="categorySearchBox">
+                            
+                    </div>
+                    <div class="colorSearchBox">
+
+                    </div>
+                     <div class="genderSearchBox">
+
+                     </div>
+
+                </div>
+            </div>
+            
+            <div class="col-lg-3">
+                <div class="header__right">
+                    <div class="header__right__auth">
+                        <% if(!user){ %>
+                    
+                                <a href="/user/login">Login/Register</a>
+                            
+                                <% } %>
+                                    <!-- <a href="/user/signup">Register</a> -->
+                    </div>
+                    
+                    <ul class="header__right__widget">
+                        <li><a href="/user/cart"><span class="icon_cart"></span>
+                            <% if(user){ %>
+                            <div class="tip" id="cartCount"><%= user.cartCount %></div>
+                            <% } %>
+                        </a></li>
+
+                        <% if(user){ %>
+                        <li class="dropdown">
+                                <a href="#" class="dropdown-btn">
+                                    <span class="icon_profile"></span>
+                                    <span><%= user.firstName %></span>
+                                    
+                                </a>
+                            <div class="dropdown-content">
+                                <a href="/user/my-profile" class="">Profile</a>
+                                <a href="#" class="icon_wishlist">Wishlist</a>
+                                <a href="/user/my-orders" class="icon_orders">Orders</a>
+                                <a href="/user/logout" class="">Logout</a>
+                            </div>
+                        </li>
+                        <% } %>
+                        
+                        <!-- <li><span class="icon_search search-switch"></span></li> -->
+                       
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open">
+            <i class="fa fa-bars"></i>
+        </div>
+    </div>
+</header>
+
+<script>
+const search = document.getElementById('searchInput');
+const categoryList = document.getElementsByClassName('categorySearchBox')[0];
+const productList = document.getElementsByClassName('productSearchBox')[0];
+const colorList = document.getElementsByClassName('colorSearchBox')[0];
+const genderList = document.getElementsByClassName('genderSearchBox')[0];
+const searchContainer = document.getElementsByClassName('searchsuggestion')[0];
+search.addEventListener('input', function(event) {
+    const input = search.value;
+    if (input.trim()==0){
+        return searchContainer.style.display = 'none';
+    }
+    fetch(`/user/search/category/${input}`)
+    .then((response)=> response.json()).then((data)=> {
+        if (data.success) {
+            searchContainer.style.display= 'block';
+            categoryList.innerHTML = '';
+            data.categories.forEach((category)=> {
+                categoryList.innerHTML += `<div class='searchItem'><a  href="/user/results/category/${category}?page=1">${category}</a></div><br>`;
+            })
+            
+        }
+    })
+    fetch(`/user/search/products/${input}`)
+    .then((response)=> response.json()).then((data)=> {
+        if (data.success) {
+            searchContainer.style.display= 'block';
+            productList.innerHTML = '';
+            data.products.forEach((product)=> {
+                productList.innerHTML += `<div class='searchItem'><a  href="/user/results/products/${product}?page=1">${product}</a></div><br>`;
+            })
+            
+        }
+    })
+    fetch(`/user/search/colors/${input}`)
+    .then((response)=> response.json()).then((data)=> {
+        if (data.success) {
+            searchContainer.style.display= 'block';
+            colorList.innerHTML = '';
+            data.colors.forEach((color)=> {
+                colorList.innerHTML += `<div class='searchItem'><a  href="/user/results/colors/${color}?page=1">${color}</a></div><br>`
+            })
+            
+        }
+    })
+    fetch(`/user/search/genders/${input}`)
+    .then((response)=> response.json()).then((data)=> {
+        if (data.success) {
+            searchContainer.style.display= 'block';
+            genderList.innerHTML = '';
+            data.genders.forEach((gender)=> {
+                genderList.innerHTML += `<div class='searchItem'><a  href="/user/results/genders/${gender}?page=1">${gender}</a></div><br>`;
+            })
+            
+        }
+    })
+});
+
+window.addEventListener('click', function(event){
+    if (event.target !== searchContainer) {
+        searchContainer.style.display = 'none';
+        search.value = null;
+    }
+})
+
+</script>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/user-login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        input {
+            margin-top: 20px !important;
+            margin-bottom: 10px !important;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="main">
+        <div class="container " id="a-container" style="flex-direction: column;">
+            <form class="form" id="b-form" onsubmit="return false">
+                <h2 class="form_title title">Sign in to Admin Panel</h2>
+
+                <input class="form__input" type="text" placeholder="Email" id="email-input" onkeypress="keypress()">
+                <input class="form__input" type="password" placeholder="Password" id="pass-input"
+                    onkeypress="keypress()">
+                <small id="login-error" style="visibility: hidden;color: red;">Fill all credentials to login</small>
+                <small id="login-info" style="visibility: hidden;color:darkblue">Validating your credentials and sending
+                    otp, Please
+                    wait..</small>
+                <!-- <a class="form__link" id="forgot-password">Forgot your password?</a> -->
+                <button class="form__button button submit signupbtn" id="login-btn" on onclick="login()">SIGN
+                    IN</button>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+<script>
+    let count = 1;
+    const email = document.getElementById('email-input');
+    const pass = document.getElementById('pass-input');
+    const loginError = document.getElementById('login-error');
+    const loginInfo = document.getElementById('login-info');
+    const loginBtn = document.getElementById('login-btn');
+    function keypress() {
+        loginError.style.visibility = 'hidden';
+    }
+    function isValidEmail(email) {
+        const re =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+    function login() {
+        switch (count) {
+            case 1:
+                console.log(1)
+                let emailVal = email.value;
+                let passVal = pass.value;
+                if (emailVal == '' || passVal == '') {
+                    loginError.style.visibility = 'visible';
+                } else if (!isValidEmail(emailVal)) {
+                    loginError.innerHTML = 'Provide a valid email';
+                    loginError.style.visibility = 'visible';
+                } else {
+                    loginInfo.style.visibility = 'visible';
+                    loginBtn.disabled = true;
+                    loginBtn.innerHTML = 'Loading...';
+                    loginBtn.style.background = 'lightblue';
+                    fetch('/admin', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: emailVal,
+                            password: passVal,
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }).then(response => response.json()).then(data => {
+                        loginInfo.style.visibility = 'hidden';
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = 'SIGN IN';
+                        loginBtn.style.background = '#4b70e2';
+                        if (data.success) {
+                            email.placeholder = 'Verify otp sent to your email';
+                            email.type = 'number';
+                            pass.style.display = 'none';
+                            loginBtn.innerHTML = 'Verify otp';
+                            count++;
+                        } else if (data.otp) {
+                            loginError.innerHTML = 'There is a trouble sending otp, Please try again later';
+                            loginError.style.visibility = 'visible';
+
+                        } else if (data.admin) {
+                            loginError.innerHTML = 'Password Incorrect';
+                            loginError.style.visibility = 'visible';
+                            pass.value = null;
+
+                        } else {
+                            loginError.innerHTML = `No such admin with ${emailVal} mail`;
+                            loginError.style.visibility = 'visible';
+                            pass.value = null;
+                            email.value = null;
+                        }
+                    })
+                }
+                break;
+
+            case 2:
+                console.log(2)
+                otp = email.value;
+                if (otp == '') {
+                    loginError.innerHTML = 'Provide otp to continue';
+                    loginError.style.visibility = 'visible';
+                } else {
+                    fetch('/admin/verify', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            otp: otp,
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }).then(response => response.json()).then(data => {
+                        if (data.success) {
+                            location.href = '/admin/home';
+                        } else {
+                            loginError.innerHTML = 'Otp doesn\'t match';
+                            loginError.style.visibility = 'visible';
+                        }
+                    })
+                }
+        }
+
+    }
+</script>
