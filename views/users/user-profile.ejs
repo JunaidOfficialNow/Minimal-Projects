@@ -143,9 +143,8 @@
                 </div>
                 <div class="col-sm-9">
                   <p class="text-muted mb-0" id="phoneNo">
-                    <% if(user.phoneNo.length> 0) { %>
+                    <% if (user.phoneNo && user.phoneNo.length >0) { %>
                       <%= user.phoneNo %>
-
                         <% } else { %>
                           Not added
                           <% } %>
