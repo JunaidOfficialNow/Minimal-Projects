@@ -1,3 +1,26 @@
+
+<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <ul class="offcanvas__widget">
+
+        <li><a href="/user/cart"><span class="icon_cart"></span>
+            <!-- <div class="tip" id="cartCount"><%= user.cartCount %></div> -->
+        </a></li>
+    </ul>
+    <div class="offcanvas__logo">
+        <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+    </div>
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__auth">
+        <% if(!user){ %>
+                    
+            <a href="/user/login">Login/Register</a>
+        
+            <% } %>
+    </div>
+</div>
+
 <header class="header">
     <div class="container-fluid">
         <div class="row">
