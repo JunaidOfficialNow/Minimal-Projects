@@ -163,7 +163,15 @@
                                  style="background-image: url('/static/uploads/<%= product.category %>/<%= product.designCode %>/<%= product.images[0] %>')">
                                  <% if (user) { %>
                                     <ul class="product__hover" >
-                                        <li><a href=""><span class="icon_heart_alt"></span></a></li>
+                                        <li  class="add-to-wishlist">
+                                            
+                                            <a href="#" data-userId="<%= user._id %>" data-proId="<%= product._id %>" class="addToWishlist" >
+                                                <div class="">
+                                            <span class="icon_heart_alt"></span>
+                                        </div>
+                                      
+                                        </a>
+                                    </li>
                                         
                                         <li  class="add-to-cart">
                                             
@@ -302,7 +310,7 @@
     <script src="/static/js/owl.carousel.min.js"></script>
     <script src="/static/js/jquery.nicescroll.min.js"></script>
     <script src="/static/js/shop.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     
     <script src="/static/js/main.js"></script>
@@ -329,12 +337,26 @@
           }).then((response) => response.json()).then((data)=> {
             if (data.success) {
                 if (data.product) {
-                    swal("Hey!", "Product is already in the cart", "success");
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product is already in the cart',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
 
                 } else {
                     const count = Number(cartCount.innerHTML);
                     cartCount.innerHTML = count +1;
-                    swal("Good job", "Product added to the cart", "success");
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to the cart',
+                            showConfirmButton: false,
+                            imageHeight: 100,
+                            timer: 1500
+                        })
                 }
                
             } else {
@@ -342,6 +364,49 @@
             }
           } )
      }
+     if (event.target.matches('.icon_heart_alt')) {
+    event.preventDefault();
+    const productId = event.target.closest('.addToWishlist').getAttribute('data-proId');
+    const userId = event.target.closest('.addToWishlist').getAttribute('data-userId');
+          fetch('/user/wishlist', {
+                method: 'POST',
+                body: JSON.stringify({
+                    proId: productId,
+                    userId: userId,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+          }).then((response) => response.json()).then((data)=> {
+            if (data.success) {
+                if (data.product) {
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product is already in the wishlist',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
+
+                } else {
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to the wishlist',
+                            showConfirmButton: false,
+                            imageHeight: 100,
+                            timer: 1500
+                        })
+                }
+               
+            } else {
+                alert(data.error);
+            }
+          } )
+     }
+
+
     })
 
 </script>

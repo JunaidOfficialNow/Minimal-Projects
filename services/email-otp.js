@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const fEmail = process.env.EMAIL;
 const appName = process.env.APP_NAME;
+const appUrl = process.env.APP_URL;
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   auth: {
@@ -41,6 +42,24 @@ const email = {
           reject(err);
         } else {
           resolve(otp);
+        }
+      });
+    });
+  },
+  sendUrl: (email, token) => {
+    return new Promise((resolve, reject)=>{
+      const mailOption = {
+        from: `${appName} ${process.env.EMAIL}`,
+        to: email,
+        subject: 'Reset your password',
+        html: `<h4> Click the link to reset your password </h4> <br/>
+        <a href="${appUrl}/user/reset-password/${token}" >Reset Password</a>`,
+      };
+      transporter.sendMail(mailOption, (err, info)=>{
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
         }
       });
     });

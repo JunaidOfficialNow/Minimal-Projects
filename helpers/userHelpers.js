@@ -104,4 +104,19 @@ module.exports = {
       return Promise.reject(error);
     });
   },
+  saveToken: async (email, token)=> {
+    const user = await User.findOne({email: email});
+    if (user) {
+      user.token = token;
+      return await user.save();
+    }
+    return new Error('Couldn\'t find the user');
+  },
+  checkToken: async (token)=> {
+    return await User.findOne({token: token});
+  },
+  resetPassword: async (token, password)=> {
+    const update = {hashPassword: password, $unset: {token: 1}};
+    await User.updateOne({token: token}, update);
+  },
 };

@@ -6,6 +6,7 @@ const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const addressHelpers = require('../helpers/addressHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
+const wishlistHelpers = require('../helpers/wishlistHelpers');
 const cartHelpers = require('../helpers/cartHelpers');
 const couponHelpers = require('../helpers/couponHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
@@ -19,7 +20,11 @@ const instance = new Razorpay({
 
 module.exports = {
   getLoginPage: (req, res)=>{
-    res.render('users/user-login');
+    const reset = req.session.passwordReset;
+    const signin = req.session.signin;
+    delete req.session.passwordReset;
+    delete req.session.signin;
+    res.render('users/user-login', {reset, signin});
   },
   handleEmail: (req, res)=>{
     const email = req.body.email;
@@ -534,6 +539,82 @@ module.exports = {
     }).catch((err)=> {
       next(err);
     });
+  },
+  forgotPassword: async (req, res, next)=> {
+    try {
+      const user = await userHelpers.checkEmailExist(req.body.email);
+      if (!user) {
+        return res.json({success: false, user: true});
+      }
+      const token = crypto.randomBytes(20).toString('hex');
+      await sendEmail.sendUrl(req.body.email, token);
+      await userHelpers.saveToken(req.body.email, token);
+      res.json({success: true});
+    } catch (error) {
+      console.log(error);
+      next(error);
+    };
+  },
+  getResetPassword: async (req, res, next)=> {
+    const user = await userHelpers.checkToken(req.params.token);
+    if (user) {
+      req.session.resetToken = req.params.token;
+      return res.render('users/reset-password');
+    }
+    next(new Error('Invalid token'));
+  },
+  ResetPassword: async (req, res, next)=> {
+    const user = await userHelpers.checkToken(req.session.resetToken);
+    if (user) {
+      const password = await bcrypt.hash(req.body.password, 10);
+      await userHelpers.resetPassword(req.session.resetToken, password);
+      delete req.session.resetToken;
+      req.session.passwordReset = true;
+      res.redirect('/user/login');
+    }
+    next(new Error('Invalid token'));
+  },
+  checkPasswordExists: async (req, res, next)=> {
+    const user = await userHelpers.checkToken(req.session.resetToken);
+    if (user) {
+      const result = await bcrypt
+          .compare(req.params.password, user.hashPassword);
+      if (result) {
+        return res.json({success: true, exists: true});
+      };
+      return res.json({success: true});
+    }
+    next(new Error('Invalid token'));
+  },
+  getWishlist: async (req, res)=> {
+    try {
+      const products = await wishlistHelpers.getWishlist(req.session.user._id);
+      res.render('users/wishlist',
+          {user: req.session.user, page: 'wishlist', products});
+    } catch (error) {
+      next(error);
+    }
+  },
+  addWishlist: (req, res, next)=> {
+    const {proId, userId} = req.body;
+    wishlistHelpers.addToWishlist(proId, userId).then((result)=> {
+      if (result.product) {
+        res.json({success: true, product: true});
+      } else {
+        res.json({success: true});
+      }
+    }).catch((err)=> {
+      res.json({error: err.message});
+    });
+  },
+  removeFromWishlist: (req, res, next) => {
+    console.log('im here')
+    wishlistHelpers
+        .removeFromWishlist(req.body.id, req.session.user._id).then(()=> {
+          res.json({success: true});
+        }).catch((err)=> {
+          next(err);
+        });
   },
 };
 

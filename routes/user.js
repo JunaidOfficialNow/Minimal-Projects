@@ -23,6 +23,9 @@ router.get('/search/:type/:value', user.getSearchResults);
 router.get('/results/:type/:value', user.getResults);
 router.get('/email-check', verifyLogin, user.checkEmail);
 router.get('/addresses/:id', verifyLogin, user.getOneEditAddress);
+router.get('/password/:password', user.checkPasswordExists);
+router.get('/wishlist', verifyLogin, user.getWishlist);
+
 // post requests
 router.post('/signup/email', user.handleEmail);
 router.post('/signup/otp', user.handleOtp);
@@ -40,8 +43,16 @@ router.post('/checkout/payment/online', verifyLogin, user.createPaymentOnline);
 router.post('/checkout/verify/payment', verifyLogin, user.verifyPayment);
 router.post('/checkout/check/stock', verifyLogin, user.verifyStock);
 router.post('/order/details', verifyLogin, user.getOrderDetails);
+router.post('/forgotPassword', user.forgotPassword);
+router.post('/wishlist', verifyLogin, user.addWishlist);
 // post requests
 router.post('/login', user.DoLogin);
+
+
+// route endpoints
+router.route('/reset-password/:token')
+    .get( user.getResetPassword)
+    .post(user.ResetPassword);
 
 // delete requests
 
@@ -62,6 +73,7 @@ router.put('/addresses', verifyLogin, user.editAddress);
 // patch requests
 
 router.patch('/order/change/status', verifyLogin, user.changeStatusOrder);
+router.patch('/wishlist', verifyLogin, user.removeFromWishlist);
 
 /* ----------------------------------------- */
 

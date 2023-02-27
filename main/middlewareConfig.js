@@ -56,7 +56,6 @@ module.exports = (app, express)=>{
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30, // Equals 30 days
     },
-
   }));
   app.use(checkCheckoutToken);
 };

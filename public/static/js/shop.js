@@ -20,8 +20,8 @@ priceFilter.addEventListener('click', function(event) {
   fetch(`/user/products?category=${category}&color=${color}&size=${size}&max=${maxamount.value.substring(1)}&min=${minamount.value.substring(1)}`)
       .then((response)=> response.json()).then((data)=> {
         if (data.success) {
-          min = minamount.value;
-          max = maxamount.value;
+          min = minamount.value.substring(1);
+          max = maxamount.value.substring(1);
           if (data.products.length == 0) {
             return productContainer.innerHTML = '<h4>No products Found</h4>';
           }

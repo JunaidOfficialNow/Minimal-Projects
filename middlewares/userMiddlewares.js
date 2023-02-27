@@ -11,7 +11,8 @@ module.exports = {
     if (req.session.user) {
       next();
     } else {
-      res.redirect('/');
+      req.session.signin = true;
+      res.redirect('/user/login');
     }
   },
   checkAdminLoggedIn: (req, res, next)=>{

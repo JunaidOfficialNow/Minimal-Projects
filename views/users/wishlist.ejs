@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ashion Template">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wishlist | Minimal projects</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <style>
+        img {
+            height: 50px;
+            width: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <%- include('./partials/user-navbar') %>
+        <!-- Header Section End -->
+
+        <!-- Breadcrumb Begin -->
+        <div class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__links">
+                            <a href="/"><i class="fa fa-home"></i> Home</a>
+                            <span>Wishlist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- Shop Cart Section Begin -->
+        <section class="shop-cart spad">
+          <div class="container">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="shop__cart__table">
+                          <table>
+                              <thead>
+                                  <tr>
+                                      <th>Product</th>
+                                      <th>Price</th>
+                                      <th></th>
+                                      <th></th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                <% products.forEach((product)=> { %>
+                                  <tr id="<%= product._id._id %>">
+                                      <td class="cart__product__item">
+                                          <img src="/static/uploads/<%= product._id.category %>/<%= product._id.designCode %>/<%= product._id.images[0] %>" alt="">
+                                          <div class="cart__product__item__title">
+                                              <h6><%= product._id.name %></h6>
+                                       
+                                          </div>
+                                      </td>
+                                      <td class="cart__price"><%= product._id.price %> </td>
+                                      <td class="cart__close"><button onclick="addToCart('<%= product._id._id %>', '<%= user._id %>')" class="btn_close icon_cart_alt"></button></td>
+                                      <td class="cart__close"><button onclick="removeFromWishlist('<%= product._id._id %>')" class="btn_close icon_close"></button></td>
+                                  </tr>
+                                  <% }); %>
+                             
+                         
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+              <!-- <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6">
+                      <div class="cart__btn">
+                          <a href="#">Continue Shopping</a>
+                      </div>
+                  </div>
+                
+              </div> -->
+      
+          </div>
+      </section>
+        <!-- Shop Cart Section End -->
+
+
+        <!-- Footer Section Begin -->
+        <!-- <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-7">
+                        <div class="footer__about">
+                            <div class="footer__logo">
+                                <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                cilisis.</p>
+                            <div class="footer__payment">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-5">
+                        <div class="footer__widget">
+                            <h6>Quick links</h6>
+                            <ul>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Blogs</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="footer__widget">
+                            <h6>Account</h6>
+                            <ul>
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="#">Orders Tracking</a></li>
+                                <li><a href="#">Checkout</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-8">
+                        <div class="footer__newslatter">
+                            <h6>NEWSLETTER</h6>
+                            <form action="#">
+                                <input type="text" placeholder="Email">
+                                <button type="submit" class="site-btn">Subscribe</button>
+                            </form>
+                            <div class="footer__social">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-youtube-play"></i></a>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                         Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <!-- <div class="footer__copyright__text">
+                            <p>Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                                template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
+                                    href="https://colorlib.com" target="_blank">Colorlib</a>
+                            </p>
+                        </div> -->
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <!-- </div>
+                </div>
+            </div>
+        </footer> --> 
+        <!-- Footer Section End -->
+
+        <!-- Search Begin -->
+
+        <!-- Search End -->
+
+        <!-- Js Plugins -->
+        <script src="/static/js/jquery-3.3.1.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.magnific-popup.min.js"></script>
+        <script src="/static/js/jquery-ui.min.js"></script>
+        <script src="/static/js/mixitup.min.js"></script>
+        <script src="/static/js/jquery.countdown.min.js"></script>
+        <script src="/static/js/jquery.slicknav.js"></script>
+        <script src="/static/js/owl.carousel.min.js"></script>
+        <script src="/static/js/jquery.nicescroll.min.js"></script>
+        <script src="/static/js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+<script>
+
+
+    function removeFromWishlist(id) {
+        fetch('/user/wishlist', {
+            method: 'PATCH',
+            body: JSON.stringify({
+                id: id,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+                const row = document.getElementById(id);
+                row.parentNode.removeChild(row);
+            } else {
+                console.log(data)
+                Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Something  went wrong',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
+
+            }
+        })
+    }
+
+    function addToCart(id, user) {
+        fetch('/user/add/to/cart', {
+                method: 'POST',
+                body: JSON.stringify({
+                    proId: id,
+                    userId: user,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => response.json()).then((data) => {
+                if (data.success) {
+                    if (data.product) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product is already in the cart',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 500
+                        })
+
+                    } else {
+                        const count = Number(cartCount.innerHTML);
+                        cartCount.innerHTML = count + 1;
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to the cart',
+                            showConfirmButton: false,
+                            imageHeight: 100,
+                            timer: 500
+                        })
+                    }
+                } else {
+                    alert(data.error);
+                }
+            })
+    }
+
+
+</script>
+
+</html>

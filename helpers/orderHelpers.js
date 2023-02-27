@@ -215,6 +215,14 @@ const sizeAndSaleReport = async function() {
   });
 };
 
+const getSalesReport= async function(status) {
+  try {
+    return await Order.find({status: status});
+  } catch (error) {
+    return Promise.reject(error);
+  };
+};
+
 module.exports = {
   createOrder,
   getOrder,
@@ -228,4 +236,5 @@ module.exports = {
   salesAndRevenueChart,
   sizeAndSaleReport,
   getLimitedOrders,
+  getSalesReport,
 };

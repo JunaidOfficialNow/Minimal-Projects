@@ -108,117 +108,119 @@
                         <div class="product__details__text">
                             <!-- <h3>Essential structured blazer <span>Brand: SKMEIMore Men Watches from SKMEI</span></h3> -->
                             <div class="rating">
-                                <% 
-                                function getMaxStar(rating) {
-                                    let maxKey = 0;
-                                    let maxValue = 0;
-                                  
-                                    for (const [key, value] of Object.entries(rating)) {
-                                      if (value > maxValue) {
-                                        maxValue = value;
-                                        maxKey = key;
-                                      }
+                                <% function getMaxStar(rating) { let maxKey=0; let maxValue=0; for (const [key, value]
+                                    of Object.entries(rating)) { if (value> maxValue) {
+                                    maxValue = value;
+                                    maxKey = key;
                                     }
-                                  
+                                    }
+
                                     return maxKey;
-                                  }
-                                  
-                                  function areAllValuesZero(rating) {
-                                    for (const value of Object.values(rating)) {
-                                      if (value !== 0) {
-                                        return false;
-                                      }
                                     }
-                                  
+
+                                    function areAllValuesZero(rating) {
+                                    for (const value of Object.values(rating)) {
+                                    if (value !== 0) {
+                                    return false;
+                                    }
+                                    }
+
                                     return true;
-                                  }
-                                  %>
-                                  <% if (areAllValuesZero(product.rating)) { %>
-                                         No rating
-                                   <%  } else { %>
-                                    <% const maxStar = Number(getMaxStar(product.rating)) ; %>
-                                    <% for (i=0;i < maxStar ;i++ ) { %>
-                                      <i class="fa fa-star"></i>
-                                      <% } %>
-                                     
-                                  <% } %>
-                             
-                                <span> Reviews( <%= product.reviews %> )</span>
+                                    }
+                                    %>
+                                    <% if (areAllValuesZero(product.rating)) { %>
+                                        No rating
+                                        <% } else { %>
+                                            <% const maxStar=Number(getMaxStar(product.rating)) ; %>
+                                                <% for (i=0;i < maxStar ;i++ ) { %>
+                                                    <i class="fa fa-star"></i>
+                                                    <% } %>
+
+                                                        <% } %>
+
+                                                            <span> Reviews( <%= product.reviews %> )</span>
                             </div>
                             <div class="product__details__price">
                                 <%= product.price-(product.price*(product.discount/100)) %>
-                                <!-- <span></span> -->
+                                    <!-- <span></span> -->
                             </div>
                             <p>
                                 <%= product.name %>
                             </p>
                             <% if(user) { %>
-                            <div class="product__details__button">
-                            
-                                <a  href="#" data-userId="<%= user._id %>" data-proId="<%= product._id %>" id="addToCart" class="cart-btn" ><span class="icon_cart_alt"></span> Add to cart</a>
-                                <ul>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <% } %>
-                            <div class="product__details__widget">
-                                <ul>
-                                    <li>
-                                        <span>Availability:</span>
-                                        <div class="stock__checkbox">
-                                            <label for="stockin">
-                                                <% if (product.stock ==  0) { %>
-                                                    Out of stock
-                                                 <% } else { %>
-                                                    In Stock
-                                                <% } %>
-                                               
-                                            </label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <span>Available color:</span>
-                                        <div class="color__checkbox">
-                                            <% function setBackgroundColor(color) {
-                                                return `background-color: ${color};`;
-                                              } %>
+                                <div class="product__details__button">
 
-                                              <% colors.forEach(function(color) { %>
-                                                    <label for="<%= color %>">
-                                                        <input type="radio" style="<%= setBackgroundColor(color) %>"
-                                                            name="color__radio" id="<%= color %>" checked>
-                                                        <span style="<%= setBackgroundColor(color) %>"
-                                                            class="checkmark"></span>
+                                    <a href="#" data-userId="<%= user._id %>" data-proId="<%= product._id %>"
+                                        id="addToCart" class="cart-btn"><span class="icon_cart_alt"
+                                            data-userId="<%= user._id %>" data-proId="<%= product._id %>"></span> Add to
+                                        cart</a>
+                                    <ul>
+                                        <li><a href="#" data-userId="<%= user._id %>" data-proId="<%= product._id %>"
+                                                id="addToWishlist"><span class="icon_heart_alt"
+                                                    data-userId="<%= user._id %>"
+                                                    data-proId="<%= product._id %>"></span></a></li>
+                                    </ul>
+                                </div>
+                                <% } %>
+                                    <div class="product__details__widget">
+                                        <ul>
+                                            <li>
+                                                <span>Availability:</span>
+                                                <div class="stock__checkbox">
+                                                    <label for="stockin">
+                                                        <% if (product.stock==0) { %>
+                                                            Out of stock
+                                                            <% } else { %>
+                                                                In Stock
+                                                                <% } %>
+
                                                     </label>
-                                                    <% }) %>
-                                   
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <span>Available size:</span>
-                                        <div class="size__btn">
-                                            <% product.sizes.forEach(function(size) { %>
-                                                <label for="<%= size.size %>-btn" class="active">
-                                                    <input type="radio" id="<%= size.size %>-btn">
-                                                    <%= size.size %>
-                                                </label>
-                                                <% }) %>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <span>Available color:</span>
+                                                <div class="color__checkbox">
+                                                    <% function setBackgroundColor(color) { return `background-color:
+                                                        ${color};`; } %>
 
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <span>Promotions:</span>
-                                        <p>Free shipping</p>
-                                    </li>
-                                </ul>
-                            </div>
+                                                        <% colors.forEach(function(color) { %>
+                                                            <label for="<%= color %>">
+                                                                <input type="radio"
+                                                                    style="<%= setBackgroundColor(color) %>"
+                                                                    name="color__radio" id="<%= color %>" checked>
+                                                                <span style="<%= setBackgroundColor(color) %>"
+                                                                    class="checkmark"></span>
+                                                            </label>
+                                                            <% }) %>
+
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <span>Available size:</span>
+                                                <div class="size__btn">
+                                                    <% product.sizes.forEach(function(size) { %>
+                                                        <label for="<%= size.size %>-btn" class="active">
+                                                            <input type="radio" id="<%= size.size %>-btn">
+                                                            <%= size.size %>
+                                                        </label>
+                                                        <% }) %>
+
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <span>Promotions:</span>
+                                                <p>Free shipping</p>
+                                            </li>
+                                        </ul>
+                                    </div>
                         </div>
                     </div>
                     <div class="col-lg-12">
                         <div class="product__details__tab">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item active">
-                                    <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews (<%= product.reviews %> )</a>
+                                    <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews (<%=
+                                            product.reviews %> )</a>
                                 </li>
                             </ul>
                             <div class="tab-content">
@@ -263,9 +265,9 @@
                             <div class="product__item__text">
                                 <h6><a href="#">Buttons tweed blazer</a></h6>
                                 <div class="rating">
-                                 
-                                   
-                                   
+
+
+
                                 </div>
                                 <div class="product__price">$ 59.0</div>
                             </div>
@@ -346,7 +348,7 @@
         </section>
         <!-- Product Details Section End -->
 
-    
+
         <!-- Footer Section Begin -->
         <footer class="footer">
             <div class="container">
@@ -359,7 +361,7 @@
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                                 cilisis.</p>
                             <div class="footer__payment">
-                        
+
                             </div>
                         </div>
                     </div>
@@ -441,46 +443,100 @@
         <script src="/static/js/owl.carousel.min.js"></script>
         <script src="/static/js/jquery.nicescroll.min.js"></script>
         <script src="/static/js/main.js"></script>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 <script>
     const cartBtn = document.getElementById('addToCart');
     const cartCount = document.getElementById("cartCount");
-      cartBtn.addEventListener('click', function(event) {
-   
-  
- event.preventDefault();
- const productId = event.target.getAttribute('data-proId');
- const userId = event.target.getAttribute('data-userId');
-       fetch('/user/add/to/cart', {
-             method: 'POST',
-             body: JSON.stringify({
-                 proId: productId,
-                 userId: userId,
-             }),
-             headers: {
-                 'Content-Type': 'application/json',
-             },
-       }).then((response) => response.json()).then((data)=> {
-         if (data.success) {
-             if (data.product) {
-                 swal("Hey!", "Product is already in the cart", "success");
+    const wishlist = document.getElementById('addToWishlist');
+    cartBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        const productId = event.target.getAttribute('data-proId');
+        const userId = event.target.getAttribute('data-userId');
+        fetch('/user/add/to/cart', {
+            method: 'POST',
+            body: JSON.stringify({
+                proId: productId,
+                userId: userId,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+                if (data.product) {
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product is already in the wishlist',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
 
-             } else {
-                 const count = Number(cartCount.innerHTML);
-                 cartCount.innerHTML = count +1;
-                 swal("Good job", "Product added to the cart", "success");
-             }
-            
-         } else {
-             alert(data.error);
-         }
-       } )
-  
- })
-    
+                } else {
+                    const count = Number(cartCount.innerHTML);
+                    cartCount.innerHTML = count + 1;
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to the wishlist',
+                            showConfirmButton: false,
+                            imageHeight: 100,
+                            timer: 1500
+                        })
+                }
+
+            } else {
+                alert(data.error);
+            }
+        })
+
+    })
+
+    wishlist.addEventListener("click", function (event) {
+        event.preventDefault();
+        const productId = event.target.getAttribute('data-proId');
+        const userId = event.target.getAttribute('data-userId');
+        fetch('/user/wishlist', {
+                method: 'POST',
+                body: JSON.stringify({
+                    proId: productId,
+                    userId: userId,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+          }).then((response) => response.json()).then((data)=> {
+            if (data.success) {
+                if (data.product) {
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product is already in the wishlist',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
+
+                } else {
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to the wishlist',
+                            showConfirmButton: false,
+                            imageHeight: 100,
+                            timer: 1500
+                        })
+                }
+               
+            } else {
+                alert(data.error);
+            }
+          } )
+    });
+
 </script>
 
 
 </html>
-

@@ -30,6 +30,8 @@ router.get('/banners', middle.verifyLogin, admin.getBannersPage);
 router.get('/banners/:name', middle.verifyLogin, admin.getEditBannersPage);
 router.get('/banners/name/:name', middle.verifyLogin, admin.checkNameExists);
 router.get('/sales-and-revenue', middle.verifyLogin, admin.salesAndRevenue);
+router.get('/sales-report/:status',
+    middle.verifyLogin, admin.downloadSalesReport);
 // Post requests
 
 router.post('/', admin.DoLogin);

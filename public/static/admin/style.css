@@ -20,6 +20,30 @@
 td{
     vertical-align: middle;
 }
+.salesBtn {
+    position: relative;
+  }
+.salesDropdown {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 160px;
+    opacity: 0;
+    background-color: #17171c;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  }
+  .salesDropdown a {
+    text-decoration: none!important;
+    color: white !important;
+  }
+  
+.salesBtn:hover .salesDropdown {
+    display: block;
+    opacity: 1;
+    transform: translateY(50px);
+  }
+  
 #orderContainer {
     background-color: #8282b229;
     margin-left: 21%;

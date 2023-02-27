@@ -66,7 +66,11 @@ module.exports = {
     return await Product.find().sort({createdAt: -1}).limit(8);
   },
   filterProducts: async (details) => {
-    return await Product.find(details);
+    try {
+      return await Product.find(details);
+    } catch (error) {
+      return error;
+    }
   },
   getCategoryNames: async (value) => {
     return await Product.find({category: {$regex: new RegExp(value, 'i')}})
