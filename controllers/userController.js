@@ -6,6 +6,7 @@ const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const addressHelpers = require('../helpers/addressHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
+const bannerHelpers = require('../helpers/bannerHelpers');
 const wishlistHelpers = require('../helpers/wishlistHelpers');
 const cartHelpers = require('../helpers/cartHelpers');
 const couponHelpers = require('../helpers/couponHelpers');
@@ -19,6 +20,12 @@ const instance = new Razorpay({
 
 
 module.exports = {
+  getHomePage: async (req, res, next) => {
+    const products = await productHelpers.getNewProducts();
+    const banners = await bannerHelpers.getBanners();
+    res.render('users/user-home',
+        {user: req.session.user, page: 'home', products, banners});
+  },
   getLoginPage: (req, res)=>{
     const reset = req.session.passwordReset;
     const signin = req.session.signin;
@@ -123,15 +130,23 @@ module.exports = {
       });
     });
   },
-  GetProductPage: (req, res)=> {
-    productHelpers.getProductDetails(req.params.id).then((product)=>{
-      designHelpers.getDesignColors(product.designCode).then((colors)=>{
-        res.render('users/single-product', {user: req.session.user,
-          product: product, colors: colors[0].colors, page: 'shop'});
-      });
-    }).catch((err)=>
+  GetProductPage: async (req, res)=> {
+    try {
+      const product = await productHelpers.getProductDetails(req.params.id);
+      const colors= await designHelpers.getDesignColors(product.designCode);
+      const categoryRelatedProducts =
+         await productHelpers.getCategoryRelatedProducts(product.category);
+      const colorRelatedProduct =
+       await productHelpers.getColorRelatedProduct(product.broadColor);
+      const designRelatedProduct =
+       await productHelpers.getDesignRelatedProduct(product.designCode);
+      res.render('users/single-product', {user: req.session.user,
+        product: product, colors: colors[0].colors, page: 'shop',
+        categoryRelatedProducts, colorRelatedProduct, designRelatedProduct});
+    } catch (error) {
       res.json({message: 'Ninte chattom enghattaann ink manslaaknd mandhjj',
-        status: '5059'}));
+        status: '5059', error});
+    };
   },
   GetProfilePage: (req, res)=> {
     res.render('users/user-profile', {page: 'profile', user: req.session.user});
@@ -142,10 +157,10 @@ module.exports = {
       if (result.new) {
         userHelpers.changeAddressStatus(id).then(()=> {
           req.session.user.isAddressAdded = true;
-          res.json({success: true, new: true});
+          res.json({success: true, new: true, address: result.doc});
         });
       } else {
-        res.json({success: true});
+        res.json({success: true, address: result.doc});
       }
     }).catch((err)=>{
       res.json({error: err.message});
@@ -189,6 +204,7 @@ module.exports = {
     cartHelpers.getCart(req.session.user._id).then((products)=> {
       const token = crypto.randomBytes(8).toString('hex').slice(0, 8);
       req.session.checkOutToken = token;
+      console.log(req.session, 76543);
       res.render('users/user-cart',
           {user: req.session.user, page: 'cart', products: products, token});
     }).catch((err)=> {
@@ -239,6 +255,8 @@ module.exports = {
     });
   },
   getCheckout: (req, res, next) => {
+    console.log(req.session.checkOutToken, req.params.token)
+    console.log(req.session,123456)
     if (req.session.checkOutToken === req.params.token) {
       const user = req.session.user;
       addressHelpers.getAddress(user._id).then((address)=> {
@@ -249,7 +267,7 @@ module.exports = {
         });
       });
     } else {
-      res.redirect('/user/cart');
+      res.redirect('/cart');
     }
   },
   getOneAddress: (req, res)=> {
@@ -298,7 +316,7 @@ module.exports = {
       await cartHelpers.clearCart(req.session.user._id);
       await userHelpers.changeCartCount(req.session.user._id);
       req.session.user.cartCount = 0;
-      res.redirect(`/user/order/success/${req.session.orderId}`);
+      res.redirect(`/order/success/${req.session.orderId}`);
     } catch (error) {
       next(error);
     };
@@ -570,7 +588,7 @@ module.exports = {
       await userHelpers.resetPassword(req.session.resetToken, password);
       delete req.session.resetToken;
       req.session.passwordReset = true;
-      res.redirect('/user/login');
+      res.redirect('/login');
     }
     next(new Error('Invalid token'));
   },
@@ -608,7 +626,6 @@ module.exports = {
     });
   },
   removeFromWishlist: (req, res, next) => {
-    console.log('im here')
     wishlistHelpers
         .removeFromWishlist(req.body.id, req.session.user._id).then(()=> {
           res.json({success: true});
@@ -616,5 +633,15 @@ module.exports = {
           next(err);
         });
   },
+  checkAddress: async (req, res, next)=> {
+    try {
+      const result = await addressHelpers.checkAddress(req.session.user._id);
+      if (result) {
+        res.json({success: true});
+      } else res.json({success: false});
+    } catch (error) {
+      next(error);
+    }
+  }
 };
 

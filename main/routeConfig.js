@@ -1,12 +1,10 @@
 const adminRouter = require('../routes/admin');
 const userRouter = require('../routes/user');
 const shopRouter = require('../routes/shop');
-const indexRouter = require('../routes/index');
 
 module.exports = (app) =>{
-  app.use('/', indexRouter);
+  app.use('/', userRouter);
   app.use('/admin', adminRouter);
-  app.use('/user', userRouter);
   app.use('/shop', shopRouter);
 
   // error handler
@@ -17,5 +15,8 @@ module.exports = (app) =>{
         message: err.message || 'internal server error',
       },
     });
+  });
+  app.all('*', (req, res)=> {
+    res.render('404.ejs');
   });
 };

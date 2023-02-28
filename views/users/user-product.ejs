@@ -157,6 +157,7 @@
                         <!-- data-setbg=""  -->
                         <!-- each product -->
                         <% products.forEach((product)=> {  %> 
+                            <% if (product.isActive) { %>
                         <div class="col-lg-4 col-md-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg"
@@ -183,10 +184,11 @@
                                         </a>
                                     </li>
                                     </ul>
+                                    
                                     <% } %>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="/user/product/<%= product._id %>"><%= product.name %></a></h6>
+                                    <h6><a href="/product/<%= product._id %>"><%= product.name %></a></h6>
                                     <div class="rating">
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
@@ -198,16 +200,17 @@
                                 </div>
                             </div>
                         </div>
+                        <% } %>
                         <% }) %>
                         <!-- each product -->
                     </div>
                     <div class="col-lg-12 text-center">
                         <div class="pagination__option" id="paginationContainer">
                             <% for(i=1;i<=count/9;i++) { %>
-                            <a href="/user/<%= page %>?page=<%= i %>"><%= i %></a>
+                            <a href="/<%= page %>?page=<%= i %>"><%= i %></a>
                             <% } %>
                             <% if (count % 9 > 0) { %>
-                                <a href="/user/<%= page %>?page=<%= (Math.floor(count/9) + 1) %>"><%= (Math.floor(count/9) + 1) %></a>
+                                <a href="/<%= page %>?page=<%= (Math.floor(count/9) + 1) %>"><%= (Math.floor(count/9) + 1) %></a>
                             <% } %>
                             <!-- <a href="#"><i class="fa fa-angle-right"></i></a> -->
                         </div>
@@ -325,7 +328,7 @@
     event.preventDefault();
     const productId = event.target.closest('.addToCart').getAttribute('data-proId');
     const userId = event.target.closest('.addToCart').getAttribute('data-userId');
-          fetch('/user/add/to/cart', {
+          fetch('/add/to/cart', {
                 method: 'POST',
                 body: JSON.stringify({
                     proId: productId,
@@ -368,7 +371,7 @@
     event.preventDefault();
     const productId = event.target.closest('.addToWishlist').getAttribute('data-proId');
     const userId = event.target.closest('.addToWishlist').getAttribute('data-userId');
-          fetch('/user/wishlist', {
+          fetch('/wishlist', {
                 method: 'POST',
                 body: JSON.stringify({
                     proId: productId,

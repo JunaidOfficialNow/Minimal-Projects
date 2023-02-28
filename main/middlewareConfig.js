@@ -7,12 +7,12 @@ const MongoStore = require('connect-mongodb-session')(session);
 
 // eslint-disable-next-line require-jsdoc
 function checkCheckoutToken(req, res, next) {
-  if (req.path.startsWith('/static/')) {
+  if (req.path.startsWith('/static/') || req.path.startsWith('/favicon')) {
     return next();
   }
   if (req.session.checkOutToken) {
-    if (!req.path.startsWith('/user/checkout/') &&
-     !req.path.startsWith('/user/cart')) {
+    if (!req.path.startsWith('/checkout/') &&
+     !req.path.startsWith('/cart')) {
       delete req.session.checkOutToken;
     }
   }

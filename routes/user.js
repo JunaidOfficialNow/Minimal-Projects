@@ -3,11 +3,12 @@ const express = require('express');
 const router = express.Router();
 const user = require('../controllers/userController');
 const {ProfileUpload} = require('../services/multer');
-const {checkLogin, verifyLogin, checkAdminLoggedIn} =
+const {checkLogin, verifyLogin, checkAdminLoggedIn, checkBlocked} =
  require('../middlewares/userMiddlewares');
 
 
 // get requests
+router.get('/', checkBlocked, checkAdminLoggedIn, user.getHomePage);
 router.get('/login', checkAdminLoggedIn, checkLogin, user.getLoginPage);
 router.get('/logout', verifyLogin, user.DoLogout);
 router.get('/shop', user.getShopPage);
@@ -25,6 +26,7 @@ router.get('/email-check', verifyLogin, user.checkEmail);
 router.get('/addresses/:id', verifyLogin, user.getOneEditAddress);
 router.get('/password/:password', user.checkPasswordExists);
 router.get('/wishlist', verifyLogin, user.getWishlist);
+router.get('/checkout/check/address', verifyLogin, user.checkAddress);
 
 // post requests
 router.post('/signup/email', user.handleEmail);
@@ -42,6 +44,7 @@ router.post('/checkout/add/coupon', verifyLogin, user.addCoupon);
 router.post('/checkout/payment/online', verifyLogin, user.createPaymentOnline);
 router.post('/checkout/verify/payment', verifyLogin, user.verifyPayment);
 router.post('/checkout/check/stock', verifyLogin, user.verifyStock);
+router.post('/checkout/address', verifyLogin, user.addAddress);
 router.post('/order/details', verifyLogin, user.getOrderDetails);
 router.post('/forgotPassword', user.forgotPassword);
 router.post('/wishlist', verifyLogin, user.addWishlist);
@@ -51,7 +54,7 @@ router.post('/login', user.DoLogin);
 
 // route endpoints
 router.route('/reset-password/:token')
-    .get( user.getResetPassword)
+    .get( checkLogin, user.getResetPassword)
     .post(user.ResetPassword);
 
 // delete requests

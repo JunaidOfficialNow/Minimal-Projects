@@ -23,6 +23,43 @@
     <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <style>
+        .form-container {
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+        }
+
+        .text {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -31,29 +68,6 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__close">+</div>
-        <ul class="offcanvas__widget">
-            <li><span class="icon_search search-switch"></span></li>
-            <li><a href="#"><span class="icon_heart_alt"></span>
-                    <div class="tip">2</div>
-                </a></li>
-            <li><a href="#"><span class="icon_bag_alt"></span>
-                    <div class="tip">2</div>
-                </a></li>
-        </ul>
-        <div class="offcanvas__logo">
-            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__auth">
-            <a href="#">Login</a>
-            <a href="#">Register</a>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
     <%- include('./partials/user-navbar') %>
@@ -65,7 +79,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="breadcrumb__links">
-                            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                            <a href="/"><i class="fa fa-home"></i> Home</a>
                             <span>Shopping cart</span>
                         </div>
                     </div>
@@ -97,60 +111,58 @@
                 </div>
 
                 <!-- billing address -->
-                <form action="/user/checkout" class="checkout__form" method="post" id="checkoutForm">
+                <form action="/checkout" class="checkout__form" method="post" id="checkoutForm">
                     <div class="row ">
 
                         <div class="col-lg-8 col-md-8 billLabel">
                             <h5>Billing Details</h5>
                             <div class="row">
-                                <% if (address) { %>
-                                    <div class="col-md-6">
-                                        <label class="" for="name">Name</label>
-                                        <input type="text" placeholder="" name="name" value="<%= address.name %>"
-                                            readonly class="billInput">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="name">Country</label>
-                                        <input type="text" placeholder="name" name="country"
-                                            value="<%= address.country %>" readonly class="billInput">
-                                    </div>
+                                <div class="col-md-6">
+                                    <label class="" for="name">Name</label>
+                                    <input type="text" placeholder="" name="name"
+                                        value="<%= address?.name ?? 'Not added' %>" readonly class="billInput">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Country</label>
+                                    <input type="text" placeholder="name" name="country"
+                                        value="<%= address?.country ?? 'Not Added' %>" readonly class="billInput">
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="name">Address</label>
-                                    <input type="text" placeholder="name" name="address" value="<%= address.address %>"
-                                        readonly class="billInput">
+                                    <input type="text" placeholder="name" name="address"
+                                        value="<%= address?.address ?? 'Not Added' %>" readonly class="billInput">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="name">Town/City</label>
-                                    <input type="text" placeholder="name" name="city" value="<%= address.city %>"
-                                        readonly class="billInput">
+                                    <input type="text" placeholder="name" name="city"
+                                        value="<%= address?.city ?? 'Not Added' %>" readonly class="billInput">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="name">State</label>
-                                    <input type="text" placeholder="name" name="state" value="<%= address.state %>"
-                                        readonly class="billInput">
+                                    <input type="text" placeholder="name" name="state"
+                                        value="<%= address?.state ?? 'Not Added' %>" readonly class="billInput">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="name">Zip Code</label>
-                                    <input type="text" placeholder="name" name="zip" value="<%= address.zip %>" readonly
-                                        class="billInput">
+                                    <input type="text" placeholder="name" name="zip"
+                                        value="<%= address?.zip ?? 'Not Added' %>" readonly class="billInput">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="name">Phone No</label>
-                                    <input type="text" placeholder="name" name="phone" value="<%= address.phone %>"
-                                        readonly class="billInput">
+                                    <input type="text" placeholder="name" name="phone"
+                                        value="<%= address?.phone ?? 'Not Added' %>" readonly class="billInput">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="name">Email</label>
-                                    <input type="text" placeholder="name" name="email" value="<%= address.email %>"
-                                        readonly class="billInput">
+                                    <input type="text" placeholder="name" name="email"
+                                        value="<%= address?.email ?? 'Not Added' %>" readonly class="billInput">
                                 </div>
-                                <% } %>
 
                             </div>
                             <div class="row">
@@ -166,9 +178,13 @@
                                             <input type="button" class="btn-sm btn text-primary"
                                                 data-target=".bd-example-modal-lg" data-toggle="modal"
                                                 value="Choose another" onclick="chooseAnother('<%= user._id %>')">
+                                            <input class="btn-sm btn text-primary" data-toggle="modal"
+                                                onclick="clearFields()" data-target="#exampleModalCenter"
+                                                value="Add New">
+
                                         </div>
                                     </div>
-                                    <!-- <button class="btn-sm btn text-primary">Add new</button> -->
+
 
                                 </div>
                             </div>
@@ -323,14 +339,7 @@
         <!-- Footer Section End -->
 
         <!-- Search Begin -->
-        <div class="search-model">
-            <div class="h-100 d-flex align-items-center justify-content-center">
-                <div class="search-close-switch">+</div>
-                <form class="search-model-form">
-                    <input type="text" id="search-input" placeholder="Search here.....">
-                </form>
-            </div>
-        </div>
+
         <!-- Search End -->
 
         <!-- choose another modal -->
@@ -348,6 +357,76 @@
             </div>
         </div>
 
+
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Add address</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!--Section: Design Block-->
+                        <div class="form-container">
+                            <form id="addressForm">
+                                <div class="form-group">
+                                    <label class="label" for="name">Name:</label>
+                                    <input type="text" class="text" id="name" name="name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="address">Address:</label>
+                                    <input type="text" class="text" id="address" name="address">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="city">City:</label>
+                                    <input type="text" class="text" id="city" name="city">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="state">State/Province/Region:</label>
+                                    <input type="text" class="text" name="state">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="zip">Zip/Postal Code:</label>
+                                    <input type="text" class="text" id="zip" name="zip">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="country">Country:</label>
+                                    <input type="text" class="text" id="country" name="country">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="phone">Phone Number:</label>
+                                    <input type="number" class="text" id="phone" name="phone">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="label" for="email">Email Address:</label>
+                                    <input type="text" class="text" id="email" name="email">
+                                </div>
+                                <small id="addressFormError" class="text-danger" style="display: none;">Give a valid
+                                    name</small>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addAddress('<%= user._id %>')">Add
+                            address</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Js Plugins -->
         <script src="/static/js/jquery-3.3.1.min.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
@@ -359,12 +438,117 @@
         <script src="/static/js/owl.carousel.min.js"></script>
         <script src="/static/js/jquery.nicescroll.min.js"></script>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script src="/static/js/main.js"></script>
 </body>
 <script>
+
+    const Addressform = document.getElementById('addressForm');
+    const error = document.getElementById('addressFormError');
+
+    function clearFields() {
+        error.style.display = "none";
+        Addressform.querySelectorAll('input').forEach((element) => {
+            element.value = '';
+        })
+    }
+    function isValidEmail(email) {
+        const re =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+    function validatePhoneNumber(phoneNumber) {
+        const phoneNumberPattern = /^\d{10}$/;
+        return phoneNumberPattern.test(phoneNumber);
+    }
+    function validateName(name) {
+        if (!name || name.trim().length === 0) {
+            return false;
+        }
+        let nameRegExp = /^[A-Za-z\s']+$/;
+        return nameRegExp.test(name);
+
+    }
+    function validateObject(obj) {
+        for (const key in obj) {
+            if (!obj[key] || obj[key].trim().length === 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    Addressform.querySelectorAll('input').forEach((element) => {
+        element.addEventListener('keypress', () => {
+            error.style.display = 'none';
+        })
+    })
+    function addAddress(id) {
+        const formData = new FormData(Addressform);
+        const formDataEntries = Array.from(formData.entries());
+        const formDataObject = formDataEntries.reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+        }, {});
+        if (!validateObject(formDataObject)) {
+            error.innerHTML = 'Provide all fields';
+            error.style.display = 'block';
+        } else if (!validateName(formDataObject.name)) {
+            error.innerHTML = 'Provide a valid name';
+            error.style.display = 'block';
+        } else if (!isValidEmail(formDataObject.email)) {
+            error.innerHTML = 'Provide a valid email address';
+            error.style.display = 'block';
+        } else if (!validatePhoneNumber(formDataObject.phone)) {
+            error.style.display = 'block';
+            error.innerHTML = 'Provide a valid phone number';
+        } else {
+            fetch(`/checkout/address/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    address: formDataObject,
+                })
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if (data.success) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'New Address Added',
+                        showConfirmButton: false,
+                        imageHeight: 50,
+                        timer: 800
+                    })
+                    form.name.value = data.address.name;
+                    form.email.value = data.address.email;
+                    form.city.value = data.address.city;
+                    form.state.value = data.address.state;
+                    form.address.value = data.address.address;
+                    form.zip.value = data.address.zip;
+                    form.country.value = data.address.country;
+                    form.phone.value = data.address.phone;
+                    document.getElementById('exampleModalCenter').classList.remove('show');
+                    document.getElementById('exampleModalCenter').style.display = 'none';
+                    document.getElementsByClassName('modal-backdrop')[0].classList.remove('modal-backdrop');
+                    document.querySelector('body').classList.toggle('modal-open');
+
+
+                } else {
+                    alert(data.error);
+                }
+
+            });
+        }
+    }
     function chooseAnother(id) {
-        fetch('/user/checkout/get/address', {
+        fetch('/checkout/get/address', {
             method: 'POST',
             body: JSON.stringify({
                 id: id,
@@ -501,8 +685,8 @@
     const paymentMethodRadios = form['method'];
 
     function selectAddress(address, userId) {
-        
-        fetch('/user/checkout/get/one/address', {
+
+        fetch('/checkout/get/one/address', {
             method: 'POST',
             body: JSON.stringify({
                 address: address,
@@ -512,7 +696,6 @@
                 'Content-Type': 'application/json',
             },
         }).then((data) => data.json()).then((data) => {
-            console.log(data);
             form.name.value = data.name;
             form.email.value = data.email;
             form.city.value = data.city;
@@ -549,7 +732,7 @@
     const discount = document.getElementById('discount');
     function addCoupon(event) {
         event.preventDefault();
-        fetch('/user/checkout/add/coupon', {
+        fetch('/checkout/add/coupon', {
             method: 'POST',
             body: JSON.stringify({
                 coupon: coupon.value,
@@ -582,7 +765,7 @@
             }
         })
     }
-    Form.addEventListener('submit', function (event) {
+    Form.addEventListener('submit', async function (event) {
         event.preventDefault();
         let paymentMethodSelected = false;
 
@@ -596,38 +779,54 @@
             alert('please select a payment method')
             return false;
         }
-        if (form.method.value == 'ONLINE') {
-            stockChecking().then(() => {
-                fetch('/user/checkout/payment/online', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        total: total.value,
 
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                }).then((response) => response.json()).then((data) => {
-                    if (data.success) {
+        fetch('/checkout/check/address')
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    if (form.method.value == 'ONLINE') {
+                        stockChecking().then(() => {
+                            fetch('/checkout/payment/online', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    total: total.value,
 
-                        razorpayPayment(data.order);
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then((response) => response.json()).then((data) => {
+                                if (data.success) {
 
+                                    razorpayPayment(data.order);
+
+
+                                } else {
+                                    console.log(data.error);
+                                }
+                            })
+
+                        }).catch((error) => {
+                            alert(error)
+                        })
 
                     } else {
-                        console.log(data.error);
-                    }
-                })
-            }).catch((error) => {
-                alert(error)
+                        stockChecking().then(() => {
+                            Form.submit();
+                        }).catch((products) => {
+                            alert('Error')
+                        })
+                    };
+                } else {
+                    return alert('Please add address');
+                }
+
+
+
             })
 
-        } else {
-            stockChecking().then(() => {
-                Form.submit();
-            }).catch((products) => {
-                alert('Error')
-            })
-        };
+
+
     })
     function razorpayPayment(order) {
         var options = {
@@ -657,7 +856,7 @@
         rzp1.open();
     }
     function verifyPayment(payment, order) {
-        fetch('/user/checkout/verify/payment', {
+        fetch('/checkout/verify/payment', {
             method: 'POST',
             body: JSON.stringify({
                 payment: payment,
@@ -674,7 +873,7 @@
     }
     async function stockChecking() {
         return new Promise((resolve, reject) => {
-            fetch('/user/checkout/check/stock', {
+            fetch('/checkout/check/stock', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

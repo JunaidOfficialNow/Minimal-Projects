@@ -41,10 +41,7 @@ form.addEventListener("submit", (event) => {
 		return;
 	}
 
-	if (bannerImage.files.length === 0) {
-		alert("Please choose an image.");
-		return;
-	}
+
 
 	form.submit();
 });

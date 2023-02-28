@@ -32,22 +32,28 @@
     <link href="/static/admin/style.css" rel="stylesheet">
 </head>
 <style>
-    .designImage {
-        width: 40px;
-        height: 40px;
+      .designImage {
+        width:40px;
+        height:40px;
     }
     .designDropdown {
         display: none;
         position: absolute;
-        top: 50; right: 0
+        right: 50px;
+        top: 30%;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 300px;
+        height: 40px;
+        background-color: rgb(79, 77, 77);
+
     }
-    .designDropdown-content {
-
-
+    .designDropdown button {
+        background-color: transparent;
+        border-color: grey;
     }
     .designDropdownIcon:hover .designDropdown {
         display: flex;
-
     }
 </style>
 
@@ -299,12 +305,11 @@
                                 <td><%= element.lastEditedBy %></td>
                                 <td><%  element.colors.forEach((color)=> { %> <%= color %> <br> <% }) %></td>
                                 <td><%  element.sizes.forEach((size)=> { %> <%= size %> <br> <% }) %></td>
-                                <td><%  if(element.isActive) {%> Active <% } else { %> Deactivated <% } %></td>
+                                <td id="<%=element._id %>StatusCell"><%  if(element.isActive) {%> Active <% } else { %> Deactivated <% } %></td>
                                 <td class="designDropdownIcon"><i class="fa fa-ellipsis-v "></i>
                                     <div class="designDropdown">
-                                        <div class="designDropdown-content">Delete</div> &nbsp;
-                                        <div class="designDropdown-content">Edit</div> &nbsp
-                                        <div class="designDropdown-content"><%  if(element.isActive) {%> Deactivate <% } else { %> Activate <% } %></div>
+                                        <!-- <div class="designDropdown-content">Edit</div> &nbsp -->
+                                        <button onclick="deacivateDesign(this ,'<%= element._id %>')" class="designDropdown-content"><%  if(element.isActive) {%> Deactivate <% } else { %> Activate <% } %></button>
                                     </div>
                                 </td>
                                
@@ -353,4 +358,27 @@
     <script src="/static/admin/js/admin-design.js"></script>
 </body>
 
+<script>
+    function deacivateDesign(element, id) {
+        fetch('/admin/design/status', {
+            method: 'PATCH',
+            body: JSON.stringify({
+                id: id,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then((response)=> response.json()).then((data)=> {
+            if (data.success) {
+                const cell =  document.getElementById(`${id}StatusCell`);
+                if (data.status) {
+                    cell.textContent = 'Active';
+                    return element.innerHTML = 'Deactivate';
+                }
+                    cell.textContent = 'Deactivated';
+                    return element.innerHTML = 'Active';
+            } alert(data.error)
+        })
+    }
+</script>
 </html>

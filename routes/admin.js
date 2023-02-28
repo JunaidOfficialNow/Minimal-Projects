@@ -86,5 +86,6 @@ router.patch('/order/change/status',
 router.patch('/products/COD', middle.verifyLogin, admin.changeProductCODStatus);
 router.patch('/products/active',
     middle.verifyLogin, admin.changeProductActiveStatus);
+router.patch('/design/status', middle.verifyLogin, admin.changeDesignStatus);
 
 module.exports = router;

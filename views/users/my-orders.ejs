@@ -535,7 +535,7 @@
             }
     const order = document.getElementById('orderContainer');
     function orderDetails(id) {
-        fetch('/user/order/details', {
+        fetch('/order/details', {
             method: 'POST',
             body: JSON.stringify({
                 id: id,
@@ -632,7 +632,7 @@
                     })
                         .then((willDelete) => {
                             if (willDelete) {
-                                fetch('/user/order/change/status', {
+                                fetch('/order/change/status', {
                         method: 'PATCH',
                         body: JSON.stringify({
                             id: details._id,
@@ -708,7 +708,7 @@
                                             <div class="row">
                                                 <img class="col-lg-2" src="/static/uploads/${product.product.category}/${product.product.designCode}/${product.product.images[0]}"alt="">
                                                 <div class=" col-lg-10">
-                                                  <a href="/user/product/${product.product._id}"><span>${product.product.name} </span></a><br>
+                                                  <a href="/product/${product.product._id}"><span>${product.product.name} </span></a><br>
                                                   <small>Size: ${product.size}</small><br>
                                                   <small>Quantity: ${product.quantity}</small><br>
                                                   <small>Price: ${product.price}</small><br>

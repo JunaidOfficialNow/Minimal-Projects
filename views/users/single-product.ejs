@@ -65,8 +65,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="breadcrumb__links">
-                            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-                            <a href="#">
+                            <a href="/"><i class="fa fa-home"></i> Home</a>
+                            <a href="/shop?page=1">
                                 <%= product.category %>
                             </a>
                             <span>
@@ -245,104 +245,159 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="productContainer">
                     <div class="col-lg-12 text-center">
                         <div class="related__title">
                             <h5>RELATED PRODUCTS</h5>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-1.jpg">
-                                <div class="label new">New</div>
-                                <ul class="product__hover">
-                                    <li><a href="/static/img/product/related/rp-1.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Buttons tweed blazer</a></h6>
-                                <div class="rating">
+                    <% categoryRelatedProducts.forEach((product)=> { %>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg"
+                                        style="background-image: url('/static/uploads/<%= product.category %>/<%= product.designCode %>/<%= product.images[0] %>')">
+                                        <% if (user) { %>
+                                            <ul class="product__hover">
+                                                <li class="add-to-wishlist">
 
+                                                    <a href="#" data-userId="<%= user._id %>"
+                                                        data-proId="<%= product._id %>" class="addToWishlist">
+                                                        <div class="">
+                                                            <span class="icon_heart_alt"></span>
+                                                        </div>
 
+                                                    </a>
+                                                </li>
 
+                                                <li class="add-to-cart">
+
+                                                    <a href="#" data-userId="<%= user._id %>"
+                                                        data-proId="<%= product._id %>" class="addToCart">
+                                                        <div class="">
+                                                            <span class="icon_cart_alt"></span>
+                                                        </div>
+
+                                                    </a>
+                                                </li>
+                                            </ul>
+
+                                            <% } %>
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6><a href="/product/<%= product._id %>">
+                                                <%= product.name %>
+                                            </a></h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="product__price">₹ <%= product.price %>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="product__price">$ 59.0</div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-2.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="/static/img/product/related/rp-2.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Flowy striped skirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
+                                <% }); %>
+                                <% colorRelatedProduct.forEach((colorRelatedProduct)=> { %>
+                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg"
+                                            style="background-image: url('/static/uploads/<%= colorRelatedProduct.category %>/<%= colorRelatedProduct.designCode %>/<%= colorRelatedProduct.images[0] %>')">
+                                            <% if (user) { %>
+                                                <ul class="product__hover">
+                                                    <li class="add-to-wishlist">
+    
+                                                        <a href="#" data-userId="<%= user._id %>"
+                                                            data-proId="<%= colorRelatedProduct._id %>" class="addToWishlist">
+                                                            <div class="">
+                                                                <span class="icon_heart_alt"></span>
+                                                            </div>
+    
+                                                        </a>
+                                                    </li>
+    
+                                                    <li class="add-to-cart">
+    
+                                                        <a href="#" data-userId="<%= user._id %>"
+                                                            data-proId="<%= colorRelatedProduct._id %>" class="addToCart">
+                                                            <div class="">
+                                                                <span class="icon_cart_alt"></span>
+                                                            </div>
+    
+                                                        </a>
+                                                    </li>
+                                                </ul>
+    
+                                                <% } %>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <h6><a href="/product/<%= colorRelatedProduct._id %>">
+                                                    <%= colorRelatedProduct.name %>
+                                                </a></h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product__price">₹ <%= colorRelatedProduct.price %>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="product__price">$ 49.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-3.jpg">
-                                <div class="label stockout">out of stock</div>
-                                <ul class="product__hover">
-                                    <li><a href="/static/img/product/related/rp-3.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Cotton T-Shirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
+                                <% }); %>
+                                <% designRelatedProduct.forEach((designRelatedProduct)=> { %>
+                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg"
+                                            style="background-image: url('/static/uploads/<%= designRelatedProduct.category %>/<%= designRelatedProduct.designCode %>/<%= designRelatedProduct.images[0] %>')">
+                                            <% if (user) { %>
+                                                <ul class="product__hover">
+                                                    <li class="add-to-wishlist">
+    
+                                                        <a href="#" data-userId="<%= user._id %>"
+                                                            data-proId="<%= designRelatedProduct._id %>" class="addToWishlist">
+                                                            <div class="">
+                                                                <span class="icon_heart_alt"></span>
+                                                            </div>
+    
+                                                        </a>
+                                                    </li>
+    
+                                                    <li class="add-to-cart">
+    
+                                                        <a href="#" data-userId="<%= user._id %>"
+                                                            data-proId="<%= designRelatedProduct._id %>" class="addToCart">
+                                                            <div class="">
+                                                                <span class="icon_cart_alt"></span>
+                                                            </div>
+    
+                                                        </a>
+                                                    </li>
+                                                </ul>
+    
+                                                <% } %>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <h6><a href="/product/<%= designRelatedProduct._id %>">
+                                                    <%= designRelatedProduct.name %>
+                                                </a></h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product__price">₹ <%= designRelatedProduct.price %>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/static/img/product/related/rp-4.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="/static/img/product/related/rp-4.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Slim striped pocket shirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
+                                <% }); %>         
                 </div>
             </div>
         </section>
@@ -453,7 +508,7 @@
         event.preventDefault();
         const productId = event.target.getAttribute('data-proId');
         const userId = event.target.getAttribute('data-userId');
-        fetch('/user/add/to/cart', {
+        fetch('/add/to/cart', {
             method: 'POST',
             body: JSON.stringify({
                 proId: productId,
@@ -466,25 +521,25 @@
             if (data.success) {
                 if (data.product) {
                     Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Product is already in the wishlist',
-                            showConfirmButton: false,
-                            imageHeight: 50,
-                            timer: 1500
-                        })
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Product is already in the wishlist',
+                        showConfirmButton: false,
+                        imageHeight: 50,
+                        timer: 1500
+                    })
 
                 } else {
                     const count = Number(cartCount.innerHTML);
                     cartCount.innerHTML = count + 1;
                     Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Product added to the wishlist',
-                            showConfirmButton: false,
-                            imageHeight: 100,
-                            timer: 1500
-                        })
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Product added to the wishlist',
+                        showConfirmButton: false,
+                        imageHeight: 100,
+                        timer: 1500
+                    })
                 }
 
             } else {
@@ -498,7 +553,98 @@
         event.preventDefault();
         const productId = event.target.getAttribute('data-proId');
         const userId = event.target.getAttribute('data-userId');
-        fetch('/user/wishlist', {
+        fetch('/wishlist', {
+            method: 'POST',
+            body: JSON.stringify({
+                proId: productId,
+                userId: userId,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((response) => response.json()).then((data) => {
+            if (data.success) {
+                if (data.product) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Product is already in the wishlist',
+                        showConfirmButton: false,
+                        imageHeight: 50,
+                        timer: 1500
+                    })
+
+                } else {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Product added to the wishlist',
+                        showConfirmButton: false,
+                        imageHeight: 100,
+                        timer: 1500
+                    })
+                }
+
+            } else {
+                alert(data.error);
+            }
+        })
+    });
+
+</script>
+<script>
+    const productContainer = document.getElementById("productContainer");
+    productContainer.addEventListener('click', function(event) {
+   
+  
+      if (event.target.matches('.icon_cart_alt')) {
+    event.preventDefault();
+    const productId = event.target.closest('.addToCart').getAttribute('data-proId');
+    const userId = event.target.closest('.addToCart').getAttribute('data-userId');
+          fetch('/add/to/cart', {
+                method: 'POST',
+                body: JSON.stringify({
+                    proId: productId,
+                    userId: userId,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+          }).then((response) => response.json()).then((data)=> {
+            if (data.success) {
+                if (data.product) {
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product is already in the cart',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
+
+                } else {
+                    const count = Number(cartCount.innerHTML);
+                    cartCount.innerHTML = count +1;
+                    Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added to the cart',
+                            showConfirmButton: false,
+                            imageHeight: 100,
+                            timer: 1500
+                        })
+                }
+               
+            } else {
+                alert(data.error);
+            }
+          } )
+     }
+     if (event.target.matches('.icon_heart_alt')) {
+    event.preventDefault();
+    const productId = event.target.closest('.addToWishlist').getAttribute('data-proId');
+    const userId = event.target.closest('.addToWishlist').getAttribute('data-userId');
+          fetch('/wishlist', {
                 method: 'POST',
                 body: JSON.stringify({
                     proId: productId,
@@ -534,7 +680,10 @@
                 alert(data.error);
             }
           } )
-    });
+     }
+
+
+    })
 
 </script>
 

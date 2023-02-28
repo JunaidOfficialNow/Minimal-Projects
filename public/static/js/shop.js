@@ -17,7 +17,7 @@ let max = '';
 let min = '';
 priceFilter.addEventListener('click', function(event) {
   event.preventDefault();
-  fetch(`/user/products?category=${category}&color=${color}&size=${size}&max=${maxamount.value.substring(1)}&min=${minamount.value.substring(1)}`)
+  fetch(`/products?category=${category}&color=${color}&size=${size}&max=${maxamount.value.substring(1)}&min=${minamount.value.substring(1)}`)
       .then((response)=> response.json()).then((data)=> {
         if (data.success) {
           min = minamount.value.substring(1);
@@ -43,7 +43,7 @@ priceFilter.addEventListener('click', function(event) {
                 </ul>
             </div>
             <div class="product__item__text">
-                <h6><a href="/user/product/${product._id}">${product.name}</a></h6>
+                <h6><a href="/product/${product._id}">${product.name}</a></h6>
                 <div class="rating">
                     <i class="fa fa-star"></i>
                     <i class="fa fa-star"></i>
@@ -58,11 +58,11 @@ priceFilter.addEventListener('click', function(event) {
           });
           paginationContainer.innerHTML = '';
           for (i=1; i<=data.products.length/9; i++) {
-            paginationContainer.innerHTML += `<a href="/user/shop?page=${i}">${i}</a>`;
+            paginationContainer.innerHTML += `<a href="/shop?page=${i}">${i}</a>`;
           } ;
           if (data.products.length % 9 > 0) {
             paginationContainer.innerHTML +=
-            `<a href="/user/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
+            `<a href="/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
           }
         }
       });
@@ -73,7 +73,7 @@ categoryLinks.forEach((link)=> {
   link.addEventListener('click', function(event) {
     event.preventDefault();
     // eslint-disable-next-line max-len
-    fetch(`/user/products?category=${link.id}&color=${color}&size=${size}&max=${max}&min=${min}`)
+    fetch(`/products?category=${link.id}&color=${color}&size=${size}&max=${max}&min=${min}`)
         .then((response)=> response.json()).then((data)=> {
           if (data.success) {
             category = link.id;
@@ -98,7 +98,7 @@ categoryLinks.forEach((link)=> {
                       </ul>
                   </div>
                   <div class="product__item__text">
-                      <h6><a href="/user/product/${product._id}">${product.name}</a></h6>
+                      <h6><a href="/product/${product._id}">${product.name}</a></h6>
                       <div class="rating">
                           <i class="fa fa-star"></i>
                           <i class="fa fa-star"></i>
@@ -113,11 +113,11 @@ categoryLinks.forEach((link)=> {
             });
             paginationContainer.innerHTML = '';
             for (i=1; i<=data.products.length/9; i++) {
-              paginationContainer.innerHTML += `<a href="/user/shop?page=${i}">${i}</a>`;
+              paginationContainer.innerHTML += `<a href="/shop?page=${i}">${i}</a>`;
             } ;
             if (data.products.length % 9 > 0) {
               paginationContainer.innerHTML +=
-              `<a href="/user/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
+              `<a href="/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
             }
           }
         });
@@ -128,7 +128,7 @@ categoryLinks.forEach((link)=> {
 colorRadios.forEach((radio) => {
   radio.addEventListener('change', (event) => {
     // eslint-disable-next-line max-len
-    fetch(`/user/products?category=${category}&color=${radio.value}&size=${size}&max=${max}&min=${min}`)
+    fetch(`/products?category=${category}&color=${radio.value}&size=${size}&max=${max}&min=${min}`)
         .then((response)=> response.json()).then((data)=> {
           if (data.success) {
             color = radio.value;
@@ -153,7 +153,7 @@ colorRadios.forEach((radio) => {
                       </ul>
                   </div>
                   <div class="product__item__text">
-                      <h6><a href="/user/product/${product._id}">${product.name}</a></h6>
+                      <h6><a href="/product/${product._id}">${product.name}</a></h6>
                       <div class="rating">
                           <i class="fa fa-star"></i>
                           <i class="fa fa-star"></i>
@@ -168,11 +168,11 @@ colorRadios.forEach((radio) => {
             });
             paginationContainer.innerHTML = '';
             for (i=1; i<=data.products.length/9; i++) {
-              paginationContainer.innerHTML += `<a href="/user/shop?page=${i}">${i}</a>`;
+              paginationContainer.innerHTML += `<a href="/shop?page=${i}">${i}</a>`;
             } ;
             if (data.products.length % 9 > 0) {
               paginationContainer.innerHTML +=
-              `<a href="/user/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
+              `<a href="/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
             }
           }
         });
@@ -182,7 +182,7 @@ colorRadios.forEach((radio) => {
 sizeRadios.forEach((radio) => {
   radio.addEventListener('change', (event) => {
     // eslint-disable-next-line max-len
-    fetch(`/user/products?category=${category}&color=${color}&size=${radio.value}&max=${max}&min=${min}`)
+    fetch(`/products?category=${category}&color=${color}&size=${radio.value}&max=${max}&min=${min}`)
         .then((response)=> response.json()).then((data)=> {
           if (data.success) {
             size = radio.value;
@@ -207,7 +207,7 @@ sizeRadios.forEach((radio) => {
                       </ul>
                   </div>
                   <div class="product__item__text">
-                      <h6><a href="/user/product/${product._id}">${product.name}</a></h6>
+                      <h6><a href="/product/${product._id}">${product.name}</a></h6>
                       <div class="rating">
                           <i class="fa fa-star"></i>
                           <i class="fa fa-star"></i>
@@ -222,11 +222,11 @@ sizeRadios.forEach((radio) => {
             });
             paginationContainer.innerHTML = '';
             for (i=1; i<=data.products.length/9; i++) {
-              paginationContainer.innerHTML += `<a href="/user/shop?page=${i}">${i}</a>`;
+              paginationContainer.innerHTML += `<a href="/shop?page=${i}">${i}</a>`;
             } ;
             if (data.products.length % 9 > 0) {
               paginationContainer.innerHTML +=
-              `<a href="/user/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
+              `<a href="/shop?page=${(Math.floor(data.products.length/9) + 1)}">${(Math.floor(data.products.length/9) + 1)}</a>`;
             }
           }
         });

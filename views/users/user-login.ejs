@@ -152,7 +152,7 @@
     btn.innerHTML = 'Loading...';
     btn.disabled = true;
     btn.style.background = 'lightblue';
-    fetch('/user/signup/resend-otp', {
+    fetch('/signup/resend-otp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -185,7 +185,7 @@
           btn.disabled = true;
           btn.innerHTML = 'Loading...'
           btn.style.background = 'lightblue';
-          fetch('/user/signup/email', {
+          fetch('/signup/email', {
             method: 'POST',
             body: JSON.stringify({
               email: val,
@@ -230,7 +230,7 @@
           error.innerHTML = 'Provide otp to continue';
           error.style.visibility = 'visible';
         } else {
-          fetch('/user/signup/otp', {
+          fetch('/signup/otp', {
             method: 'POST',
             body: JSON.stringify({
               otp: val,
@@ -288,7 +288,7 @@
               input2.style.background = 'lightgrey';
             }
           } else {
-            fetch('/user/signup/names', {
+            fetch('/signup/names', {
               method: 'POST',
               body: JSON.stringify({
                 firstName: val,
@@ -334,7 +334,7 @@
           input1.value = null;
           input2.value = null;
         } else {
-          fetch('/user/signup/password', {
+          fetch('/signup/password', {
             method: 'POST',
             body: JSON.stringify({
               password: val2,
@@ -374,7 +374,7 @@ function keypress(){
       loginBtn.disabled = true;
       loginBtn.style.background = 'lightblue';
       loginBtn.innerHTML = 'Loading...';
-      fetch('/user/login', {
+      fetch('/login', {
         method: 'POST',
         body: JSON.stringify({
           email: email.value,
@@ -430,7 +430,7 @@ function keypress(){
       loginBtn.disabled = true;
       loginBtn.style.background = 'lightblue';
       loginBtn.innerHTML = 'Loading...';
-    fetch('/user/forgotPassword', {
+    fetch('/forgotPassword', {
       method: 'POST',
       body: JSON.stringify({
         email: email.value,

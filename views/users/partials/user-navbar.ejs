@@ -4,7 +4,7 @@
     <div class="offcanvas__close">+</div>
     <ul class="offcanvas__widget">
 
-        <li><a href="/user/cart"><span class="icon_cart"></span>
+        <li><a href="/cart"><span class="icon_cart"></span>
             <!-- <div class="tip" id="cartCount"></div> -->
         </a></li>
     </ul>
@@ -15,7 +15,7 @@
     <div class="offcanvas__auth">
         <% if(!user){ %>
                     
-            <a href="/user/login">Login/Register</a>
+            <a href="/login">Login/Register</a>
         
             <% } %>
     </div>
@@ -28,9 +28,9 @@
                 <div class="header__logo">
                     <!-- <a href="./index.html"><img src="img/logo.png" alt=""></a>
                      -->
-                    <h4
-                        style="font-family: 'Courier New', Courier, monospace; width: 300px; font-weight: 600;margin-top: 6px; font-size: 19px;">
-                        Minimal Projects</h4>
+                    <a href="/"
+                        style="font-family: 'Courier New', Courier, monospace; width: 300px; font-weight: 600;margin-top: 6px; font-size: 19px;text-decoration: none; color: black;">
+                        Minimal Projects</a>
 
                 </div>
             </div>
@@ -39,7 +39,7 @@
                     <ul>
                         <li class="<% if(page=='home') { %> active <% } %>"><a href="/">Home</a></li>
                       
-                        <li class="<% if(page=='shop') { %> active <% } %>"><a href="/user/shop?page=1">Shop</a></li>
+                        <li class="<% if(page=='shop') { %> active <% } %>"><a href="/shop?page=1">Shop</a></li>
                      
                     </ul>
                 </nav>
@@ -67,14 +67,14 @@
                     <div class="header__right__auth">
                         <% if(!user){ %>
                     
-                                <a href="/user/login">Login/Register</a>
+                                <a href="/login">Login/Register</a>
                             
                                 <% } %>
-                                    <!-- <a href="/user/signup">Register</a> -->
+                                    <!-- <a href="/signup">Register</a> -->
                     </div>
                     
                     <ul class="header__right__widget">
-                        <li><a href="/user/cart"><span class="icon_cart"></span>
+                        <li><a href="/cart"><span class="icon_cart"></span>
                             <% if(user){ %>
                             <div class="tip" id="cartCount"><%= user.cartCount %></div>
                             <% } %>
@@ -88,10 +88,10 @@
                                     
                                 </a>
                             <div class="dropdown-content">
-                                <a href="/user/my-profile" class="">Profile</a>
-                                <a href="/user/wishlist" class="icon_wishlist">Wishlist</a>
-                                <a href="/user/my-orders" class="icon_orders">Orders</a>
-                                <a href="/user/logout" class="">Logout</a>
+                                <a href="/my-profile" class="">Profile</a>
+                                <a href="/wishlist" class="icon_wishlist">Wishlist</a>
+                                <a href="/my-orders" class="icon_orders">Orders</a>
+                                <a href="/logout" class="">Logout</a>
                             </div>
                         </li>
                         <% } %>
@@ -120,46 +120,46 @@ search.addEventListener('input', function(event) {
     if (input.trim()==0){
         return searchContainer.style.display = 'none';
     }
-    fetch(`/user/search/category/${input}`)
+    fetch(`/search/category/${input}`)
     .then((response)=> response.json()).then((data)=> {
         if (data.success) {
             searchContainer.style.display= 'block';
             categoryList.innerHTML = '';
             data.categories.forEach((category)=> {
-                categoryList.innerHTML += `<div class='searchItem'><a  href="/user/results/category/${category}?page=1">${category}</a></div><br>`;
+                categoryList.innerHTML += `<div class='searchItem'><a  href="/results/category/${category}?page=1">${category}</a></div><br>`;
             })
             
         }
     })
-    fetch(`/user/search/products/${input}`)
+    fetch(`/search/products/${input}`)
     .then((response)=> response.json()).then((data)=> {
         if (data.success) {
             searchContainer.style.display= 'block';
             productList.innerHTML = '';
             data.products.forEach((product)=> {
-                productList.innerHTML += `<div class='searchItem'><a  href="/user/results/products/${product}?page=1">${product}</a></div><br>`;
+                productList.innerHTML += `<div class='searchItem'><a  href="/results/products/${product}?page=1">${product}</a></div><br>`;
             })
             
         }
     })
-    fetch(`/user/search/colors/${input}`)
+    fetch(`/search/colors/${input}`)
     .then((response)=> response.json()).then((data)=> {
         if (data.success) {
             searchContainer.style.display= 'block';
             colorList.innerHTML = '';
             data.colors.forEach((color)=> {
-                colorList.innerHTML += `<div class='searchItem'><a  href="/user/results/colors/${color}?page=1">${color}</a></div><br>`
+                colorList.innerHTML += `<div class='searchItem'><a  href="/results/colors/${color}?page=1">${color}</a></div><br>`
             })
             
         }
     })
-    fetch(`/user/search/genders/${input}`)
+    fetch(`/search/genders/${input}`)
     .then((response)=> response.json()).then((data)=> {
         if (data.success) {
             searchContainer.style.display= 'block';
             genderList.innerHTML = '';
             data.genders.forEach((gender)=> {
-                genderList.innerHTML += `<div class='searchItem'><a  href="/user/results/genders/${gender}?page=1">${gender}</a></div><br>`;
+                genderList.innerHTML += `<div class='searchItem'><a  href="/results/genders/${gender}?page=1">${gender}</a></div><br>`;
             })
             
         }

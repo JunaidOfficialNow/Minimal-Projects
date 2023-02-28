@@ -7,7 +7,7 @@
     <meta name="keywords" content="Ashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ashion | Template</title>
+    <title>Cart | Minimal projects</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
@@ -31,28 +31,6 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__close">+</div>
-        <ul class="offcanvas__widget">
-            <li><span class="icon_search search-switch"></span></li>
-            <li><a href="#"><span class="icon_heart_alt"></span>
-                    <div class="tip">2</div>
-                </a></li>
-            <li><a href="#"><span class="icon_bag_alt"></span>
-                    <div class="tip">2</div>
-                </a></li>
-        </ul>
-        <div class="offcanvas__logo">
-            <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__auth">
-            <a href="#">Login</a>
-            <a href="#">Register</a>
-        </div>
-    </div>
     <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
@@ -65,7 +43,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="breadcrumb__links">
-                            <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                            <a href="/"><i class="fa fa-home"></i> Home</a>
                             <span>Shopping cart</span>
                         </div>
                     </div>
@@ -160,12 +138,12 @@
                                                 0</span></li>
                                     </ul>
                                     <% if (products.length > 0) { %>
-                                    <a href="/user/checkout/<%= token %>" id="checkoutBtn" class="primary-btn">Proceed to checkout</a>
+                                    <a href="/checkout/<%= token %>" id="checkoutBtn" class="primary-btn">Proceed to checkout</a>
                                     <% } %>
                                 </div>
                                 <div class="col-lg-12 col-sm-12 mt-5">
                                     <div class="cart__btn update__btn">
-                                        <a href="/user/shop?page=1"><span class=""></span> Continue Shopping</a>
+                                        <a href="/shop?page=1"><span class=""></span> Continue Shopping</a>
                                     </div>
                                 </div>
 
@@ -292,7 +270,7 @@
 
     btn.addEventListener('click', function(e) {
         e.preventDefault();
-        fetch('/user/checkout/check/stock', {
+        fetch('/checkout/check/stock', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -311,7 +289,7 @@
     })
 
     function removeFromCart(id, price) {
-        fetch('/user/cart/remove/from/cart', {
+        fetch('/cart/remove/from/cart', {
             method: 'DELETE',
             body: JSON.stringify({
                 id: id,
@@ -348,7 +326,7 @@
         const counter = document.getElementById(`${id}Counter`);
         count = Number(counter.value);
         if (count > 1) {
-            fetch('/user/cart/decrement/quantity', {
+            fetch('/cart/decrement/quantity', {
                 method: 'PUT',
                 body: JSON.stringify({
                     id: id,
@@ -390,7 +368,7 @@
 
     }
     function incrementer(id, price) {
-        fetch('/user/cart/increment/quantity', {
+        fetch('/cart/increment/quantity', {
             method: 'PUT',
             body: JSON.stringify({
                 id: id,
@@ -419,7 +397,7 @@
     }
     function changeSize(id) {
         const size = document.getElementById(`${id}Size`).value;
-        fetch('/user/cart/change/size', {
+        fetch('/cart/change/size', {
             method: 'PUT',
             body: JSON.stringify({
                 id: id,

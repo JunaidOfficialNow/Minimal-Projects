@@ -483,11 +483,17 @@ module.exports = {
     const banner = await bannerHelpers.getBanner(req.params.name);
     res.render('admins/edit-banner', {admin: req.session.admin, banner});
   },
-  updateBanners: async (req, res)=> {
-    req.body.image = req.file.filename;
-    const {id, ...details} = req.body;
-    await bannerHelpers.updateBanner(id, details);
-    res.redirect('/admin/banners');
+  updateBanners: async (req, res, next)=> {
+    try {
+      if (req.file) {
+        req.body.image = req.file.filename;
+      }
+      const {id, ...details} = req.body;
+      await bannerHelpers.updateBanner(id, details);
+      res.redirect('/admin/banners');
+    } catch (error) {
+      next(error);
+    }
   },
   checkNameExists: async (req, res)=> {
     const banner = await bannerHelpers.getBanner(req.params.name);
@@ -569,5 +575,14 @@ module.exports = {
     } catch (error) {
       next(error);
     }
+  },
+  changeDesignStatus: async (req, res, next)=> {
+    try {
+      const status = await designHelpers.changeDesignStatus(req.body.id);
+      await productHelpers.updateDesignStatus(status);
+      res.json({success: true, status: status.status});
+    } catch (error) {
+      next(error);
+    };
   },
 };

@@ -12,7 +12,7 @@ module.exports = {
       next();
     } else {
       req.session.signin = true;
-      res.redirect('/user/login');
+      res.redirect('/login');
     }
   },
   checkAdminLoggedIn: (req, res, next)=>{

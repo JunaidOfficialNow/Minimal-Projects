@@ -52,4 +52,18 @@ module.exports = {
   getSizes: async ()=> {
     return await Design.distinct('sizes');
   },
+  changeDesignStatus: async (id) => {
+    try {
+      const design = await Design.findById(id);
+      if (design) {
+        design.isActive = !design.isActive;
+        const newDesign = await design.save();
+        return Promise.resolve({status: newDesign.isActive,
+          code: newDesign.designCode});
+      }
+      return Promise.reject(new Error('No design document found'));
+    } catch (error) {
+      Promise.reject(error);
+    };
+  },
 };

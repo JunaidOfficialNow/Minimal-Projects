@@ -404,11 +404,11 @@
           return profileFormError.innerHTML = 'Provide a valid phone number';
         }
         if (oldValue !== formDataObject.email) {
-          fetch(`/user/email-check?email=${formDataObject.email}`)
+          fetch(`/email-check?email=${formDataObject.email}`)
             .then((response) => response.json())
             .then((data) => {
               if (data.success) {
-                fetch('/user/profile', {
+                fetch('/profile', {
                   method: 'PUT',
                   body: JSON.stringify(formDataObject),
                   headers: {
@@ -435,7 +435,7 @@
             })
 
         } else {
-          fetch('/user/profile', {
+          fetch('/profile', {
             method: 'PUT',
             body: JSON.stringify(formDataObject),
             headers: {
@@ -524,7 +524,7 @@
           error.style.display = 'block';
           error.innerHTML = 'Provide a valid phone number';
         } else {
-          fetch(`/user/address/`, {
+          fetch(`/address/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -561,7 +561,7 @@
       }
 
       function viewAddress(id) {
-        fetch('/user/get/address', {
+        fetch('/get/address', {
           method: 'POST',
           body: JSON.stringify({
             id: id,
@@ -695,7 +695,7 @@
         })
       }
       function deleteAddress(addressId, id) {
-        fetch('/user/delete/address', {
+        fetch('/delete/address', {
           method: 'DELETE',
           body: JSON.stringify({
             id: id,
@@ -722,7 +722,7 @@
         preview.src = url;
         const formData = new FormData();
         formData.append('file', file.files[0]);
-        fetch('/user/add/image', {
+        fetch('/add/image', {
           method: 'PUT',
           body: formData,
         }).then((data) => data.json()).then((data) => {
@@ -741,7 +741,7 @@
         document.getElementsByClassName('modal-backdrop')[0].classList.toggle('modal-backdrop');
         document.querySelector('body').classList.toggle('modal-open');
 
-        fetch(`/user/addresses/${addressId}`)
+        fetch(`/addresses/${addressId}`)
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
@@ -821,7 +821,7 @@
           error.style.display = 'block';
           return error.innerHTML = 'Provide a valid phone number';
         } else {
-          fetch('/user/addresses', {
+          fetch('/addresses', {
             method: 'PUT',
             body: JSON.stringify(formDataObject),
             headers: {
@@ -853,7 +853,7 @@
         })
           .then((willDelete) => {
             if (willDelete) {
-              fetch('/user/delete/account', {
+              fetch('/delete/account', {
                 method: 'DELETE',
                 body: JSON.stringify({
                   id: id,

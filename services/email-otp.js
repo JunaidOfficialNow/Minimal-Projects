@@ -53,7 +53,7 @@ const email = {
         to: email,
         subject: 'Reset your password',
         html: `<h4> Click the link to reset your password </h4> <br/>
-        <a href="${appUrl}/user/reset-password/${token}" >Reset Password</a>`,
+        <a href="${appUrl}/reset-password/${token}" >Reset Password</a>`,
       };
       transporter.sendMail(mailOption, (err, info)=>{
         if (err) {

@@ -5,12 +5,12 @@ module.exports = {
       let doc = await Address.findById(id);
       if (!doc) {
         doc = await Address.create({_id: id, addresses: [address]});
-        return Promise.resolve({new: true});
+        return Promise.resolve({new: true, doc: doc.addresses.slice(-1)[0]});
       } else {
         doc.addresses.push(address);
         await doc.save();
       }
-      return Promise.resolve({new: false});
+      return Promise.resolve({new: false, doc: doc.addresses.slice(-1)[0]});
     } catch (err) {
       console.error(err);
       return Promise.reject(err);
@@ -54,5 +54,18 @@ module.exports = {
         }).catch((err)=> {
           return Promise.reject(err);
         });
+  },
+  checkAddress: async (id) => {
+    try {
+      const address = await Address.findById(id);
+      if (address) {
+        if (address.addresses.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
 };
