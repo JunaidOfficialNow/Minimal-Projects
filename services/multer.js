@@ -69,7 +69,6 @@ const ProfileStorage = multer.diskStorage({
     const isValid = FILE_TYPE_MAP[file.mimetype];
     let uploadError = new Error('invalid image type');
     uploadError.status = 400;
-    console.log('inside multer');
 
     if (isValid) {
       uploadError = null;
