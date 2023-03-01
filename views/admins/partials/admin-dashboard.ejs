@@ -194,7 +194,7 @@
                                 , year: 'numeric' }); %> | <%= date.toLocaleTimeString('en-US',
                                     { hour12: true, hour: 'numeric' , minute: 'numeric' }); %></td>
                             <td><%= order.orderId %></td>
-                            <td><%= order.userId.firstName %></td>
+                            <td><%= order.userId?.firstName %></td>
                             <td>&#8377;<%=order.totalAmount %></td>
                             <td><%= order.status %></td>
                             <td><a class="btn btn-sm btn-primary" href="/admin/order/details/<%= order._id %>">Detail</a></td>
