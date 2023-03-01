@@ -8,8 +8,7 @@ const FILE_TYPE_MAP = {
 
 const Categorystorage = multer.diskStorage({
   destination: function(req, file, cb) {
-    try {
-      const isValid = FILE_TYPE_MAP[file.mimetype];
+    const isValid = FILE_TYPE_MAP[file.mimetype];
     let uploadError = new Error('invalid image type');
     uploadError.status = 400;
     // eslint-disable-next-line max-len
@@ -19,10 +18,6 @@ const Categorystorage = multer.diskStorage({
       uploadError = null;
     }
     cb(uploadError, dir);
-    } catch (error) {
-      console.log(error);
-    }
-    
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');
