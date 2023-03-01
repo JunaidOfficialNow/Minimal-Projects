@@ -159,7 +159,7 @@
                                 <% products.forEach((element, index)=> { %>
                                 <tr style="position: relative">
                                     <td><%= index+1 %></td>
-                                    <td><img src="http://localhost:3000/static/uploads/<%= element.category  %>/<%= element.designCode%>/<%= element.images[0] %>" class="designImage" alt="" srcset=""></td>
+                                    <td><img src="/static/uploads/<%= element.category  %>/<%= element.designCode%>/<%= element.images[0] %>" class="designImage" alt="" srcset=""></td>
                                     <td><%= element.designCode %></td>
                                     <td><%= element.price %></td>
                                     <td><%= element.stock %></td>
