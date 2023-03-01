@@ -158,7 +158,7 @@ module.exports = {
     res.json({success: true});
   },
   blockUser: (req, res, next)=>{
-    blockUser(req.body.id).then((response)=>{
+    blockUser(req.body.id).then((response)=>{edi
       if (response) {
         res.json({success: true});
       } else {
