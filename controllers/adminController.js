@@ -207,7 +207,8 @@ module.exports = {
     const addCategory = req.session.addCategory;
     addCategory.image = req.file.filename;
     addCategory.lastEditedBy = req.session.admin.firstName;
-    fs.mkdir(path.join(__dirname, `../public/uploads/${addCategory.name}`),
+    // eslint-disable-next-line max-len
+    fs.mkdir(path.join(__dirname, `../public/static/uploads/${addCategory.name}`),
         (error)=> {
           if (error) {
             res.json({success: false});
@@ -359,7 +360,7 @@ module.exports = {
       lastEditedBy: req.session.admin.firstName,
     };
     const dir = path.join(__dirname,
-        '../public', 'uploads', category, designCode);
+        '../public', 'static', 'uploads', category, designCode);
     fs.mkdir(dir, (err) => {
       if (err) {
       } else {
