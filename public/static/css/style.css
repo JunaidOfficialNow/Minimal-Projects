@@ -142,6 +142,31 @@ abbr {
   .searchContainer {
 	position: relative;
   }
+	.filter-main {
+		transition: ease-in 0.5s;
+	}
+	.filter-main.active {
+     
+		 left: 0%;
+		 top: 0%;
+		 z-index: 2;
+		 background-color: white;
+		 width: 100%;
+
+	}
+
+	@media  screen and (max-width: 768px) {
+		.filter-main {
+			position: absolute;
+			left: -200%;
+			margin-left: -70px;
+
+		}
+		.productClass {
+			margin-left: 70px;
+		}
+		
+	}
   .searchsuggestion{
 	background-color: rgb(255, 254, 254);
 	color: black !important;
@@ -199,7 +224,18 @@ abbr {
 	border: 1px solid #ccc;
 	z-index: 1;
   }
-  
+  .user-options {
+		display: flex;
+		flex-direction: column;
+
+		
+	}
+	.user-options a {
+		text-decoration: none;
+		color: black;
+		margin-top: 5px;
+	}
+
   .dropdown-content a {
 	width: 75px;
 	color: #333;
@@ -610,6 +646,9 @@ abbr {
 }
 
 .canvas__open {
+	display: none;
+}
+.filter-btn {
 	display: none;
 }
 
@@ -3404,6 +3443,21 @@ abbr {
 	.blog__sidebar {
 		padding-left: 0;
 	}
+	.filter-btn {
+		display: block;
+		font-size: 22px;
+		color: #222;
+		height: 35px;
+		width: 35px;
+		line-height: 35px;
+		text-align: center;
+		border: 1px solid #323232;
+		border-radius: 2px;
+		cursor: pointer;
+		position: absolute;
+		right: 15px;
+		top: 24px;
+	}
 	.canvas__open {
 		display: block;
 		font-size: 22px;
@@ -3571,6 +3625,7 @@ abbr {
 
 /* Wide Mobile = 480px */
 
+
 @media only screen and (max-width: 767px) {
 	.canvas__open {
 		display: block;
@@ -3587,6 +3642,21 @@ abbr {
 		right: 15px;
 		top: 24px;
 	}
+.filter-btn  {
+	display: block;
+		font-size: 22px;
+		color: #222;
+		height: 35px;
+		width: 35px;
+		line-height: 35px;
+		text-align: center;
+		border: 1px solid #323232;
+		border-radius: 2px;
+		cursor: pointer;
+		position: absolute;
+		right: 15px;
+		top: 24px;
+}
 	.offcanvas-menu-overlay {
 		position: fixed;
 		left: 0;

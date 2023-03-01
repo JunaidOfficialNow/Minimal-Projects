@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css">
     <link rel="stylesheet" href="/static/css/magnific-popup.css" type="text/css">
     <link rel="stylesheet" href="/static/css/owl.carousel.min.css" type="text/css">
+    <link rel="icon" type="image/png"  sizes="96x96" href="/static/favicon/fav.jpg">
     <link rel="stylesheet" href="/static/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/static/css/style.css" type="text/css">
 </head>
@@ -43,22 +44,28 @@
     <div class="breadcrumb-option">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-9">
                     <div class="breadcrumb__links">
                         <a href="/"><i class="fa fa-home"></i> Home</a>
                         <span>Shop</span>
                     </div>
                 </div>
+                <div class="col-3">
+                    <div class="filter-btn">
+                        <i class="fa fa-bars"></i>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
     <!-- Breadcrumb End -->
-
+ 
     <!-- Shop Section Begin -->
     <section class="shop spad">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-3">
+            <div class="row productClass " style="position: relative;">
+                <div class="col-lg-3 col-md-3 col-sm-3 filter-main " id="filter-main">
                     <div class="shop__sidebar">
                         <div class="sidebar__categories">
                             <div class="section-title">
@@ -150,7 +157,7 @@
                     </div>
                 </div>
                 <!-- Product displays -->
-                <div class="col-lg-9 col-md-9">
+                <div class="col-lg-9 col-md-9 col-sm-9 col-9">
                     <div class="row" id="productContainer" style="justify-content: center;">
                         <!-- <div class="label stockout stockblue">Out Of Stock</div> -->
                         <!-- <div class="label new">New</div> -->
@@ -244,6 +251,11 @@
     <script src="/static/js/main.js"></script>
 </body>
 <script>
+    const filterBtn = document.getElementsByClassName('filter-btn')[0];
+    const filterMain = document.getElementById('filter-main');
+    filterBtn.addEventListener('click', function() {
+        filterMain.classList.toggle('active')
+    });
     const productContainer = document.getElementById("productContainer");
     const cartCount = document.getElementById("cartCount");
     productContainer.addEventListener('click', function(event) {

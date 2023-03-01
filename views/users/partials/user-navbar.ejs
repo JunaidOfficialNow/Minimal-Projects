@@ -12,13 +12,31 @@
         <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
     </div>
     <div id="mobile-menu-wrap"></div>
+    <span class="icon_profile"></span>
+    <% if(user){ %>
+                
+                    
+                    
+        <span><%= user.firstName %></span>
+        <div class="user-options">
+            <a href="/my-profile" class="">Profile</a>
+            <a href="/wishlist" class="icon_wishlist">Wishlist</a>
+            <a href="/my-orders" class="icon_orders">Orders</a>
+            <a href="/logout" class="">Logout</a>
+        </div>
+               
+            
+        <% } %>
+                    
     <div class="offcanvas__auth">
         <% if(!user){ %>
                     
             <a href="/login">Login/Register</a>
         
             <% } %>
+       
     </div>
+ 
 </div>
 
 <header class="header">

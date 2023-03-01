@@ -6,6 +6,7 @@
     <meta name="description" content="Ashion Template">
     <meta name="keywords" content="Ashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png"  sizes="96x96" href="/static/favicon/fav.jpg">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Checkout | Minimal projects</title>
 
@@ -196,23 +197,23 @@
                                         <div class="checkout__order__product">
                                             <ul>
                                                 <li class="row">
-                                                    <span class="col-md-3">Product</span>
-                                                    <span class="col-md-3">Size</span>
-                                                    <span class="col-md-3">Quantity</span>
-                                                    <span class="col-md-3">Total</span>
+                                                    <span class="col-md-3 col-3">Product</span>
+                                                    <span class="col-md-3 col-3">Size</span>
+                                                    <span class="col-md-3 col-3">Quantity</span>
+                                                    <span class="col-md-3 col-3">Total</span>
                                                 </li>
                                                 <% products.forEach((product, index)=> { %>
                                                     <li class="row">
-                                                        <span class="col-md-3">
+                                                        <span class="col-md-3 col-3" >
                                                             <%= index + 1 %>.<%= product._id.name %>
                                                         </span>
-                                                        <span class="col-md-3">
+                                                        <span class="col-md-3 col-3">
                                                             <%= product.size %>
                                                         </span>
-                                                        <span class="col-md-3">
+                                                        <span class="col-md-3 col-3">
                                                             <%= product.quantity %>
                                                         </span>
-                                                        <span class="col-md-3 prices">
+                                                        <span class="col-md-3 col-3 prices">
                                                             <%= product._id.price * product.quantity %>
                                                         </span>
                                                     </li>
