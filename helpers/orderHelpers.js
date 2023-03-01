@@ -171,7 +171,7 @@ const salesAndRevenueChart = async ()=> {
     if (result.length > 0) {
       return Promise.resolve(result[0].data);
     }
-    return Promise.resolve({});
+    return Promise.resolve([]);
   }).catch((err)=> {
     return Promise.reject(err);
   });

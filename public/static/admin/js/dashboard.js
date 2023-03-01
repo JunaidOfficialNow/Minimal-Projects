@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', function (e) {
         const xValues = [];
         const yValues = [];
         const yvaluesRevenue = [];
-
+      
         const currentDate = new Date();
 
         for (let i = 6; i >= 0; i--) {
@@ -18,8 +18,8 @@ window.addEventListener('DOMContentLoaded', function (e) {
           );
           const monthNumber = pastDate.getMonth() + 1;
           const monthName = pastDate.toLocaleString('default', {month: 'long'});
-          const monthData = data?.sales.find(data => data.month === monthNumber);
-          const monthData2 = data?.size.find(data => data.month === monthNumber);
+          const monthData = data.sales.find(data => data.month === monthNumber);
+          const monthData2 = data.size.find(data => data.month === monthNumber);
           if (monthData) {
             xValues.push(monthName);
             yValues.push(monthData.totalSales);
