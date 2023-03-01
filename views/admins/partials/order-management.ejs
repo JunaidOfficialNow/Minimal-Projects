@@ -151,7 +151,7 @@
                                                     src="/static/uploads/<%= order.products[0].product.category %>/<%= order.products[0].product.designCode %>/<%= order.products[0].product.images[0] %>"
                                                     alt="">
                                                 <div class="">
-                                                    User: <%= order.userId.firstName %> <br>
+                                                    User: <%= order.userId?.firstName %> <br>
                                                         <%= order.products[0].product.name %>
                                                 </div>
 
@@ -391,8 +391,8 @@
                                 </div>
                                 <div class="col-lg-6 text-start mt-2">
                                     <h5>Billed Address</h5>
-                                    Name: ${details.userId.firstName} <br>
-                                    Email: ${details.userId.email} <br>
+                                    Name: ${details.userId?.firstName} <br>
+                                    Email: ${details.userId?.email} <br>
                                     
                                  
                                 </div>
