@@ -177,7 +177,7 @@ abbr {
   }
   .productSearchBox, .categorySearchBox, .colorSearchBox, .genderSearchBox {
 	width: 100%;
-	border-bottom: 1px solid;
+	/* border-bottom: 1px solid; */
   }
   .colorbg {
 	background:#8282b229 !important;
@@ -186,6 +186,9 @@ abbr {
   .borderbg {
 	border: 2px ridge;
   }
+	.events {
+		pointer-events: none !important;
+	}
   
   .dropdown-content {
 	display: none;

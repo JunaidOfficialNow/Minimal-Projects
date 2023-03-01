@@ -53,10 +53,12 @@
         <!-- Breadcrumb End -->
 
         <!-- Shop Cart Section Begin -->
-        <section class="shop-cart spad">
+        <% if (products.length > 0) { %>
+        <section class="shop-cart spad" id="mainContainer">
             <div class="container">
                 <div class="row cartLayout">
                     <div class="col-lg-8 cartScroll">
+                        <% if (products.length > 0) { %>
                         <div class="shop__cart__table">
                             <table>
                                 <thead>
@@ -71,10 +73,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                   
                                     <% products.forEach((product)=> { %>
                                         <tr id="<%= product._id._id %>">
                                             <td class="cart__product__item">
-                                                <img src="/static/uploads/<%= product._id.category %>/<%= product._id.designCode %>/<%= product._id.images[0] %>"
+                                                <img  src="/static/uploads/<%= product._id.category %>/<%= product._id.designCode %>/<%= product._id.images[0] %>"
                                                     alt="" style="height: 40px; width: 40px">
                                             </td>
                                             <td class="cart__product__item">
@@ -125,8 +128,14 @@
 
                                 </tbody>
                             </table>
+                          
                         </div>
+                        <% } %>
+                        <% if (products.length == 0) { %>
+                            <img width="300px" height="300px" src="/static/empty/cart.gif" alt="">
+                            <% } %>
                     </div>
+                   
                     <div class="col-lg-4">
                         <div class="row">
                             <div class="col-lg-12 col-sm-12 ">
@@ -168,6 +177,13 @@
                 </div>
             </div>
         </section>
+
+        <% } else { %>
+            <section id="gifContainer" style="height: 80vh; width: 100vw; display: flex; justify-content: center; align-items: center;">
+                <img width="300px" height="300px" src="/static/empty/cart.gif" alt="">
+            </section>
+            
+            <% } %>
         <!-- Shop Cart Section End -->
 
 
@@ -267,6 +283,9 @@
     const totalAmount = document.getElementsByClassName('totalAmount');
     const table = document.querySelector('tbody');
     const btn = document.querySelector('#checkoutBtn');
+    const mainContainer = document.querySelector('#mainContainer');
+    const body = document.querySelector('body');
+
 
     btn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -276,7 +295,6 @@
                 "Content-Type": "application/json",
             },
         }).then((response)=> response.json()).then((data)=> {
-            console.log(data)
             if (data.success) {
                 location.href = btn.href;
             }
@@ -284,7 +302,7 @@
                 alert(`sorry eda njmmle ${data.products}, athundallo ath ipo njammade kayyil lla`);
              }
         }).catch((err)=> {
-            console.log(err);
+            alert(err);
         })
     })
 
@@ -311,8 +329,10 @@
                 row.parentNode.removeChild(row);
                 if (table.innerHTML.trim() == '') {
                     btn.parentNode.removeChild(btn);
-
-
+                    body.removeChild(mainContainer);
+                    body.innerHTML += `  <section id="gifContainer" style="height: 80vh; width: 100vw; display: flex; justify-content: center; align-items: center;">
+                <img width="300px" height="300px" src="/static/empty/cart.gif" alt="">
+            </section>`
                 }
                 
              
@@ -418,7 +438,6 @@
         let totalPrice = 0;
         const array = Array.from(totalAmount)
         array.forEach((element) => {
-            console.log(typeof (Number(element.textContent)))
             totalPrice += Number(element.textContent);
 
         })

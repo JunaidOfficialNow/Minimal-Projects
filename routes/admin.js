@@ -24,6 +24,7 @@ router.get('/products', middle.verifyLogin, admin.getProductsPage);
 router.get('/product/add', middle.verifyLogin, admin.getAddProductPage);
 router.get('/products/:id', middle.verifyLogin, admin.getEditProductPage);
 router.get('/coupons', middle.verifyLogin, admin.getCouponsPage);
+router.get('/coupons/:id', middle.verifyLogin, admin.getCoupon);
 router.get('/orders', middle.verifyLogin, admin.getOrdersPage);
 router.get('/order/details/:id', middle.verifyLogin, admin.getOrderDetailsPage);
 router.get('/banners', middle.verifyLogin, admin.getBannersPage);
@@ -76,6 +77,8 @@ router.put('/banners', middle.verifyLogin,
 
 router.put('/product', middle.verifyLogin,
     ProductUpload.any(), admin.updateProduct);
+
+router.put('/coupons', middle.verifyLogin, admin.updateCoupons);
 // delete requests
 
 router.delete('/deleteCategory', middle.verifyLogin, admin.deleteCategory);
@@ -87,5 +90,6 @@ router.patch('/products/COD', middle.verifyLogin, admin.changeProductCODStatus);
 router.patch('/products/active',
     middle.verifyLogin, admin.changeProductActiveStatus);
 router.patch('/design/status', middle.verifyLogin, admin.changeDesignStatus);
+router.patch('/coupon/status', middle.verifyLogin, admin.changeCouponStatus);
 
 module.exports = router;

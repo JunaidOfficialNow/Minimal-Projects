@@ -47,6 +47,9 @@
             <div class="col-lg-3 searchContainer">
                 <input type="text" class="search-box " id="searchInput" placeholder="Search...">
                 <div class="searchsuggestion">
+                    <div class="noResults">
+                        No results found
+                    </div>
                     <div class="productSearchBox">
                     </div>
                     <div class="categorySearchBox">
@@ -115,16 +118,23 @@ const productList = document.getElementsByClassName('productSearchBox')[0];
 const colorList = document.getElementsByClassName('colorSearchBox')[0];
 const genderList = document.getElementsByClassName('genderSearchBox')[0];
 const searchContainer = document.getElementsByClassName('searchsuggestion')[0];
+const noResults = document.getElementsByClassName('noResults')[0];
 search.addEventListener('input', function(event) {
     const input = search.value;
     if (input.trim()==0){
         return searchContainer.style.display = 'none';
     }
+         searchContainer.style.display = 'block';
+         noResults.innerHTML = 'No results found';
     fetch(`/search/category/${input}`)
     .then((response)=> response.json()).then((data)=> {
         if (data.success) {
             searchContainer.style.display= 'block';
             categoryList.innerHTML = '';
+            if (data.categories.length > 0) {
+                noResults.innerHTML = '';
+            }
+            
             data.categories.forEach((category)=> {
                 categoryList.innerHTML += `<div class='searchItem'><a  href="/results/category/${category}?page=1">${category}</a></div><br>`;
             })
@@ -136,6 +146,9 @@ search.addEventListener('input', function(event) {
         if (data.success) {
             searchContainer.style.display= 'block';
             productList.innerHTML = '';
+            if (data.products.length > 0) {
+                noResults.innerHTML = '';
+            }
             data.products.forEach((product)=> {
                 productList.innerHTML += `<div class='searchItem'><a  href="/results/products/${product}?page=1">${product}</a></div><br>`;
             })
@@ -147,6 +160,9 @@ search.addEventListener('input', function(event) {
         if (data.success) {
             searchContainer.style.display= 'block';
             colorList.innerHTML = '';
+            if (data.colors.length > 0) {
+                noResults.innerHTML = '';
+            }
             data.colors.forEach((color)=> {
                 colorList.innerHTML += `<div class='searchItem'><a  href="/results/colors/${color}?page=1">${color}</a></div><br>`
             })
@@ -158,12 +174,16 @@ search.addEventListener('input', function(event) {
         if (data.success) {
             searchContainer.style.display= 'block';
             genderList.innerHTML = '';
+            if (data.genders.length > 0) {
+                noResults.innerHTML = '';
+            }
             data.genders.forEach((gender)=> {
                 genderList.innerHTML += `<div class='searchItem'><a  href="/results/genders/${gender}?page=1">${gender}</a></div><br>`;
             })
             
         }
     })
+
 });
 
 window.addEventListener('click', function(event){

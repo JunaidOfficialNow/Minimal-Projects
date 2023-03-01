@@ -41,7 +41,6 @@ async function deleteDirectory(directory) {
     }
     await rmdirPromised(directory);
   } catch (err) {
-    console.error(err);
   }
 }
 
@@ -149,7 +148,6 @@ module.exports = {
     try {
       const sales = await orderHelpers.salesAndRevenueChart();
       const size = await orderHelpers.sizeAndSaleReport();
-      console.log(size);
       res.json({success: true, sales, size});
     } catch (error) {
       next(error);
@@ -212,14 +210,12 @@ module.exports = {
     fs.mkdir(path.join(__dirname, `../public/uploads/${addCategory.name}`),
         (error)=> {
           if (error) {
-            console.log(error);
             res.json({success: false});
           } else {
             categoryHelpers.addCategory(addCategory).then((doc)=>{
               delete req.session.addCategory;
               res.json({success: true, doc});
             }).catch((err)=>{
-              console.log(err);
               res.json({success: false});
             });
           }
@@ -237,8 +233,7 @@ module.exports = {
       designHelpers.deleteDesigns(data.name).then(()=> {
         fs.unlink('public/uploads/category/'+data.image, (error)=> {
           if (error) {
-            console.log(error);
-          } else console.log('file deleted');
+          }
         });
         const directory =
          path.join(__dirname, '../public', 'uploads', data.name);
@@ -298,7 +293,6 @@ module.exports = {
 
           fs.rename(oldPath, newPath, (err) => {
             if (err) {
-              console.log(err);
               res.json({error:
                  'There is trouble in upadating category name now'});
             } else {
@@ -308,7 +302,6 @@ module.exports = {
                 res.json({error:
                    'Category name is already in use , should be unique'});
               });
-              console.log(`Directory renamed from ${oldName} to ${name}.`);
             }
           });
         } else {
@@ -321,8 +314,7 @@ module.exports = {
     const {id, image} = req.body;
     fs.unlink('public/uploads/category/'+image, (err)=> {
       if (err) {
-        console.log(err);
-      } else console.log('file update deleted');
+      }
     });
     categoryHelpers.updateCategoryImage(id, req.file.filename).then((doc)=>{
       if (doc.error) {
@@ -370,7 +362,6 @@ module.exports = {
         '../public', 'uploads', category, designCode);
     fs.mkdir(dir, (err) => {
       if (err) {
-        console.log(err);
       } else {
         designHelpers.addDesign(details).then((doc)=> {
           res.redirect('/admin/design/category');
@@ -390,7 +381,6 @@ module.exports = {
       res.render('admins/admin-products', {admin: req.session.admin,
         products: products});
     }).catch((err)=> {
-      console.log(err);
     });
   },
   getDesignCodes: (req, res) => {
@@ -584,5 +574,30 @@ module.exports = {
     } catch (error) {
       next(error);
     };
+  },
+  changeCouponStatus: async (req, res, next)=> {
+    try {
+      const status = await couponHelpers.changeCouponStatus(req.body.id);
+      res.json({success: true, status});
+    } catch (error) {
+      next(error);
+    };
+  },
+  getCoupon: async (req, res, next)=> {
+    try {
+      const coupon = await couponHelpers.getCouponById(req.params.id);
+      res.json({success: true, coupon});
+    } catch (error) {
+      next(error);
+    }
+  },
+  updateCoupons: async (req, res, next)=> {
+    try {
+      const {id, ...details} = req.body;
+      await couponHelpers.updateCoupons(id, details);
+      res.json({success: true});
+    } catch (error) {
+      next(error);
+    }
   },
 };

@@ -1,0 +1,102 @@
+<footer class="footer">
+  <div class="container">
+      <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-7">
+              <div class="footer__about">
+                  <div class="footer__logo">
+                    <a href="/"
+                    style="font-family: 'Courier New', Courier, monospace; width: 300px; font-weight: 600;margin-top: 6px; font-size: 19px;text-decoration: none; color: black;">
+                    Minimal Projects</a>
+                  </div>
+                  <p>Our t-shirts come in a variety of sizes and colors, so you can find the perfect fit and style to suit your taste. Whether you're dressing up for a night out or just looking for a casual and comfortable look, our t-shirts are the perfect addition to any wardrobe.</p>
+               
+              </div>
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-5">
+              <div class="footer__widget">
+                  <h6>Quick links</h6>
+                  <ul>
+                      <li><a href="#" class="events">About</a></li>
+                      <li><a href="#" class="events">Blogs</a></li>
+                      <li><a href="#" class="events">Contact</a></li>
+                      <li><a href="#" class="events">FAQ</a></li>
+                  </ul>
+              </div>
+          </div>
+          <div class="col-lg-2 col-md-3 col-sm-4">
+              <div class="footer__widget">
+                  <h6>Account</h6>
+                  <ul>
+                      <li><a href="/my-profile">My Account</a></li>
+                      <li><a href="/my-orders">Orders</a></li>
+                      <li><a href="/cart">Cart</a></li>
+                      <li><a href="/wishlist">Wishlist</a></li>
+                  </ul>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-8">
+              <div class="footer__newslatter">
+                  <h6>NEWSLETTER</h6>
+                  <form action="#" onsubmit="return false" class="">
+                      <input type="text" id="newsletter-input" class="" placeholder="Email">
+                      <button type="submit" onclick="newsletter()" class="site-btn">Subscribe</button>
+                      <small class="text-danger" id="newsletter-error" style="display: none;">Provide a valid  email</small>
+                  </form>
+                  <div class="footer__social">
+                      <a href="#" class="events"><i class="fa fa-facebook"></i></a>
+                      <a href="#" class="events"><i class="fa fa-twitter"></i></a>
+                      <a href="#" class="events"><i class="fa fa-youtube-play"></i></a>
+                      <a href="https://www.instagram.com/minimalprojects_/"><i class="fa fa-instagram"></i></a>
+                      <a href="#" class="events"><i class="fa fa-pinterest"></i></a>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-lg-12">
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+              <div class="footer__copyright__text">
+                  <p>Copyright &copy;
+                      <script>document.write(new Date().getFullYear());</script> All
+                      rights reserved | This
+                      template is made with <i class="fa fa-heart"
+                          aria-hidden="true"></i> by <a href="https://colorlib.com"
+                          target="_blank">Colorlib</a>
+                  </p>
+              </div>
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+          </div>
+      </div>
+  </div>
+</footer>
+
+<script>
+  const input = document.getElementById('newsletter-input');
+  const newserror = document.getElementById('newsletter-error');
+  input.addEventListener('input',function() {
+    newserror.style.display = 'none';
+  });
+  function newsletter() {
+     if (isValidEmail(input.value)) {
+      Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Successfully subscibed to newsletter',
+                            showConfirmButton: false,
+                            imageHeight: 50,
+                            timer: 1500
+                        })
+                input.value = '';
+     }
+     else {
+     newserror.style.display = 'block';
+     }
+
+  }
+  function isValidEmail(email) {
+    const re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+</script>

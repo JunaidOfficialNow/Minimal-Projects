@@ -90,7 +90,17 @@
         display: none;
         position: absolute;
         right: 50px;
+        top: 30%;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 300px;
+        height: 40px;
+        background-color: rgb(79, 77, 77);
 
+    }
+    .designDropdown button {
+        background-color: transparent;
+        border-color: grey;
     }
     .designDropdownIcon:hover .designDropdown {
         display: flex;
@@ -148,11 +158,11 @@
                             class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
                             <% } %>
                      <% if (admin.userManager) { %>
-                    <a href="#users" class="nav-item nav-link " id="users"><i
+                    <a href="/admin/home" class="nav-item nav-link " id="users"><i
                             class="fa fa-users me-2"></i>Users</a>
                             <% } %>
                             <% if (admin.superAdmin) { %>
-                    <a href="#employees" class="nav-item nav-link " id="employees"><i
+                    <a href="/admin/home" class="nav-item nav-link " id="employees"><i
                             class="fa fa-user me-2"></i>Employees</a>
                             <% } %>
                             <% if (admin.productManager) { %>

@@ -132,11 +132,11 @@
                                 <td><%= date.toLocaleDateString() %></td>
                                 <td><%=  element.purchaseAmount %></td>
                                 <td><%=  element.offerUpto %></td>
-                                <td><%  if(element.isActive) {%> Active <% } else { %> Deactivated <% } %></td>
+                                <td id="<%=element._id%>StatusCell"><%  if(element.isActive) {%> Active <% } else { %> Deactivated <% } %></td>
                                 <td class="designDropdownIcon"><i class="fa fa-ellipsis-v "></i>
                                     <div class="designDropdown">
-                                        <div class="designDropdown-content">Edit</div> &nbsp
-                                        <div class="designDropdown-content"><%  if(element.isActive) {%> Deactivate <% } else { %> Activate <% } %></div>
+                                        <button onclick="editCoupon('<%=element._id %>')" class="designDropdown-content">Edit</button> &nbsp
+                                        <button class="designDropdown-content" onclick="deacivateCoupon( this, '<%=element._id%>')"><%  if(element.isActive) {%> Deactivate <% } else { %> Activate <% } %></button>
                                     </div>
                                 </td>
                             </tr>
@@ -154,6 +154,10 @@
             </div>
         </div>
 
+        <script>
+
+         
+        </script>
       
 
         
@@ -186,6 +190,34 @@
         </form>
         <button onclick="createCoupon()">Create Coupon</button>
       </div>
+
+      <div class="coupon-form" id="editCouponForm-container">
+        <h2>Edit Coupon</h2>
+        <form id="editCouponForm">
+          <label for="coupon-code">Coupon Code:</label>
+          <input type="text" id="" readonly name="couponCode" required />
+      
+          <label for="discount-amount">Discount Percentage:</label>
+          <input type="number" id=""  name="discountPercentage" required />
+
+         <label for="discount-amount">Minimum purchase amount:</label>
+          <input type="number" id="" name="purchaseAmount" required />
+
+          <label for="discount-amount">Maximum offer upto:</label>
+          <input type="number" id="" name="offerUpto" required />
+      
+          <label for="expiration-date">Expiration Date:</label>
+          <input type="date" id="" name="expirationDate" required />
+          <input type="text" hidden name="id">
+      
+          <label for="usage-limit">Usage Limit:</label>
+          <input type="number" id="" name="usageLimit" required />
+      
+          
+        </form>
+        <button onclick="updateCoupon()">Edit Coupon</button>
+      </div>
+
 
 
 

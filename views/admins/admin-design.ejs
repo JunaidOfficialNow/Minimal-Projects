@@ -96,27 +96,27 @@
                             class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
                             <% } %>
                      <% if (admin.userManager) { %>
-                    <a href="#users" class="nav-item nav-link " id="users"><i
+                    <a href="/admin/home" class="nav-item nav-link " id="users"><i
                             class="fa fa-users me-2"></i>Users</a>
                             <% } %>
                             <% if (admin.superAdmin) { %>
-                    <a href="#employees" class="nav-item nav-link " id="employees"><i
+                    <a href="/admin/home" class="nav-item nav-link " id="employees"><i
                             class="fa fa-user me-2"></i>Employees</a>
                             <% } %>
                             <% if (admin.productManager) { %>
-                    <a href="#category" class="nav-item nav-link active" id="category"><i
+                    <a href="/admin/design/category" class="nav-item nav-link active" id="category"><i
                             class="fa fa-user me-2"></i>Category</a>
                     <a href="/admin/products" class="nav-item nav-link" id="products"><i
                             class="fa fa-table me-2"></i>Products</a>
                             <% } %>
                             <% if (admin.orderManager) { %>
-                    <a href="#orders" class="nav-item nav-link" id="orders"><i
+                    <a href="/admin/orders" class="nav-item nav-link" id="orders"><i
                             class="fa fa-chart-bar me-2"></i>Orders</a>
                             <% } %>
                             <% if (admin.superAdmin) { %>
-                    <a href="#coupons" class="nav-item nav-link" id="coupons"><i
+                    <a href="/admin/coupons" class="nav-item nav-link" id="coupons"><i
                             class="fa fa-chart-bar me-2"></i>Coupons</a>
-                    <a href="#banners" class="nav-item nav-link" id="banners"><i
+                    <a href="/admin/banners" class="nav-item nav-link" id="banners"><i
                             class="fa fa-chart-bar me-2"></i>Banners</a>
                             <% } %>
 

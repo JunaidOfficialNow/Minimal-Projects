@@ -278,7 +278,7 @@ module.exports = {
       res.json({error: error.message});
     });
   },
-  checkout: async (req, res) =>{
+  checkout: async (req, res, next) =>{
     try {
       const {coupon, subTotal, discount, total, method, ...address} = req.body;
       if (method === 'COD') {
