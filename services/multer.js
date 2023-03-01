@@ -14,7 +14,7 @@ const Categorystorage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, './public/uploads/category');
+    cb(uploadError, './public/static/uploads/category');
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');
