@@ -35,7 +35,7 @@ const DesignStorage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, './public/uploads/designs');
+    cb(uploadError, './public/static/uploads/designs');
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');
