@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path');
 const FILE_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpeg',
@@ -10,11 +11,13 @@ const Categorystorage = multer.diskStorage({
     const isValid = FILE_TYPE_MAP[file.mimetype];
     let uploadError = new Error('invalid image type');
     uploadError.status = 400;
+    // eslint-disable-next-line max-len
+    const dir = path.join(__dirname, '..', 'public', 'static', 'uploads', 'category');
 
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, './public/static/uploads/category');
+    cb(uploadError, dir);
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');

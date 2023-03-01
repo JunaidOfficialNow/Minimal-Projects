@@ -255,8 +255,6 @@ module.exports = {
     });
   },
   getCheckout: (req, res, next) => {
-    console.log(req.session.checkOutToken, req.params.token)
-    console.log(req.session,123456)
     if (req.session.checkOutToken === req.params.token) {
       const user = req.session.user;
       addressHelpers.getAddress(user._id).then((address)=> {
@@ -642,6 +640,6 @@ module.exports = {
     } catch (error) {
       next(error);
     }
-  }
+  },
 };
 
