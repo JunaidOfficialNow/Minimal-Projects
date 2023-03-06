@@ -130,7 +130,7 @@ module.exports = {
       });
     });
   },
-  GetProductPage: async (req, res)=> {
+  GetProductPage: async (req, res, next)=> {
     try {
       const product = await productHelpers.getProductDetails(req.params.id);
       const colors= await designHelpers.getDesignColors(product.designCode);
@@ -144,8 +144,7 @@ module.exports = {
         product: product, colors: colors[0].colors, page: 'shop',
         categoryRelatedProducts, colorRelatedProduct, designRelatedProduct});
     } catch (error) {
-      res.json({message: 'Ninte chattom enghattaann ink manslaaknd mandhjj',
-        status: '5059', error});
+      next(error);
     };
   },
   GetProfilePage: (req, res)=> {

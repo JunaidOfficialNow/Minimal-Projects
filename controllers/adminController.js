@@ -560,8 +560,7 @@ module.exports = {
           });
         });
       } else {
-        res.json({result: 'success', data: 'empty',
-          message: 'No records to download'});
+        throw new Error('No records to download');
       };
     } catch (error) {
       next(error);

@@ -19,7 +19,7 @@ router.get('/cart', verifyLogin, user.getCart);
 router.get('/checkout/:token', verifyLogin, user.getCheckout);
 router.get('/order/success/:orderId', verifyLogin, user.getSuccessOrder);
 router.get('/my-orders', verifyLogin, user.getOrderPage);
-router.get('/products', verifyLogin, user.getCertainProducts);
+router.get('/products', user.getCertainProducts);
 router.get('/search/:type/:value', user.getSearchResults);
 router.get('/results/:type/:value', user.getResults);
 router.get('/email-check', verifyLogin, user.checkEmail);

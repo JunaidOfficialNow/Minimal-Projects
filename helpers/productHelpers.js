@@ -1,5 +1,5 @@
 const Product = require('../models/productModel');
-
+const mongoose = require('mongoose');
 module.exports = {
   addProduct: (productDetails) => {
     return new Promise( (resolve, reject)=>{
@@ -38,14 +38,18 @@ module.exports = {
       });
     });
   },
-  getProductDetails: (id)=> {
-    return new Promise((resolve, reject) => {
-      Product.findById(id).then((doc)=> {
-        resolve(doc);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
+  getProductDetails: async (id)=> {
+    try {
+      // eslint-disable-next-line new-cap
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        const doc = await Product.findById(id);
+        return Promise.resolve(doc);
+      } else {
+        throw new Error('Tried to change the id value , huh?');
+      };
+    } catch (error) {
+      return Promise.reject(error);
+    };
   },
   changeStock: async (product, value, size) => {
     const filter = {_id: product};
