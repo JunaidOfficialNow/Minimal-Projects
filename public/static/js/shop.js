@@ -74,6 +74,9 @@ categoryLinks.forEach((link)=> {
     event.preventDefault();
     // eslint-disable-next-line max-len
     fetch(`/products?category=${link.id}&color=${color}&size=${size}&max=${max}&min=${min}`)
+        .catch((err)=> {
+          console.log(err);
+        })
         .then((response)=> response.json()).then((data)=> {
           if (data.success) {
             category = link.id;

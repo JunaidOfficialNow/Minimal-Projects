@@ -466,7 +466,7 @@ module.exports = {
       details.sizes = {$elemMatch: {size: size.trim()}};
     }
     const products = await productHelpers.filterProducts(details);
-    res.json({success: true, products, user: req.session.user._id});
+    res.json({success: true, products, user: req.session?.user._id});
   },
   getSearchResults: async (req, res) => {
     const {type, value} = req.params;
