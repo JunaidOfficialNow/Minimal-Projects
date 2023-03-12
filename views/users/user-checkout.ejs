@@ -469,7 +469,7 @@
                     form.phone.value = data.address.phone;
                     document.getElementById('exampleModalCenter').classList.remove('show');
                     document.getElementById('exampleModalCenter').style.display = 'none';
-                    document.getElementsByClassName('modal-backdrop')[0].classList.remove('modal-backdrop');
+                    document.getElementsByClassName('modal-backdrop')[0].parentNode.removeChild(document.getElementsByClassName('modal-backdrop')[0]);
                     document.querySelector('body').classList.toggle('modal-open');
 
 
@@ -622,7 +622,7 @@
         fetch('/checkout/get/one/address', {
             method: 'POST',
             body: JSON.stringify({
-                address: address,
+                addressId: address,
                 userId: userId
             }),
             headers: {
@@ -639,7 +639,7 @@
             form.phone.value = data.phone;
             document.getElementsByClassName('bd-example-modal-lg')[0].classList.remove('show');
             document.getElementsByClassName('bd-example-modal-lg')[0].style.display = 'none';
-            document.getElementsByClassName('modal-backdrop')[0].style.display = 'none';
+            document.getElementsByClassName('modal-backdrop')[0].parentNode.removeChild(document.getElementsByClassName('modal-backdrop')[0]);
             document.querySelector('body').classList.remove('modal-open');
         })
     }

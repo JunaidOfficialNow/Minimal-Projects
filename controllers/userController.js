@@ -4,7 +4,6 @@ const sendEmail = require('../services/email-otp');
 const userHelpers = require('../helpers/userHelpers');
 const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
-const addressHelpers = require('../helpers/addressHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const bannerHelpers = require('../helpers/bannerHelpers');
 const wishlistHelpers = require('../helpers/wishlistHelpers');
@@ -12,6 +11,8 @@ const cartHelpers = require('../helpers/cartHelpers');
 const couponHelpers = require('../helpers/couponHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
 const Razorpay = require('razorpay');
+const Address = require('../models/addressModel');
+const User = require('../models/userModel');
 
 const instance = new Razorpay({
   key_id: process.env.RAZ_KEY_ID,
@@ -150,35 +151,44 @@ module.exports = {
   GetProfilePage: (req, res)=> {
     res.render('users/user-profile', {page: 'profile', user: req.session.user});
   },
-  addAddress: (req, res)=> {
-    const {id, address} = req.body;
-    addressHelpers.addAddress(id, address).then((result)=>{
-      if (result.new) {
-        userHelpers.changeAddressStatus(id).then(()=> {
-          req.session.user.isAddressAdded = true;
-          res.json({success: true, new: true, address: result.doc});
-        });
+  addAddress: async (req, res, next)=> {
+    try {
+      const {id, address} = req.body;
+      let doc = await Address.findById(id);
+      if (!doc) {
+        doc = await Address.create({_id: id, addresses: [address]});
+        await User.findByIdAndUpdate(id, {isAddressAdded: true});
+        req.session.user.isAddressAdded = true;
+        res.json({success: true, new: true,
+          address: doc.addresses.slice(-1)[0]});
       } else {
-        res.json({success: true, address: result.doc});
+        doc.addresses.push(address);
+        await doc.save();
+        res.json({success: true, address: doc.addresses.slice(-1)[0]});
       }
-    }).catch((err)=>{
-      res.json({error: err.message});
-    });
+    } catch (err) {
+      next(err);
+    }
   },
-  getAddress: (req, res) => {
-    addressHelpers.getAddress(req.body.id).then((address)=> {
-      res.json(address);
-    }).catch((error)=> {
-      res.json({error: error.message});
-    });
-  },
-  deleteAddress: (req, res) => {
-    const {id, addressId} = req.body;
-    addressHelpers.deleteAddress(id, addressId).then(()=> {
-      res.json({success: true});
+  getAddress: (req, res, next) => {
+    Address.findById(req.body.id).then((address)=> {
+      if (address) {
+        return res.json(address.addresses);
+      }
+      res.json([]);
     }).catch((err) => {
-      res.json({error: err.message});
+      next(err);
     });
+  },
+  deleteAddress: async (req, res, next) => {
+    try {
+      const {id, addressId} = req.body;
+      await Address.findByIdAndUpdate(id,
+          {$pull: {addresses: {_id: addressId}}});
+      res.json({success: true});
+    } catch (err) {
+      next(err);
+    }
   },
   addImage: (req, res)=> {
     userHelpers
@@ -192,12 +202,16 @@ module.exports = {
   GetImage: (req, res) => {
     res.sendFile(`../profiles/${req.params.image}`, {root: __dirname});
   },
-  deleteAccount: (req, res) => {
-    userHelpers.deleteAccount(req.body.id).then(()=> {
-      addressHelpers.deleteAccount(req.body.id);
+  deleteAccount: async (req, res) => {
+    try {
+      const id = req.body.id;
+      await userHelpers.deleteAccount(id);
+      await Address.findByIdAndDelete(id);
       delete req.session.user;
       res.json({success: true});
-    });
+    } catch (error) {
+      next(error);
+    }
   },
   getCart: (req, res, next)=> {
     cartHelpers.getCart(req.session.user._id).then((products)=> {
@@ -253,27 +267,30 @@ module.exports = {
       res.json({error: err.message});
     });
   },
-  getCheckout: (req, res, next) => {
+  getCheckout: async (req, res, next) => {
     if (req.session.checkOutToken === req.params.token) {
       const user = req.session.user;
-      addressHelpers.getAddress(user._id).then((address)=> {
+      Address.findById(user._id).then((address)=> {
         cartHelpers.getCart(user._id).then((products)=> {
           res.render('users/user-checkout',
               {user, page: 'checkout',
-                address: address[0], products});
+                address: address.addresses[0], products});
         });
       });
     } else {
       res.redirect('/cart');
     }
   },
-  getOneAddress: (req, res)=> {
-    const {address, userId} = req.body;
-    addressHelpers.getOneAddress(address, userId).then((address)=> {
-      res.json(address);
-    }).catch((error)=> {
-      res.json({error: error.message});
-    });
+  getOneAddress: async (req, res, next)=> {
+    try {
+      const {addressId, userId} = req.body;
+      const address = await Address.findById(userId);
+      const spAddress =
+      address.addresses.find((address)=> address._id.toString() === addressId);
+      res.json(spAddress);
+    } catch (error) {
+      next(error);
+    }
   },
   checkout: async (req, res, next) =>{
     try {
@@ -537,19 +554,22 @@ module.exports = {
   },
   getOneEditAddress: async (req, res, next) => {
     try {
-      const address =
-      await addressHelpers.getOneAddress(req.params.id, req.session.user._id);
-      if (address) {
-        return res.json({success: true, address});
+      const id = req.params.id;
+      const address = await Address.findById(req.session.user._id);
+      const spAddress =
+       address.addresses.find((address)=> address._id.toString() === id);
+      if (spAddress) {
+        return res.json({success: true, address: spAddress});
       }
       return res.json({success: false});
     } catch (error) {
       next(error);
     }
   },
-  editAddress: (req, res, next)=> {
+  editAddress: async (req, res, next)=> {
     const {id, ...address} = req.body;
-    addressHelpers.editAddress(id, address).then(()=> {
+    await Address.updateOne({'addresses._id': id},
+        {'addresses.$': address}).then(()=> {
       res.json({success: true});
     }).catch((err)=> {
       next(err);
@@ -632,10 +652,13 @@ module.exports = {
   },
   checkAddress: async (req, res, next)=> {
     try {
-      const result = await addressHelpers.checkAddress(req.session.user._id);
-      if (result) {
-        res.json({success: true});
-      } else res.json({success: false});
+      const address = await Address.findById(req.session.user._id);
+      if (address) {
+        if (address.addresses.length > 0) {
+          return res.json({success: true});
+        }
+      }
+      return res.json({success: false});
     } catch (error) {
       next(error);
     }
