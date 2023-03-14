@@ -47,7 +47,6 @@ router.post('/getUsers', middle.verifyLogin, admin.getUsers);
 router.post('/addCatImage', middle.verifyLogin,
     csrfProtection, middle.checkCsrf,
     uploadOptions.single('file'), admin.addCatImage);
-router.post('/addAdmin', admin.addAdmin);
 router.post('/getCategories', middle.verifyLogin, admin.getCategories);
 router.post('/categoryDetails', middle.verifyLogin, admin.getCategoryDetails);
 router.post('/category/names', middle.verifyLogin, admin.getCategoryNames);
