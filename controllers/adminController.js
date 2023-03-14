@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-const adminHelpers = require('../helpers/adminHelpers');
+const Admin = require('../models/adminModel');
 const productHelpers = require('../helpers/productHelpers');
 const {blockUser, getAllUsers, unblockUser} = require('../helpers/userHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
@@ -76,27 +76,28 @@ module.exports = {
     res.render('admins/admin-login', apis);
   },
 
-  DoLogin: (req, res, next) => {
-    const {email, password} = req.body;
-    adminHelpers.checkEmailExist(email).then(async (admin)=>{
+  DoLogin: async (req, res, next) => {
+    try {
+      const {email, password} = req.body;
+      const admin = await Admin.findOne({email: email});
       if (admin) {
         const result = await bcrypt.compare(password, admin.hashPassword);
         if (result) {
           req.session.admin = admin;
-          sendEmail.sendOtp(email).then((otp)=>{
-            req.session.adminOtp = otp;
-            console.log('admin otp ', otp);
-            res.json({success: true});
-          }).catch((err)=>{
-            res.json({otp: true});
-          });
+          const otp = await sendEmail.sendOtp(email);
+          req.session.adminOtp = otp;
+          console.log('admin otp ', otp);
+          res.json({success: true});
         } else {
           res.json({admin: true});
         }
       } else {
         res.json({success: false});
       }
-    });
+    } catch (error) {
+      // res.json({otp: true});
+      next(error);
+    };
   },
   verifyOtp: (req, res, next)=>{
     if (req.body.otp == req.session.adminOtp) {
@@ -152,10 +153,6 @@ module.exports = {
     } catch (error) {
       next(error);
     }
-  },
-  addAdmin: async (req, res, next)=>{
-    await adminHelpers.addAdmin(req.body);
-    res.json({success: true});
   },
   blockUser: (req, res, next)=>{
     blockUser(req.body.id).then((response)=>{
