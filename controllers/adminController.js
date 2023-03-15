@@ -3,11 +3,11 @@ const Admin = require('../models/adminModel');
 const productHelpers = require('../helpers/productHelpers');
 const {blockUser, getAllUsers, unblockUser} = require('../helpers/userHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
-const bannerHelpers = require('../helpers/bannerHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const sendEmail = require('../services/email-otp');
 const couponHelpers = require('../helpers/couponHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
+const Banner = require('../models/bannerModel');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const bcrypt = require('bcrypt');
 const fs = require('fs');
@@ -119,7 +119,7 @@ module.exports = {
   DoLogout: (req, res, next)=>{
     delete req.session.adminLoggedIn;
     delete req.session.admin;
-    res.redirect('/admin');
+    res.redirect('/');
   },
   getHome: async (req, res, next)=>{
     try {
@@ -463,12 +463,12 @@ module.exports = {
     });
   },
   getBannersPage: async (req, res) => {
-    const banners = await bannerHelpers.getBanners();
+    const banners = await Banner.find();
     res.render('admins/banners.ejs',
         {admin: req.session.admin, banners});
   },
   getEditBannersPage: async (req, res) => {
-    const banner = await bannerHelpers.getBanner(req.params.name);
+    const banner = await Banner.findOne({name: req.params.name});
     res.render('admins/edit-banner', {admin: req.session.admin, banner});
   },
   updateBanners: async (req, res, next)=> {
@@ -477,14 +477,14 @@ module.exports = {
         req.body.image = req.file.filename;
       }
       const {id, ...details} = req.body;
-      await bannerHelpers.updateBanner(id, details);
+      await Banner.findByIdAndUpdate(id, details);
       res.redirect('/admin/banners');
     } catch (error) {
       next(error);
     }
   },
   checkNameExists: async (req, res)=> {
-    const banner = await bannerHelpers.getBanner(req.params.name);
+    const banner = await Banner.findOne({name: req.params.name});
     if (banner) {
       return res.json({exists: true});
     }

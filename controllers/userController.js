@@ -5,8 +5,8 @@ const userHelpers = require('../helpers/userHelpers');
 const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
-const bannerHelpers = require('../helpers/bannerHelpers');
 const wishlistHelpers = require('../helpers/wishlistHelpers');
+const Banner = require('../models/bannerModel');
 const cartHelpers = require('../helpers/cartHelpers');
 const couponHelpers = require('../helpers/couponHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
@@ -23,7 +23,7 @@ const instance = new Razorpay({
 module.exports = {
   getHomePage: async (req, res, next) => {
     const products = await productHelpers.getNewProducts();
-    const banners = await bannerHelpers.getBanners();
+    const banners = await Banner.find();
     res.render('users/user-home',
         {user: req.session.user, page: 'home', products, banners});
   },
