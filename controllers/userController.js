@@ -6,9 +6,9 @@ const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const wishlistHelpers = require('../helpers/wishlistHelpers');
+const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
 const cartHelpers = require('../helpers/cartHelpers');
-const couponHelpers = require('../helpers/couponHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
 const Razorpay = require('razorpay');
 const Address = require('../models/addressModel');
@@ -303,7 +303,8 @@ module.exports = {
         req.session.orderId = orderId;
       }
       if (coupon !== 'No coupon applied') {
-        await couponHelpers.changeStock(coupon, -1);
+        await Coupon.updateOne({couponCode: coupon},
+            {$inc: {usageLimit: -1}});
       }
       const products = await cartHelpers.getCart(req.session.user._id);
       const details = {
@@ -338,7 +339,7 @@ module.exports = {
   addCoupon: async (req, res) => {
     const {coupon, total} = req.body;
     try {
-      const couponData = await couponHelpers.getCoupon(coupon);
+      const couponData = await Coupon.findOne({couponCode: coupon});
       if (!couponData) {
         return res.json({success: false});
       }

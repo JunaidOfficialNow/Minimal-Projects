@@ -5,8 +5,8 @@ const {blockUser, getAllUsers, unblockUser} = require('../helpers/userHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const sendEmail = require('../services/email-otp');
-const couponHelpers = require('../helpers/couponHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
+const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const bcrypt = require('bcrypt');
@@ -426,15 +426,19 @@ module.exports = {
       res.json({success: true});
     }).catch((err)=> res.json({error: err.message}));
   },
-  getCouponsPage: (req, res) => {
-    couponHelpers.getCoupons().then((coupons)=> {
+  getCouponsPage: (req, res, next) => {
+    Coupon.find().then((coupons)=> {
       res.render('admins/admin-coupons', {admin: req.session.admin, coupons});
+    }).catch((error)=> {
+      next(error);
     });
   },
-  createCoupon: (req, res)=> {
+  createCoupon: (req, res, next)=> {
     req.body.lastEditedBy = req.session.admin.firstName;
-    couponHelpers.addCoupon(req.body).then(()=> {
+    Coupon.create(req.body).then(()=> {
       res.json({success: true});
+    }).catch((error)=> {
+      next(error);
     });
   },
   getOrdersPage: async (req, res)=> {
@@ -574,15 +578,20 @@ module.exports = {
   },
   changeCouponStatus: async (req, res, next)=> {
     try {
-      const status = await couponHelpers.changeCouponStatus(req.body.id);
-      res.json({success: true, status});
+      const coupon = await Coupon.findById(req.body.id);
+      if (coupon) {
+        coupon.isActive = !coupon.isActive;
+        const newCoupon = await coupon.save();
+        return res.json({success: true, status: newCoupon.isActive});
+      }
+      new Error('Coupon not found');
     } catch (error) {
       next(error);
     };
   },
   getCoupon: async (req, res, next)=> {
     try {
-      const coupon = await couponHelpers.getCouponById(req.params.id);
+      const coupon = await Coupon.findById(req.params.id);
       res.json({success: true, coupon});
     } catch (error) {
       next(error);
@@ -591,7 +600,7 @@ module.exports = {
   updateCoupons: async (req, res, next)=> {
     try {
       const {id, ...details} = req.body;
-      await couponHelpers.updateCoupons(id, details);
+      await Coupon.findByIdAndUpdate(id, details);
       res.json({success: true});
     } catch (error) {
       next(error);
