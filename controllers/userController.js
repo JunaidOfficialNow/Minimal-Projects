@@ -5,7 +5,8 @@ const userHelpers = require('../helpers/userHelpers');
 const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
-const wishlistHelpers = require('../helpers/wishlistHelpers');
+const Wishlist = require('../models/wishlistModel');
+const Product = require('../models/productModel');
 const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
 const cartHelpers = require('../helpers/cartHelpers');
@@ -622,30 +623,50 @@ module.exports = {
     }
     next(new Error('Invalid token'));
   },
-  getWishlist: async (req, res)=> {
+  getWishlist: async (req, res, next)=> {
     try {
-      const products = await wishlistHelpers.getWishlist(req.session.user._id);
+      const wishlist = await Wishlist.findById(req.session.user._id).populate({
+        path: 'products._id',
+        model: Product,
+      });
       res.render('users/wishlist',
-          {user: req.session.user, page: 'wishlist', products});
+          {user: req.session.user,
+            page: 'wishlist', products: wishlist?.products ?? []});
     } catch (error) {
       next(error);
     }
   },
-  addWishlist: (req, res, next)=> {
-    const {proId, userId} = req.body;
-    wishlistHelpers.addToWishlist(proId, userId).then((result)=> {
-      if (result.product) {
-        res.json({success: true, product: true});
+  addWishlist: async (req, res, next)=> {
+    try {
+      const {proId, userId} = req.body;
+      const wishlist = await Wishlist.findById(userId);
+      if (wishlist) {
+        const result =
+           wishlist.products.some((product) => product._id.equals(proId));
+        if (result) {
+          return res.json({success: true, product: true});
+        } else {
+          wishlist.products.push({_id: proId, quantity: 1});
+          await wishlist.save();
+          return res.json({success: true});
+        }
       } else {
-        res.json({success: true});
+        const newWishlist = new Wishlist({
+          _id: userId,
+          products: [{_id: proId,
+            quantity: 1}],
+        });
+        await newWishlist.save();
+        return res.json({success: true});
       }
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
+    } catch (error) {
+      next(error);
+    }
   },
   removeFromWishlist: (req, res, next) => {
-    wishlistHelpers
-        .removeFromWishlist(req.body.id, req.session.user._id).then(()=> {
+    Wishlist.findByIdAndUpdate(req.session.user._id,
+        {$pull: {products: {_id: req.body.id}}})
+        .then(()=> {
           res.json({success: true});
         }).catch((err)=> {
           next(err);
