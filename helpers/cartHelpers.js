@@ -2,32 +2,6 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 
 module.exports = {
-  addToCart: async (proId, userId)=> {
-    try {
-      const cart = await Cart.findById(userId);
-      if (cart) {
-        const result =
-           cart.products.some((product) => product._id.equals(proId));
-        if (result) {
-          return Promise.resolve({product: true});
-        } else {
-          cart.products.push({_id: proId, quantity: 1});
-          await cart.save();
-          return Promise.resolve({product: false});
-        }
-      } else {
-        const newCart = new Cart({
-          _id: userId,
-          products: [{_id: proId,
-            quantity: 1}],
-        });
-        await newCart.save();
-        return Promise.resolve({product: false});
-      }
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  },
   getCart: async (userId)=> {
     try {
       const cart = await Cart.findById(userId).populate({
