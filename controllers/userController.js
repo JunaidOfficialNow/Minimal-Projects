@@ -6,6 +6,7 @@ const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Wishlist = require('../models/wishlistModel');
+const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
@@ -214,31 +215,56 @@ module.exports = {
       next(error);
     }
   },
-  getCart: (req, res, next)=> {
-    cartHelpers.getCart(req.session.user._id).then((products)=> {
+  getCart: async (req, res, next)=> {
+    try {
+      const cart = await Cart.findById(req.session.user._id).populate({
+        path: 'products._id',
+        model: Product,
+      });
       const token = crypto.randomBytes(8).toString('hex').slice(0, 8);
       req.session.checkOutToken = token;
-      console.log(req.session, 76543);
       res.render('users/user-cart',
-          {user: req.session.user, page: 'cart', products: products, token});
-    }).catch((err)=> {
-      next(err);
-    });
+          {user: req.session.user,
+            page: 'cart', products: cart?.products ?? [], token});
+    } catch (error) {
+      next(error);
+    }
   },
-  addToCart: (req, res)=> {
-    const {proId, userId} = req.body;
-    cartHelpers.addToCart(proId, userId).then((result)=> {
-      if (result.product) {
-        res.json({success: true, product: true});
+  addToCart: async (req, res, next)=> {
+    try {
+      let product;
+      const {proId, userId} = req.body;
+      const cart = await Cart.findById(userId);
+      if (cart) {
+        const result =
+           cart.products.some((product) => product._id.equals(proId));
+        if (result) {
+          product = true;
+        } else {
+          cart.products.push({_id: proId, quantity: 1});
+          await cart.save();
+          product = false;
+        }
+      } else {
+        const newCart = new Cart({
+          _id: userId,
+          products: [{_id: proId,
+            quantity: 1}],
+        });
+        await newCart.save();
+        product = false;
+      }
+      if (product) {
+        return res.json({success: true, product: true});
       } else {
         userHelpers.incCartCount(userId).then(()=> {
           req.session.user.cartCount += 1;
-          res.json({success: true});
+          return res.json({success: true});
         });
       }
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
+    } catch (error) {
+      next(error);
+    }
   },
   removeFromCart: (req, res) => {
     cartHelpers.removeFromCart(req.body.id, req.session.user._id).then(()=> {
@@ -269,17 +295,23 @@ module.exports = {
     });
   },
   getCheckout: async (req, res, next) => {
-    if (req.session.checkOutToken === req.params.token) {
-      const user = req.session.user;
-      Address.findById(user._id).then((address)=> {
-        cartHelpers.getCart(user._id).then((products)=> {
-          res.render('users/user-checkout',
-              {user, page: 'checkout',
-                address: address.addresses[0], products});
+    try {
+      if (req.session.checkOutToken === req.params.token) {
+        const user = req.session.user;
+        const address = await Address.findById(user._id);
+        const cart = await Cart.findById(user._id).populate({
+          path: 'products._id',
+          model: Product,
         });
-      });
-    } else {
-      res.redirect('/cart');
+        res.render('users/user-checkout',
+            {user, page: 'checkout',
+              address: address?.addresses[0],
+              products: cart?.products ?? []});
+      } else {
+        res.redirect('/cart');
+      }
+    } catch (error) {
+      next(error);
     }
   },
   getOneAddress: async (req, res, next)=> {
