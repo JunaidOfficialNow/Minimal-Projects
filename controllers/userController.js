@@ -10,7 +10,6 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
-const cartHelpers = require('../helpers/cartHelpers');
 const orderHelpers = require('../helpers/orderHelpers');
 const Razorpay = require('razorpay');
 const Address = require('../models/addressModel');
@@ -266,33 +265,35 @@ module.exports = {
       next(error);
     }
   },
-  removeFromCart: (req, res) => {
-    cartHelpers.removeFromCart(req.body.id, req.session.user._id).then(()=> {
-      userHelpers.decCartCount(req.session.user._id).then(()=> {
-        req.session.user.cartCount += -1;
-        res.json({success: true});
-      }).catch((err)=> {
-        res.json({error: err.message});
-      });
-    });
-  },
-  incrementQuantity: (req, res) => {
-    cartHelpers.
-        changeQuantity(req.session.user._id, req.body.id, 1)
-        .then(() => res.json({success: true}));
-  },
-  decrementQuantity: (req, res)=> {
-    cartHelpers.
-        changeQuantity(req.session.user._id, req.body.id, -1)
-        .then(() => res.json({success: true}));
-  },
-  changeSize: (req, res)=>{
-    const {id, size} = req.body;
-    cartHelpers.changeSize(id, size, req.session.user._id).then(()=> {
+  removeFromCart: async (req, res, next) => {
+    try {
+      await Cart.findByIdAndUpdate(req.session.user._id,
+          {$pull: {products: {_id: req.body.id}}});
+      await userHelpers.decCartCount(req.session.user._id);
+      req.session.user.cartCount += -1;
       res.json({success: true});
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
+    } catch (error) {
+      next(error);
+    };
+  },
+  incrementQuantity: async (req, res, next) => {
+    await Cart.updateOne(
+        {'_id': req.session.user._id, 'products._id': req.body.id},
+        {$inc: {'products.$.quantity': 1}},
+    ).then(()=> res.json({success: true})).catch((err)=> next(err));
+  },
+  decrementQuantity: async (req, res, next)=> {
+    await Cart.updateOne(
+        {'_id': req.session.user._id, 'products._id': req.body.id},
+        {$inc: {'products.$.quantity': -1}},
+    ).then(()=> res.json({success: true})).catch((err)=> next(err));
+  },
+  changeSize: async (req, res, next)=>{
+    const {id, size} = req.body;
+    await Cart.updateOne(
+        {'_id': req.session.user._id, 'products._id': id},
+        {$set: {'products.$.size': size}},
+    ).then(()=> res.json({success: true})).catch((err)=> next(err));
   },
   getCheckout: async (req, res, next) => {
     try {
@@ -339,7 +340,16 @@ module.exports = {
         await Coupon.updateOne({couponCode: coupon},
             {$inc: {usageLimit: -1}});
       }
-      const products = await cartHelpers.getCart(req.session.user._id);
+      const cart = await Cart.findById(req.session.user._id).populate({
+        path: 'products._id',
+        model: Product,
+      });
+      const products= cart?.products ?? [];
+      // clearing cart items
+      if (cart) {
+        cart.products = [];
+        await cart.save();
+      }
       const details = {
         orderId: req.session.orderId,
         userId: req.session.user._id,
@@ -350,10 +360,10 @@ module.exports = {
         discount,
         coupon,
         products: products.map((item) => ({
-          product: item._id._id,
-          quantity: item.quantity,
-          size: item.size,
-          price: Number(item._id.price),
+          product: item?._id?._id,
+          quantity: item?.quantity,
+          size: item?.size,
+          price: Number(item?._id?.price),
         })),
       };
       details.products.forEach(async (item)=> {
@@ -361,7 +371,6 @@ module.exports = {
         await productHelpers.changeStock(product, -(Number(quantity)), size);
       });
       await orderHelpers.createOrder(details);
-      await cartHelpers.clearCart(req.session.user._id);
       await userHelpers.changeCartCount(req.session.user._id);
       req.session.user.cartCount = 0;
       res.redirect(`/order/success/${req.session.orderId}`);
@@ -400,11 +409,15 @@ module.exports = {
       }
       const discount =
        Math.min(Number(total) * (discountPercentage / 100), offerUpto);
-      await cartHelpers.addCoupon(couponCode, discount, req.session.user._id);
+      const cart = await Cart.findById(req.session.user._id);
+      if (cart) {
+        cart.coupon = couponCode;
+        cart.discount = discount;
+        await cart.save();
+      }
       return res.json({success: true, discount, couponCode});
     } catch (err) {
-      console.error(err);
-      return res.json({success: false});
+      next(err);
     }
   },
   createPaymentOnline: (req, res)=> {
@@ -458,21 +471,29 @@ module.exports = {
     }
   },
   verifyStock: async (req, res, next) => {
-    const products = await cartHelpers.getCart(req.session.user._id);
-    const results = await Promise.all(products.map(async (product) => {
-      const stock =
-       await productHelpers.getStock(product._id._id, product.size);
-      if (Number(stock) < Number(product.quantity)) {
-        return product._id.name;
+    try {
+      const cart = await Cart.findById(req.session.user._id).populate({
+        path: 'products._id',
+        model: Product,
+      });
+      const products = cart?.products ?? [];
+      const results = await Promise.all(products.map(async (product) => {
+        const stock =
+        await productHelpers.getStock(product._id._id, product.size);
+        if (Number(stock) < Number(product.quantity)) {
+          return product._id.name;
+        } else {
+          return null;
+        }
+      }));
+      const insufficientProducts = results.filter((result) => result !== null);
+      if (insufficientProducts.length > 0) {
+        return res.json({success: false, products: insufficientProducts});
       } else {
-        return null;
+        return res.json({success: true});
       }
-    }));
-    const insufficientProducts = results.filter((result) => result !== null);
-    if (insufficientProducts.length > 0) {
-      return res.json({success: false, products: insufficientProducts});
-    } else {
-      return res.json({success: true});
+    } catch (error) {
+      next(error);
     }
   },
   getOrderPage: async (req, res)=> {
