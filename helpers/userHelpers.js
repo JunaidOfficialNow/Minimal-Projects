@@ -1,22 +1,6 @@
 const User = require('../models/userModel');
 
 module.exports = {
-  addUser: (userDetails)=>{
-    return new Promise((resolve, reject)=>{
-      User.create(userDetails).then((doc)=>{
-        resolve(doc);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  checkEmailExist: (email)=>{
-    return new Promise((resolve, reject)=>{
-      User.findOne({email: email}).then((user) =>{
-        resolve(user);
-      });
-    });
-  },
   blockUser: (id) => {
     return new Promise((resolve, reject)=>{
       User.findByIdAndUpdate(id, {isBlocked: true}).then((response)=>{

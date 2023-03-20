@@ -35,25 +35,24 @@ module.exports = {
     delete req.session.signin;
     res.render('users/user-login', {reset, signin});
   },
-  handleEmail: (req, res)=>{
-    const email = req.body.email;
-    userHelpers.checkEmailExist(email).then((user)=>{
+  handleEmail: async (req, res, next)=>{
+    try {
+      const email = req.body.email;
+      const user = await User.findOne({email: email});
       if (user) {
         res.json({user: true});
       } else {
-        sendEmail.sendOtp(email).then((otp)=>{
-          console.log(otp);
-          req.session.userDetails = {
-            email: email,
-            otp: otp,
-          };
-          res.json({success: true});
-        }).catch((err)=>{
-          console.log(err);
-          res.json({success: false});
-        });
+        const otp = await sendEmail.sendOtp(email);
+        console.log(otp);
+        req.session.userDetails = {
+          email: email,
+          otp: otp,
+        };
+        res.json({success: true});
       };
-    });
+    } catch (error) {
+      next(error);
+    }
   },
   handleOtp: (req, res)=>{
     if (req.body.otp == req.session.userDetails.otp) {
@@ -73,17 +72,17 @@ module.exports = {
     res.json({});
   },
   handlePassword: async (req, res, next)=>{
-    const pass = await bcrypt.hash(req.body.password, 10);
-    const userDetails = req.session.userDetails;
-    userDetails.hashPassword = pass;
-    userHelpers.addUser(userDetails).then((user)=>{
+    try {
+      const pass = await bcrypt.hash(req.body.password, 10);
+      const userDetails = req.session.userDetails;
+      userDetails.hashPassword = pass;
+      const user = await User.create(userDetails);
       delete req.session.userDetails;
       req.session.user = user;
       res.json({success: true});
-    }).catch((err)=>{
-      console.log(err);
-      res.json({success: false});
-    });
+    } catch (error) {
+      next(error);
+    };
   },
   handleResendOtp: (req, res, next)=>{
     sendEmail.resendOtp(req.session.userDetails.email).then((otp)=>{
@@ -94,9 +93,10 @@ module.exports = {
       res.json({success: false});
     });
   },
-  DoLogin: (req, res, next)=>{
-    const {email, password} = req.body;
-    userHelpers.checkEmailExist(email).then(async (user)=>{
+  DoLogin: async (req, res, next)=>{
+    try {
+      const {email, password} = req.body;
+      const user = await User.findOne({email: email});
       if (user) {
         if (user.isBlocked) {
           res.json({blocked: true});
@@ -112,7 +112,9 @@ module.exports = {
       } else {
         res.json({success: false});
       }
-    });
+    } catch (error) {
+      next(error);
+    }
   },
   DoLogout: (req, res, next)=>{
     req.session.destroy();
@@ -600,12 +602,14 @@ module.exports = {
       next(error);
     }
   },
-  checkEmail: async (req, res)=> {
-    const email = await userHelpers.checkEmailExist(req.query.email);
-    if (email) {
-      return res.json({success: false});
-    }
-    return res.json({success: true});
+  checkEmail: async (req, res, next)=> {
+    User.findOne({email: req.query.email})
+        .then((email)=> {
+          if (email) {
+            return res.json({success: false});
+          }
+          return res.json({success: true});
+        }).catch((error)=> next(error));
   },
   getOneEditAddress: async (req, res, next) => {
     try {
@@ -632,7 +636,7 @@ module.exports = {
   },
   forgotPassword: async (req, res, next)=> {
     try {
-      const user = await userHelpers.checkEmailExist(req.body.email);
+      const user = await User.findOne({email: req.body.email});
       if (!user) {
         return res.json({success: false, user: true});
       }
@@ -641,7 +645,6 @@ module.exports = {
       await userHelpers.saveToken(req.body.email, token);
       res.json({success: true});
     } catch (error) {
-      console.log(error);
       next(error);
     };
   },
