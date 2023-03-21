@@ -1,13 +1,13 @@
 /* eslint-disable require-jsdoc */
 const Admin = require('../models/adminModel');
 const productHelpers = require('../helpers/productHelpers');
-const {blockUser, getAllUsers, unblockUser} = require('../helpers/userHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const sendEmail = require('../services/email-otp');
 const orderHelpers = require('../helpers/orderHelpers');
 const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
+const User = require('../models/userModel');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const bcrypt = require('bcrypt');
 const fs = require('fs');
@@ -154,29 +154,27 @@ module.exports = {
       next(error);
     }
   },
-  blockUser: (req, res, next)=>{
-    blockUser(req.body.id).then((response)=>{
+  blockUser: async (req, res, next)=>{
+    User.findByIdAndUpdate(req.body.id, {isBlocked: true}).then((resolve)=> {
       if (response) {
         res.json({success: true});
       } else {
         res.json({succcess: false});
       }
-    }).catch((err)=>{
-      res.json({error: err.message});
-    });
+    }).catch((error)=> next(error));
   },
   unblockUser: (req, res, next)=>{
-    unblockUser(req.body.id).then((response)=>{
+    User.findByIdAndUpdate(req.body.id, {isBlocked: false}).then((response)=>{
       res.json({success: true});
     }).catch((err)=>{
-      res.json({succcess: false});
+      next(err);
     });
   },
   getUsers: (req, res, next)=>{
-    getAllUsers().then((users)=>{
+    User.find().then((users)=>{
       res.json(users);
     }).catch((err)=>{
-      res.json({succcess: false});
+      next(err);
     });
   },
   getCsrf: (req, res, next)=>{
