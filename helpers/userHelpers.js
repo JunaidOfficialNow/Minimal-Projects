@@ -1,33 +1,6 @@
 const User = require('../models/userModel');
 
 module.exports = {
-  blockUser: (id) => {
-    return new Promise((resolve, reject)=>{
-      User.findByIdAndUpdate(id, {isBlocked: true}).then((response)=>{
-        resolve(response);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  unblockUser: (id) => {
-    return new Promise((resolve, reject)=>{
-      User.findByIdAndUpdate(id, {isBlocked: false}).then((response)=>{
-        resolve(response);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  getAllUsers: ()=>{
-    return new Promise((resolve, reject)=>{
-      User.find().then((users)=>{
-        resolve(users);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
   checkBlocked: (email)=>{
     return new Promise((resolve, reject)=>{
       User.findOne({email: email}).then((doc)=>{
