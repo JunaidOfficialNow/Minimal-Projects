@@ -31,9 +31,11 @@ module.exports = {
   getLoginPage: (req, res)=>{
     const reset = req.session.passwordReset;
     const signin = req.session.signin;
+    const messages = req.session.userMessage;
+    delete req.session.userMessage;
     delete req.session.passwordReset;
     delete req.session.signin;
-    res.render('users/user-login', {reset, signin});
+    res.render('users/user-login', {reset, signin, messages});
   },
   handleEmail: async (req, res, next)=>{
     try {

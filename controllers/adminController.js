@@ -155,7 +155,7 @@ module.exports = {
     }
   },
   blockUser: async (req, res, next)=>{
-    User.findByIdAndUpdate(req.body.id, {isBlocked: true}).then((resolve)=> {
+    User.findByIdAndUpdate(req.body.id, {isBlocked: true}).then((response)=> {
       if (response) {
         res.json({success: true});
       } else {

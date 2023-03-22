@@ -3,12 +3,12 @@ const express = require('express');
 const router = express.Router();
 const user = require('../controllers/userController');
 const {ProfileUpload} = require('../services/multer');
-const {checkLogin, verifyLogin, checkAdminLoggedIn, checkBlocked} =
+const {checkLogin, verifyLogin, checkAdminLoggedIn} =
  require('../middlewares/userMiddlewares');
 
 
 // get requests
-router.get('/', checkBlocked, checkAdminLoggedIn, user.getHomePage);
+router.get('/', checkAdminLoggedIn, user.getHomePage);
 router.get('/login', checkAdminLoggedIn, checkLogin, user.getLoginPage);
 router.get('/logout', verifyLogin, user.DoLogout);
 router.get('/shop', user.getShopPage);
