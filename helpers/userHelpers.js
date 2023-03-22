@@ -1,21 +1,6 @@
 const User = require('../models/userModel');
 
 module.exports = {
-  checkBlocked: (email)=>{
-    return new Promise((resolve, reject)=>{
-      User.findOne({email: email}).then((doc)=>{
-        if (doc) {
-          if (doc.isBlocked) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        } else {
-          resolve(false);
-        }
-      });
-    });
-  },
   changeAddressStatus: async (id) => {
     return User.findByIdAndUpdate(id, {isAddressAdded: true}).then(()=> {
       return Promise.resolve();
