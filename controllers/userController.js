@@ -644,14 +644,15 @@ module.exports = {
       }
       const token = crypto.randomBytes(20).toString('hex');
       await sendEmail.sendUrl(req.body.email, token);
-      await userHelpers.saveToken(req.body.email, token);
+      user.token = token;
+      await user.save();
       res.json({success: true});
     } catch (error) {
       next(error);
     };
   },
   getResetPassword: async (req, res, next)=> {
-    const user = await userHelpers.checkToken(req.params.token);
+    const user = await User.findOne({token: req.params.token});
     if (user) {
       req.session.resetToken = req.params.token;
       return res.render('users/reset-password');
@@ -659,18 +660,19 @@ module.exports = {
     next(new Error('Invalid token'));
   },
   ResetPassword: async (req, res, next)=> {
-    const user = await userHelpers.checkToken(req.session.resetToken);
+    const user = await User.findOne({token: req.session.resetToken});
     if (user) {
       const password = await bcrypt.hash(req.body.password, 10);
-      await userHelpers.resetPassword(req.session.resetToken, password);
+      const update = {hashPassword: password, $unset: {token: 1}};
+      await User.updateOne({token: req.session.resetToken}, update);
       delete req.session.resetToken;
       req.session.passwordReset = true;
-      res.redirect('/login');
+      return res.redirect('/login');
     }
     next(new Error('Invalid token'));
   },
   checkPasswordExists: async (req, res, next)=> {
-    const user = await userHelpers.checkToken(req.session.resetToken);
+    const user = await User.findOne({token: req.session.resetToken});
     if (user) {
       const result = await bcrypt
           .compare(req.params.password, user.hashPassword);
