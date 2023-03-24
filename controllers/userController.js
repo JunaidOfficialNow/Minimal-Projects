@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const sendEmail = require('../services/email-otp');
-const userHelpers = require('../helpers/userHelpers');
 const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
@@ -195,14 +194,18 @@ module.exports = {
       next(err);
     }
   },
-  addImage: (req, res)=> {
-    userHelpers
-        .addProfileImage(req.files[0].filename, req.session.user._id)
-        .then(()=> {
-          req.session.user.profilePicture = req.files[0].filename;
-          req.session.user.isProfilePictureAdded = true;
-          res.json({success: true});
-        });
+  addImage: async (req, res, next)=> {
+    try {
+      const doc = await User.findById(req.session.user._id);
+      doc.profilePicture = req.files[0].filename;
+      doc.isProfilePictureAdded = true;
+      await doc.save();
+      req.session.user.profilePicture = req.files[0].filename;
+      req.session.user.isProfilePictureAdded = true;
+      res.json({success: true});
+    } catch (error) {
+      next(error);
+    }
   },
   GetImage: (req, res) => {
     res.sendFile(`../profiles/${req.params.image}`, {root: __dirname});
@@ -210,7 +213,7 @@ module.exports = {
   deleteAccount: async (req, res) => {
     try {
       const id = req.body.id;
-      await userHelpers.deleteAccount(id);
+      await User.findByIdAndDelete(id);
       await Address.findByIdAndDelete(id);
       delete req.session.user;
       res.json({success: true});
@@ -260,10 +263,9 @@ module.exports = {
       if (product) {
         return res.json({success: true, product: true});
       } else {
-        userHelpers.incCartCount(userId).then(()=> {
-          req.session.user.cartCount += 1;
-          return res.json({success: true});
-        });
+        await User.findByIdAndUpdate(userId, {$inc: {cartCount: 1}});
+        req.session.user.cartCount += 1;
+        return res.json({success: true});
       }
     } catch (error) {
       next(error);
@@ -273,7 +275,8 @@ module.exports = {
     try {
       await Cart.findByIdAndUpdate(req.session.user._id,
           {$pull: {products: {_id: req.body.id}}});
-      await userHelpers.decCartCount(req.session.user._id);
+      await User.findByIdAndUpdate(req.session.user._id,
+          {$inc: {cartCount: -1}});
       req.session.user.cartCount += -1;
       res.json({success: true});
     } catch (error) {
@@ -375,7 +378,8 @@ module.exports = {
         await productHelpers.changeStock(product, -(Number(quantity)), size);
       });
       await orderHelpers.createOrder(details);
-      await userHelpers.changeCartCount(req.session.user._id);
+      await User.findByIdAndUpdate(req.session.user._id,
+          {$set: {cartCount: 0}});
       req.session.user.cartCount = 0;
       res.redirect(`/order/success/${req.session.orderId}`);
     } catch (error) {
@@ -594,7 +598,7 @@ module.exports = {
   editProfile: async (req, res, next) => {
     try {
       const {email, phoneNo, firstName, lastName} = req.body;
-      await userHelpers.editProfile(req.session.user._id, req.body);
+      await User.findByIdAndUpdate(req.session.user._id, req.body);
       req.session.user.email = email;
       req.session.user.phoneNo = phoneNo;
       req.session.user.firstName = firstName;
