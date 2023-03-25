@@ -2,6 +2,7 @@
 const Admin = require('../models/adminModel');
 const productHelpers = require('../helpers/productHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
+const Product = require('../models/productModel');
 const designHelpers = require('../helpers/designHelpers');
 const sendEmail = require('../services/email-otp');
 const orderHelpers = require('../helpers/orderHelpers');
@@ -372,12 +373,11 @@ module.exports = {
       } else res.json({success: true});
     });
   },
-  getProductsPage: (req, res) => {
-    productHelpers.getProducts().then((products)=> {
+  getProductsPage: (req, res, next) => {
+    Product.find().then((products)=> {
       res.render('admins/admin-products', {admin: req.session.admin,
         products: products});
-    }).catch((err)=> {
-    });
+    }).catch((err)=> next(err));
   },
   getDesignCodes: (req, res) => {
     designHelpers.getDesignCodes().then((doc)=> {
@@ -398,31 +398,35 @@ module.exports = {
       res.render('admins/admin-add-product', {name: name, doc});
     });
   },
-  addProductAll: (req, res)=> {
-    const {name, designCode, gender, sizes, exactColor, broadColor, price,
-      stock, category} = req.body;
-    const newSizes = sizes.map((size)=> {
-      return {size: size,
-        stock: req.body[`stockOf${size}`],
+  addProductAll: async (req, res, next)=> {
+    try {
+      const {name, designCode, gender, sizes, exactColor, broadColor, price,
+        stock, category} = req.body;
+      const newSizes = sizes.map((size)=> {
+        return {size: size,
+          stock: req.body[`stockOf${size}`],
+        };
+      });
+      const imageArray = Object.values(req.files).map((file) => file.filename);
+      const details = {
+        name: name,
+        designCode: designCode,
+        gender: gender,
+        sizes: newSizes,
+        exactColor: exactColor,
+        broadColor: broadColor,
+        stock: stock,
+        category: category,
+        price: price,
+        images: imageArray,
+        lastEditedBy: req.session.admin.firstName,
       };
-    });
-    const imageArray = Object.values(req.files).map((file) => file.filename);
-    const details = {
-      name: name,
-      designCode: designCode,
-      gender: gender,
-      sizes: newSizes,
-      exactColor: exactColor,
-      broadColor: broadColor,
-      stock: stock,
-      category: category,
-      price: price,
-      images: imageArray,
-      lastEditedBy: req.session.admin.firstName,
-    };
-    productHelpers.addProduct(details).then((doc)=>{
+      const product = new Product(details);
+      await product.save();
       res.json({success: true});
-    }).catch((err)=> res.json({error: err.message}));
+    } catch (error) {
+      next(error);
+    }
   },
   getCouponsPage: (req, res, next) => {
     Coupon.find().then((coupons)=> {
