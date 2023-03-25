@@ -121,19 +121,20 @@ module.exports = {
     req.session.destroy();
     res.redirect('/');
   },
-  getShopPage: async (req, res)=> {
-    const categoryNames = await categoryHelpers.getCategoryNames();
-    const colors = await designHelpers.getColors();
-    const sizes = await designHelpers.getSizes();
-    productHelpers.getProductsCount().then((count)=> {
-      productHelpers.getLimitedProducts(req.query.page).then((products)=>{
-        res.render('users/user-product', {user: req.session.user,
-          products, count: count, page: 'shop',
-          categoryNames, colors: colors.slice(0, 10), sizes});
-      }).catch((error)=>{
-        console.error(error);
-      });
-    });
+  getShopPage: async (req, res, next)=> {
+    try {
+      const categoryNames = await categoryHelpers.getCategoryNames();
+      const colors = await designHelpers.getColors();
+      const sizes = await designHelpers.getSizes();
+      const count = await Product.count();
+      const products =
+      await Product.find().limit(9).skip((req.query.page-1)*9);
+      res.render('users/user-product', {user: req.session.user,
+        products, count: count, page: 'shop',
+        categoryNames, colors: colors.slice(0, 10), sizes});
+    } catch (error) {
+      next(error);
+    }
   },
   GetProductPage: async (req, res, next)=> {
     try {

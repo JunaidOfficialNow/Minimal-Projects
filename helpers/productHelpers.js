@@ -1,43 +1,6 @@
 const Product = require('../models/productModel');
 const mongoose = require('mongoose');
 module.exports = {
-  addProduct: (productDetails) => {
-    return new Promise( (resolve, reject)=>{
-      const product = new Product(productDetails);
-      product.save().then((doc)=>{
-        resolve(doc);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  getProducts: () => {
-    return new Promise( (resolve, reject)=>{
-      Product.find().then((docs)=>{
-        resolve(docs);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  getLimitedProducts: (page) => {
-    return new Promise((resolve, reject) => {
-      Product.find().limit(9).skip((page-1)*9).then((docs)=>{
-        resolve(docs);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  getProductsCount: ()=> {
-    return new Promise((resolve, reject) => {
-      Product.count().then((count)=>{
-        resolve(count);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
   getProductDetails: async (id)=> {
     try {
       // eslint-disable-next-line new-cap
