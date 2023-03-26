@@ -1,21 +1,6 @@
 const Product = require('../models/productModel');
 
 module.exports = {
-  changeStock: async (product, value, size) => {
-    const filter = {_id: product};
-    const update = {$inc: {'stock': value, 'sizes.$[elem].stock': value}};
-    const options = {arrayFilters: [{'elem.size': size}]};
-    await Product.updateOne( filter, update, options);
-  },
-  getStock: async (proId, proSize) => {
-    const product = await Product.findById(proId);
-    if (product) {
-      const matchingSize = product.sizes.find((size) => size.size === proSize);
-      if (matchingSize) {
-        return matchingSize.stock;
-      }
-    }
-  },
   getNewProducts: async () => {
     return await Product.find().sort({createdAt: -1}).limit(8);
   },

@@ -498,8 +498,15 @@ module.exports = {
       });
       const products = cart?.products ?? [];
       const results = await Promise.all(products.map(async (product) => {
-        const stock =
-        await productHelpers.getStock(product._id._id, product.size);
+        const productEach = await Product.findById(product._id._id);
+        let stock = 0;
+        if (productEach) {
+          const matchingSize =
+          productEach.sizes.find((size) => size.size === product.size);
+          if (matchingSize) {
+            stock = matchingSize.stock;
+          }
+        }
         if (Number(stock) < Number(product.quantity)) {
           return product._id.name;
         } else {
