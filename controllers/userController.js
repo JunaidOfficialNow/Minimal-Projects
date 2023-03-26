@@ -5,6 +5,7 @@ const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Wishlist = require('../models/wishlistModel');
+const mongoose = require('mongoose');
 const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const Coupon = require('../models/couponModel');
@@ -138,7 +139,13 @@ module.exports = {
   },
   GetProductPage: async (req, res, next)=> {
     try {
-      const product = await productHelpers.getProductDetails(req.params.id);
+      const id = req.params.id;
+      let product;
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        product = await Product.findById(id);
+      } else {
+        throw new Error('Tried to change the id value , huh?');
+      };
       const colors= await designHelpers.getDesignColors(product.designCode);
       const categoryRelatedProducts =
          await productHelpers.getCategoryRelatedProducts(product.category);
@@ -376,7 +383,11 @@ module.exports = {
       };
       details.products.forEach(async (item)=> {
         const {product, quantity, size} = item;
-        await productHelpers.changeStock(product, -(Number(quantity)), size);
+        const filter = {_id: product};
+        const update = {$inc: {'stock': -(Number(quantity)),
+          'sizes.$[elem].stock': -(Number(quantity))}};
+        const options = {arrayFilters: [{'elem.size': size}]};
+        await Product.updateOne( filter, update, options);
       });
       await orderHelpers.createOrder(details);
       await User.findByIdAndUpdate(req.session.user._id,
@@ -487,8 +498,15 @@ module.exports = {
       });
       const products = cart?.products ?? [];
       const results = await Promise.all(products.map(async (product) => {
-        const stock =
-        await productHelpers.getStock(product._id._id, product.size);
+        const productEach = await Product.findById(product._id._id);
+        let stock = 0;
+        if (productEach) {
+          const matchingSize =
+          productEach.sizes.find((size) => size.size === product.size);
+          if (matchingSize) {
+            stock = matchingSize.stock;
+          }
+        }
         if (Number(stock) < Number(product.quantity)) {
           return product._id.name;
         } else {
@@ -517,12 +535,16 @@ module.exports = {
     }
     return res.json({success: false});
   },
-  changeStatusOrder: (req, res)=> {
+  changeStatusOrder: async (req, res, next)=> {
     const {id, status, products} = req.body;
     if (status === 'Cancelled') {
-      products.forEach((product)=>{
+      products.forEach(async (product)=>{
         // eslint-disable-next-line max-len
-        productHelpers.changeStock(product.product._id, Number(product.quantity), product.size);
+        const filter = {_id: product.product._id};
+        const update = {$inc: {'stock': Number(product.quantity),
+          'sizes.$[elem].stock': Number(product.quantity)}};
+        const options = {arrayFilters: [{'elem.size': product.size}]};
+        await Product.updateOne( filter, update, options);
       });
     }
     orderHelpers.changeOrderStatus(id, status).then(()=> {
