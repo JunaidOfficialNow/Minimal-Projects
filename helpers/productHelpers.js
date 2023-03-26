@@ -1,19 +1,6 @@
 const Product = require('../models/productModel');
-const mongoose = require('mongoose');
+
 module.exports = {
-  getProductDetails: async (id)=> {
-    try {
-      // eslint-disable-next-line new-cap
-      if (mongoose.Types.ObjectId.isValid(id)) {
-        const doc = await Product.findById(id);
-        return Promise.resolve(doc);
-      } else {
-        throw new Error('Tried to change the id value , huh?');
-      };
-    } catch (error) {
-      return Promise.reject(error);
-    };
-  },
   changeStock: async (product, value, size) => {
     const filter = {_id: product};
     const update = {$inc: {'stock': value, 'sizes.$[elem].stock': value}};
