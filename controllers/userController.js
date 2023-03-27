@@ -23,7 +23,7 @@ const instance = new Razorpay({
 
 module.exports = {
   getHomePage: async (req, res, next) => {
-    const products = await productHelpers.getNewProducts();
+    const products = await Product.find().sort({createdAt: -1}).limit(8);
     const banners = await Banner.find();
     res.render('users/user-home',
         {user: req.session.user, page: 'home', products, banners});
@@ -568,17 +568,21 @@ module.exports = {
     if (size.trim().length > 0 && size.trim() != 'ALL') {
       details.sizes = {$elemMatch: {size: size.trim()}};
     }
-    const products = await productHelpers.filterProducts(details);
+    const products = await Product.find(details);
     res.json({success: true, products, user: req.session?.user?._id});
   },
   getSearchResults: async (req, res) => {
     const {type, value} = req.params;
     if (type === 'category') {
-      const categories = await productHelpers.getCategoryNames(value);
+      const categories =
+       await Product.find({category: {$regex: new RegExp(value, 'i')}})
+           .distinct('category');
       return res.json({success: true, categories});
     }
     if (type === 'products') {
-      const products = await productHelpers.getProductsNames(value);
+      const products =
+       await Product.find({name: {$regex: new RegExp(value, 'i')}})
+           .distinct('name');
       return res.json({success: true, products: products.slice(0, 5)});
     }
     if (type === 'colors') {
