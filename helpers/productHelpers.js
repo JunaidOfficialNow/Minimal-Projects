@@ -1,24 +1,6 @@
 const Product = require('../models/productModel');
 
 module.exports = {
-  getNewProducts: async () => {
-    return await Product.find().sort({createdAt: -1}).limit(8);
-  },
-  filterProducts: async (details) => {
-    try {
-      return await Product.find(details);
-    } catch (error) {
-      return error;
-    }
-  },
-  getCategoryNames: async (value) => {
-    return await Product.find({category: {$regex: new RegExp(value, 'i')}})
-        .distinct('category');
-  },
-  getProductsNames: async (value) => {
-    return await Product.find({name: {$regex: new RegExp(value, 'i')}})
-        .distinct('name');
-  },
   getColorsNames: async (value) => {
     const exactColors =
          await Product.find({exactColor: {$regex: new RegExp(value, 'i')}})
