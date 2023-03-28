@@ -1,47 +1,6 @@
 const Product = require('../models/productModel');
 
 module.exports = {
-  getColorsNames: async (value) => {
-    const exactColors =
-         await Product.find({exactColor: {$regex: new RegExp(value, 'i')}})
-             .distinct('exactColor');
-
-    const broadColors =
-  await Product.find({broadColor: {$regex: new RegExp(value, 'i')}})
-      .distinct('broadColor');
-
-    return [...new Set([...exactColors, ...broadColors])];
-  },
-  getGendersNames: async (value)=> {
-    return await Product.find({gender: {$regex: new RegExp(value, 'i')}})
-        .distinct('gender');
-  },
-  getCategoryProducts: async (value, page) => {
-    return await Product.find({category: value}).skip((page -1)* 9).limit(9);
-  },
-  getProductsProducts: async (value, page)=> {
-    return await Product.find({name: value}).skip((page -1)* 9).limit(9);
-  },
-  getColorsProducts: async (value, page)=> {
-    return await Product.find({$or: [{exactColor: value},
-      {broadColor: value}]}).skip((page -1)* 9).limit(9);
-  },
-  getGendersProducts: async (value, page) => {
-    return await Product.find({gender: value}).skip((page -1)* 9).limit(9);
-  },
-  getProductsProductsCount: async (value)=> {
-    return await Product.find({name: value}).count();
-  },
-  getCategoryProductsCount: async (value)=> {
-    return await Product.find({category: value}).count();
-  },
-  getColorsProductsCount: async (value)=> {
-    return await Product.find({$or: [{exactColor: value},
-      {broadColor: value}]}).count();
-  },
-  getGendersProductsCount: async (value)=> {
-    return await Product.find({gender: value}).count();
-  },
   changeProductCODStatus: async (id) => {
     const product = await Product.findById(id);
     if (product) {

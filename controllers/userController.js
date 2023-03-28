@@ -586,11 +586,19 @@ module.exports = {
       return res.json({success: true, products: products.slice(0, 5)});
     }
     if (type === 'colors') {
-      const colors = await productHelpers.getColorsNames(value);
+      const exactColors =
+      await Product.find({exactColor: {$regex: new RegExp(value, 'i')}})
+          .distinct('exactColor');
+      const broadColors =
+    await Product.find({broadColor: {$regex: new RegExp(value, 'i')}})
+        .distinct('broadColor');
+      const colors = [...new Set([...exactColors, ...broadColors])];
       return res.json({success: true, colors});
     }
     if (type === 'genders') {
-      const genders = await productHelpers.getGendersNames(value);
+      const genders = await Product.find({gender:
+          {$regex: new RegExp(value, 'i')}})
+          .distinct('gender');
       return res.json({success: true, genders});
     }
     res.json({success: true});
@@ -601,17 +609,21 @@ module.exports = {
     let products;
     let count;
     if (type === 'products') {
-      products = await productHelpers.getProductsProducts(value, page);
-      count = await productHelpers.getProductsProductsCount(value);
+      products = await Product.find({name: value}).skip((page -1)* 9).limit(9);
+      count = await Product.find({name: value}).count();
     } else if (type === 'category') {
-      products = await productHelpers.getCategoryProducts(value, page);
-      count = await productHelpers.getCategoryProductsCount(value);
+      products = await Product.find({category: value})
+          .skip((page -1)* 9).limit(9);
+      count = await Product.find({category: value}).count();
     } else if (type === 'colors') {
-      products = await productHelpers.getColorsProducts(value, page);
-      count = await productHelpers.getColorsProductsCount(value);
+      products = await Product.find({$or: [{exactColor: value},
+        {broadColor: value}]}).skip((page -1)* 9).limit(9);
+      count = await Product.find({$or: [{exactColor: value},
+        {broadColor: value}]}).count();
     } else if (type === 'genders') {
-      products = await productHelpers.getGendersProducts(value, page);
-      count = await productHelpers.getGendersProductsCount(value);
+      products = await Product.find({gender: value})
+          .skip((page -1)* 9).limit(9);
+      count = await Product.find({gender: value}).count();
     };
     const categoryNames = await categoryHelpers.getCategoryNames();
     const colors = await designHelpers.getColors();
