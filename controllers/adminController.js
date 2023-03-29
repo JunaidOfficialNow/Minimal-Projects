@@ -1,6 +1,5 @@
 /* eslint-disable require-jsdoc */
 const Admin = require('../models/adminModel');
-const productHelpers = require('../helpers/productHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Product = require('../models/productModel');
 const designHelpers = require('../helpers/designHelpers');
@@ -521,7 +520,7 @@ module.exports = {
     };
   },
   getEditProductPage: (req, res, next)=> {
-    productHelpers.getProductDetails(req.params.id).then((product)=> {
+    Product.findById(req.params.id).then((product)=> {
       res.render('admins/edit-product', {product});
     }).catch((error)=> next(error));
   },
