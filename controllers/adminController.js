@@ -1,6 +1,5 @@
 /* eslint-disable require-jsdoc */
 const Admin = require('../models/adminModel');
-const productHelpers = require('../helpers/productHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Product = require('../models/productModel');
 const designHelpers = require('../helpers/designHelpers');
@@ -498,46 +497,64 @@ module.exports = {
   },
   changeProductCODStatus: async (req, res, next)=> {
     try {
-      const status = await productHelpers.changeProductCODStatus(req.body.id);
-      res.json({success: true, status});
+      const product = await Product.findById(req.body.id);
+      if (product) {
+        product.isCodAvailable = !product.isCodAvailable;
+        const newProduct = await product.save();
+        res.json({success: true, status: newProduct.isCodAvailable});
+      } else {
+        throw new Error('Couldn\'t find product');
+      }
     } catch (error) {
       next(error);
     }
   },
-  changeProductActiveStatus: (req, res, next)=> {
-    productHelpers.changeProductActiveStatus(req.body.id)
-        .then((status)=> res.json({success: true, status}))
-        .catch((error)=> next(error));
+  changeProductActiveStatus: async (req, res, next)=> {
+    try {
+      const product = await Product.findById(req.body.id);
+      product.isActive = !product.isActive;
+      const newProduct = await product.save();
+      res.json({success: true, status: newProduct.isActive});
+    } catch (error) {
+      next(error);
+    };
   },
   getEditProductPage: (req, res, next)=> {
-    productHelpers.getProductDetails(req.params.id).then((product)=> {
+    Product.findById(req.params.id).then((product)=> {
       res.render('admins/edit-product', {product});
     }).catch((error)=> next(error));
   },
-  updateProduct: (req, res, next)=> {
-    const {name, id, designCode, gender, sizes, exactColor, broadColor, price,
-      stock, category} = req.body;
-    const newSizes = sizes.map((size)=> {
-      return {size: size,
-        stock: req.body[`stockOf${size}`],
+  updateProduct: async (req, res, next)=> {
+    try {
+      const {name, id, designCode, gender, sizes, exactColor, broadColor, price,
+        stock, category} = req.body;
+      const newSizes = sizes.map((size)=> {
+        return {size: size,
+          stock: req.body[`stockOf${size}`],
+        };
+      });
+      const imageArray = Object.values(req.files).map((file) => file.filename);
+      const details = {
+        name: name,
+        designCode: designCode,
+        gender: gender,
+        sizes: newSizes,
+        exactColor: exactColor,
+        broadColor: broadColor,
+        stock: stock,
+        category: category,
+        price: price,
+        lastEditedBy: req.session.admin.firstName,
       };
-    });
-    const imageArray = Object.values(req.files).map((file) => file.filename);
-    const details = {
-      name: name,
-      designCode: designCode,
-      gender: gender,
-      sizes: newSizes,
-      exactColor: exactColor,
-      broadColor: broadColor,
-      stock: stock,
-      category: category,
-      price: price,
-      lastEditedBy: req.session.admin.firstName,
-    };
-    productHelpers.updateProduct(id, details, imageArray).then(()=> {
+      const product = await Product.findByIdAndUpdate(id, details, {new: true});
+      imageArray.forEach((image)=> {
+        product.images.push(image);
+      });
+      await product.save();
       res.json({success: true});
-    }).catch((err)=> next(err));
+    } catch (error) {
+      next(error);
+    }
   },
   downloadSalesReport: async (req, res, next)=> {
     try {
@@ -572,7 +589,10 @@ module.exports = {
   changeDesignStatus: async (req, res, next)=> {
     try {
       const status = await designHelpers.changeDesignStatus(req.body.id);
-      await productHelpers.updateDesignStatus(status);
+      await Product.updateMany(
+          {designCode: status.code},
+          {$set: {isActive: status.status}},
+      );
       res.json({success: true, status: status.status});
     } catch (error) {
       next(error);

@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const sendEmail = require('../services/email-otp');
-const productHelpers = require('../helpers/productHelpers');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Wishlist = require('../models/wishlistModel');
@@ -147,12 +146,30 @@ module.exports = {
         throw new Error('Tried to change the id value , huh?');
       };
       const colors= await designHelpers.getDesignColors(product.designCode);
-      const categoryRelatedProducts =
-         await productHelpers.getCategoryRelatedProducts(product.category);
-      const colorRelatedProduct =
-       await productHelpers.getColorRelatedProduct(product.broadColor);
-      const designRelatedProduct =
-       await productHelpers.getDesignRelatedProduct(product.designCode);
+      const categoryRelatedProducts = await Product.aggregate([
+        {
+          $match: {category: product.category},
+        },
+        {
+          $sample: {size: 2},
+        },
+      ]);
+      const colorRelatedProduct = await Product.aggregate([
+        {
+          $match: {broadColor: product.broadColor},
+        },
+        {
+          $sample: {size: 1},
+        },
+      ]);
+      const designRelatedProduct = await Product.aggregate([
+        {
+          $match: {designCode: product.designCode},
+        },
+        {
+          $sample: {size: 1},
+        },
+      ]);
       res.render('users/single-product', {user: req.session.user,
         product: product, colors: colors[0].colors, page: 'shop',
         categoryRelatedProducts, colorRelatedProduct, designRelatedProduct});
