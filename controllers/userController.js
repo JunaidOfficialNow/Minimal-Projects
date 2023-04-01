@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const sendEmail = require('../services/email-otp');
 const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
+const Order = require('../models/orderModel');
 const Wishlist = require('../models/wishlistModel');
 const mongoose = require('mongoose');
 const Cart = require('../models/cartModel');
@@ -406,7 +407,7 @@ module.exports = {
         const options = {arrayFilters: [{'elem.size': size}]};
         await Product.updateOne( filter, update, options);
       });
-      await orderHelpers.createOrder(details);
+      await Order.create(details);
       await User.findByIdAndUpdate(req.session.user._id,
           {$set: {cartCount: 0}});
       req.session.user.cartCount = 0;
@@ -497,7 +498,11 @@ module.exports = {
   getSuccessOrder: async (req, res, next)=> {
     if (req.session.orderId === req.params.orderId) {
       delete req.session.orderId;
-      const order = await orderHelpers.getOrder(req.params.orderId);
+      const order =
+         await Order.findOne({orderId: req.params.orderId}).populate({
+           path: 'products.product',
+           model: Product,
+         });
       if (order) {
         res.render('users/order-success', {user: req.session.user,
           order: order,
@@ -541,12 +546,19 @@ module.exports = {
     }
   },
   getOrderPage: async (req, res)=> {
-    const orders = await orderHelpers.getOrders(req.session.user._id);
+    const orders = await Order.find({userId: req.session.user._id})
+        .populate({
+          path: 'products.product',
+          model: Product,
+        }).sort({createdAt: -1});
     res.render('users/my-orders',
         {user: req.session.user, page: 'order', orders});
   },
   getOrderDetails: async (req, res)=> {
-    const order = await orderHelpers.getOneOrder(req.body.id);
+    const order = await Order.findById(req.body.id).populate({
+      path: 'products.product',
+      model: Product,
+    });
     if (order) {
       return res.json({success: true, order});
     }

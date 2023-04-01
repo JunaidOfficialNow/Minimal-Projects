@@ -2,35 +2,6 @@ const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
 
-const createOrder = async function(details) {
-  return Order.create(details).then((order)=> {
-    return Promise.resolve(order);
-  }).catch((error)=> {
-    return Promise.reject(error);
-  });
-};
-
-const getOrder = async function(orderId) {
-  return await Order.findOne({orderId: orderId}).populate({
-    path: 'products.product',
-    model: Product,
-  });
-};
-
-const getOrders = async function(userId) {
-  return await Order.find({userId: userId})
-      .populate({
-        path: 'products.product',
-        model: Product,
-      }).sort({createdAt: -1});
-};
-
-const getOneOrder = async function(id) {
-  return await Order.findById(id).populate({
-    path: 'products.product',
-    model: Product,
-  });
-};
 
 const getOneOrderAdmin = async function(id) {
   return await Order.findById(id).populate({
