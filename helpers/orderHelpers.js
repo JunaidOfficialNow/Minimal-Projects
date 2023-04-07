@@ -1,6 +1,5 @@
 const Order = require('../models/orderModel');
 
-
 const todaySale = async function() {
   const today = new Date();
   const startOfDay =
@@ -154,20 +153,10 @@ const sizeAndSaleReport = async function() {
   });
 };
 
-const getSalesReport= async function(status) {
-  try {
-    return await Order.find({status: status});
-  } catch (error) {
-    return Promise.reject(error);
-  };
-};
 
 module.exports = {
-  changeOrderStatus,
   todaySale,
   totalSale,
   salesAndRevenueChart,
   sizeAndSaleReport,
-  getLimitedOrders,
-  getSalesReport,
 };
