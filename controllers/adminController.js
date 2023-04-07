@@ -594,7 +594,7 @@ module.exports = {
   },
   downloadSalesReport: async (req, res, next)=> {
     try {
-      const orders = await orderHelpers.getSalesReport(req.params.status);
+      const orders = await Order.find({status: req.params.status});
       if (orders.length > 0) {
         const csvWriter = createCsvWriter({
           path: 'orders.csv',
