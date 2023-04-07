@@ -2,6 +2,7 @@
 const Admin = require('../models/adminModel');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Product = require('../models/productModel');
+const Order = require('../models/orderModel');
 const designHelpers = require('../helpers/designHelpers');
 const sendEmail = require('../services/email-otp');
 const orderHelpers = require('../helpers/orderHelpers');
@@ -123,7 +124,10 @@ module.exports = {
   },
   getHome: async (req, res, next)=>{
     try {
-      let recentOrders = await orderHelpers.getLimitedOrders();
+      let recentOrders = await Order.find({}).populate({
+        path: 'userId',
+        model: User,
+      }).sort({createdAt: -1}).limit(5);
       let todaySale = await orderHelpers.todaySale();
       let totalSale = await orderHelpers.totalSale();
       if (todaySale.length === 0) {
@@ -443,28 +447,60 @@ module.exports = {
     });
   },
   getOrdersPage: async (req, res)=> {
-    const orders = await orderHelpers.getAllOrders();
-    res.render('admins/admin-orders', {admin: req.session.admin,
-      page: 'orders', orders});
-  },
-  getOrderDetails: async (req, res)=> {
-    const order = await orderHelpers.getOneOrderAdmin(req.body.id);
-    if (order) {
-      return res.json({success: true, order});
+    try {
+      const orders = await Order.find({}).populate({
+        path: 'products.product',
+        model: Product,
+      }).populate({
+        path: 'userId',
+        model: User,
+      }).sort({createdAt: -1});
+      res.render('admins/admin-orders', {admin: req.session.admin,
+        page: 'orders', orders});
+    } catch (error) {
+      next(error);
     }
-    return res.json({success: false});
   },
-  getOrderDetailsPage: async (req, res)=> {
-    const order = await orderHelpers.getOneOrderAdmin(req.params.id);
-    if (order) {
-      res.render('admins/view-order', {admin: req.session.admin,
-        order: order});
+  getOrderDetails: async (req, res, next)=> {
+    try {
+      const order = await Order.findById(req.body.id).populate({
+        path: 'products.product',
+        model: Product,
+      }).populate({
+        path: 'userId',
+        model: User,
+      });
+      if (order) {
+        return res.json({success: true, order});
+      }
+      return res.json({success: false});
+    } catch (error) {
+      next(error);
+    }
+  },
+  getOrderDetailsPage: async (req, res, next)=> {
+    try {
+      const order = await Order.findById(req.params.id).populate({
+        path: 'products.product',
+        model: Product,
+      }).populate({
+        path: 'userId',
+        model: User,
+      });
+      if (order) {
+        res.render('admins/view-order', {admin: req.session.admin,
+          order: order});
+      }
+    } catch (error) {
+      next(error);
     }
   },
   changeOrderStatus: (req, res)=> {
     const {id, status} = req.body;
-    orderHelpers.changeOrderStatus(id, status).then(()=> {
+    Order.findByIdAndUpdate(id, {status: status}).then(()=> {
       res.json({success: true});
+    }).catch((err)=> {
+      next(err);
     });
   },
   getBannersPage: async (req, res) => {

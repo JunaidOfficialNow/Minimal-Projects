@@ -1,40 +1,5 @@
 const Order = require('../models/orderModel');
-const Product = require('../models/productModel');
-const User = require('../models/userModel');
 
-
-const getOneOrderAdmin = async function(id) {
-  return await Order.findById(id).populate({
-    path: 'products.product',
-    model: Product,
-  }).populate({
-    path: 'userId',
-    model: User,
-  });
-};
-
-const getAllOrders = async () => {
-  return await Order.find({}).populate({
-    path: 'products.product',
-    model: Product,
-  }).populate({
-    path: 'userId',
-    model: User,
-  }).sort({createdAt: -1});
-};
-
-const changeOrderStatus = async function(id, status) {
-  return await Order.findByIdAndUpdate(id, {status: status}).then(()=> {
-    return Promise.resolve();
-  });
-};
-
-const getLimitedOrders = async function() {
-  return await Order.find({}).populate({
-    path: 'userId',
-    model: User,
-  }).sort({createdAt: -1}).limit(5);
-};
 
 const todaySale = async function() {
   const today = new Date();
@@ -198,12 +163,6 @@ const getSalesReport= async function(status) {
 };
 
 module.exports = {
-  createOrder,
-  getOrder,
-  getOrders,
-  getOneOrder,
-  getAllOrders,
-  getOneOrderAdmin,
   changeOrderStatus,
   todaySale,
   totalSale,
