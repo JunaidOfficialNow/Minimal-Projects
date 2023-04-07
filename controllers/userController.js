@@ -10,7 +10,6 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
-const orderHelpers = require('../helpers/orderHelpers');
 const Razorpay = require('razorpay');
 const Address = require('../models/addressModel');
 const User = require('../models/userModel');
@@ -565,22 +564,23 @@ module.exports = {
     return res.json({success: false});
   },
   changeStatusOrder: async (req, res, next)=> {
-    const {id, status, products} = req.body;
-    if (status === 'Cancelled') {
-      products.forEach(async (product)=>{
-        // eslint-disable-next-line max-len
-        const filter = {_id: product.product._id};
-        const update = {$inc: {'stock': Number(product.quantity),
-          'sizes.$[elem].stock': Number(product.quantity)}};
-        const options = {arrayFilters: [{'elem.size': product.size}]};
-        await Product.updateOne( filter, update, options);
-      });
-    }
-    orderHelpers.changeOrderStatus(id, status).then(()=> {
+    try {
+      const {id, status, products} = req.body;
+      if (status === 'Cancelled') {
+        products.forEach(async (product)=>{
+          // eslint-disable-next-line max-len
+          const filter = {_id: product.product._id};
+          const update = {$inc: {'stock': Number(product.quantity),
+            'sizes.$[elem].stock': Number(product.quantity)}};
+          const options = {arrayFilters: [{'elem.size': product.size}]};
+          await Product.updateOne( filter, update, options);
+        });
+      }
+      await Order.findByIdAndUpdate(id, {status: status});
       res.json({success: true});
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
+    } catch (error) {
+      next(error);
+    }
   },
   getCertainProducts: async (req, res)=> {
     const {category, color, size, min, max} = req.query;
