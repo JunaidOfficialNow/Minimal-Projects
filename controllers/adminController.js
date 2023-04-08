@@ -3,7 +3,7 @@ const Admin = require('../models/adminModel');
 const categoryHelpers = require('../helpers/categoryHelpers');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
-const designHelpers = require('../helpers/designHelpers');
+const Design = require('../models/designModel');
 const sendEmail = require('../services/email-otp');
 const orderHelpers = require('../helpers/orderHelpers');
 const Coupon = require('../models/couponModel');
@@ -230,7 +230,7 @@ module.exports = {
   },
   deleteCategory: (req, res) => {
     categoryHelpers.deleteCategory(req.body.id).then((data)=>{
-      designHelpers.deleteDesigns(data.name).then(()=> {
+      Design.deleteMany({category: data.name}).then(()=> {
         fs.unlink('public/uploads/category/'+data.image, (error)=> {
           if (error) {
           }
@@ -333,48 +333,50 @@ module.exports = {
       res.json({error: err.message});
     });
   },
-  getDesignCategory: (req, res) => {
-    designHelpers.getDesigns().then((doc)=> {
-      res.render('admins/admin-design',
-          {admin: req.session.admin, category: doc});
-    });
+  getDesignCategory: async (req, res) => {
+    const category = await Design.find({});
+    res.render('admins/admin-design',
+        {admin: req.session.admin, category});
   },
   getAddDesignCategory: (req, res) => {
     categoryHelpers.getCategoryNames().then((category)=> {
       res.render('admins/add-design', {category: category});
     });
   },
-  AddDesignCategory: (req, res) => {
-    const {designCode, gender, sizes, colors, expectedPrice,
-      stock, category} = req.body;
-    const details = {
-      designCode: designCode,
-      gender: gender,
-      sizes: sizes,
-      colors: colors,
-      expectedPrice: expectedPrice,
-      stock: stock,
-      category: category,
-      image: req.file.filename,
-      lastEditedBy: req.session.admin.firstName,
-    };
-    const dir = path.join(__dirname,
-        '../public', 'static', 'uploads', category, designCode);
-    fs.mkdir(dir, (err) => {
-      if (err) {
-      } else {
-        designHelpers.addDesign(details).then((doc)=> {
+  AddDesignCategory: async (req, res, next) => {
+    try {
+      const {designCode, gender, sizes, colors, expectedPrice,
+        stock, category} = req.body;
+      const details = {
+        designCode: designCode,
+        gender: gender,
+        sizes: sizes,
+        colors: colors,
+        expectedPrice: expectedPrice,
+        stock: stock,
+        category: category,
+        image: req.file.filename,
+        lastEditedBy: req.session.admin.firstName,
+      };
+      const dir = path.join(__dirname,
+          '../public', 'static', 'uploads', category, designCode);
+      fs.mkdir(dir, async (err) => {
+        if (err) {
+        } else {
+          await Design.create(details);
           res.redirect('/admin/design/category');
-        });
-      }
-    });
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
   },
-  checkCodeExists: (req, res)=> {
-    designHelpers.checkCodeExists(req.body.code).then((doc)=> {
+  checkCodeExists: (req, res, next)=> {
+    Design.findOne({designCode: req.body.code}).then((doc)=> {
       if (doc) {
         res.json({});
       } else res.json({success: true});
-    });
+    }).catch((err)=> next(err));
   },
   getProductsPage: (req, res, next) => {
     Product.find().then((products)=> {
@@ -382,10 +384,10 @@ module.exports = {
         products: products});
     }).catch((err)=> next(err));
   },
-  getDesignCodes: (req, res) => {
-    designHelpers.getDesignCodes().then((doc)=> {
+  getDesignCodes: (req, res, next) => {
+    Design.distinct('designCode').then((doc)=> {
       res.json({success: true, codes: doc});
-    });
+    }).catch((err)=> next(err));
   },
   addProductName: (req, res) => {
     const {name, designCode} = req.body;
@@ -397,7 +399,7 @@ module.exports = {
   },
   getAddProductPage: (req, res) => {
     const {name, designCode} = req.session.addProduct;
-    designHelpers.checkCodeExists(designCode).then((doc)=>{
+    Design.findOne({designCode}).then((doc)=>{
       res.render('admins/admin-add-product', {name: name, doc});
     });
   },
@@ -624,7 +626,16 @@ module.exports = {
   },
   changeDesignStatus: async (req, res, next)=> {
     try {
-      const status = await designHelpers.changeDesignStatus(req.body.id);
+      const design = await Design.findById(req.body.id);
+      let status;
+      if (design) {
+        design.isActive = !design.isActive;
+        const newDesign = await design.save();
+        status = {status: newDesign.isActive,
+          code: newDesign.designCode};
+      } else {
+        throw new Error('No design document found');
+      }
       await Product.updateMany(
           {designCode: status.code},
           {$set: {isActive: status.status}},
