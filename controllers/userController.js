@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const sendEmail = require('../services/email-otp');
-const designHelpers = require('../helpers/designHelpers');
 const categoryHelpers = require('../helpers/categoryHelpers');
+const Design = require('../models/designModel');
 const Order = require('../models/orderModel');
 const Wishlist = require('../models/wishlistModel');
 const mongoose = require('mongoose');
@@ -124,8 +124,8 @@ module.exports = {
   getShopPage: async (req, res, next)=> {
     try {
       const categoryNames = await categoryHelpers.getCategoryNames();
-      const colors = await designHelpers.getColors();
-      const sizes = await designHelpers.getSizes();
+      const colors = await Design.distinct('colors');
+      const sizes = await Design.distinct('sizes');
       const count = await Product.count();
       const products =
       await Product.find().limit(9).skip((req.query.page-1)*9);
@@ -145,7 +145,8 @@ module.exports = {
       } else {
         throw new Error('Tried to change the id value , huh?');
       };
-      const colors= await designHelpers.getDesignColors(product.designCode);
+      // eslint-disable-next-line max-len
+      const colors= Design.find({designCode: product.designCode}).select('colors -_id');
       const categoryRelatedProducts = await Product.aggregate([
         {
           $match: {category: product.category},
@@ -655,8 +656,8 @@ module.exports = {
       count = await Product.find({gender: value}).count();
     };
     const categoryNames = await categoryHelpers.getCategoryNames();
-    const colors = await designHelpers.getColors();
-    const sizes = await designHelpers.getSizes();
+    const colors = await Design.distinct('colors');
+    const sizes = await Design.distinct('sizes');
     const pageName = `results/${type}/${value}`;
     const user = req.session.user;
     res.render('users/user-product', {user,
