@@ -2,15 +2,6 @@ const Category = require('../models/categoryModel');
 
 
 module.exports = {
-  addCategory: (details)=>{
-    return new Promise((resolve, reject)=>{
-      Category.create(details).then((doc)=>{
-        resolve(doc);
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
   checkCategoryExists: (name)=>{
     return new Promise((resolve, reject)=>{
       Category.findOne({name: name}).then((doc)=>{
@@ -27,15 +18,6 @@ module.exports = {
         if (doc) {
           resolve(doc.name);
         } else resolve({error: 'Category may have already been deleted'});
-      });
-    });
-  },
-  getAllCategories: ()=>{
-    return new Promise((resolve, reject)=>{
-      Category.find({}).then((docs)=>{
-        resolve(docs);
-      }).catch((err)=>{
-        reject(err);
       });
     });
   },
