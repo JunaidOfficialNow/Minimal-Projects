@@ -4,6 +4,7 @@ const categoryHelpers = require('../helpers/categoryHelpers');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Design = require('../models/designModel');
+const Category = require('../models/categoryModel');
 const sendEmail = require('../services/email-otp');
 const orderHelpers = require('../helpers/orderHelpers');
 const Coupon = require('../models/couponModel');
@@ -212,7 +213,7 @@ module.exports = {
           if (error) {
             res.json({success: false});
           } else {
-            categoryHelpers.addCategory(addCategory).then((doc)=>{
+            Category.create(addCategory).then((doc)=>{
               delete req.session.addCategory;
               res.json({success: true, doc});
             }).catch((err)=>{
@@ -221,11 +222,11 @@ module.exports = {
           }
         });
   },
-  getCategories: (req, res) => {
-    categoryHelpers.getAllCategories().then((category)=> {
+  getCategories: (req, res, next) => {
+    Category.find({}).then((category)=> {
       res.json(category);
     }).catch((err)=>{
-      res.json({error: err.message});
+      next(err);
     });
   },
   deleteCategory: (req, res) => {
