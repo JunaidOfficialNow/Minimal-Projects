@@ -245,26 +245,28 @@ module.exports = {
       res.json({error: error.message});
     });
   },
-  deactivateCategory: (req, res) => {
-    categoryHelpers.deactivateCategory(req.body.id).then((doc)=> {
-      if (doc.error) {
-        res.json({error: doc.error});
-      } else {
+  deactivateCategory: (req, res, next) => {
+    Category.findByIdAndUpdate(req.body.id, {isActive: false},
+        {new: true}).then((doc)=>{
+      if (doc) {
         res.json({success: true, date: doc.updatedAt, by: doc.lastEditedBy});
-      }
+      } else {
+        throw new Error('Category may have already deleted');
+      };
     }).catch((err) => {
-      res.json({error: err.message});
+      next(err);
     });
   },
-  activateCategory: (req, res) => {
-    categoryHelpers.activateCategory(req.body.id).then((doc)=> {
-      if (doc.error) {
-        res.json({error: doc.error});
-      } else {
+  activateCategory: (req, res, next) => {
+    Category.findByIdAndUpdate(req.body.id, {isActive: true},
+        {new: true}).then((doc)=>{
+      if (doc) {
         res.json({success: true, date: doc.updatedAt, by: doc.lastEditedBy});
-      }
+      } else {
+        throw new Error('Category may have already deleted');
+      };
     }).catch((err) => {
-      res.json({error: err.message});
+      next(err);
     });
   },
   getCategoryDetails: (req, res) => {
