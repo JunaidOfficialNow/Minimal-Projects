@@ -30,36 +30,6 @@ module.exports = {
       });
     });
   },
-  deactivateCategory: (id)=>{
-    return new Promise((resolve, reject)=>{
-      Category.findByIdAndUpdate(id, {isActive: false}).then((doc)=>{
-        if (doc) {
-          Category.findById(id).then((doc)=>{
-            resolve(doc);
-          });
-        } else {
-          resolve({error: 'Category  may have already be  deleted'});
-        };
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  activateCategory: (id)=>{
-    return new Promise((resolve, reject)=>{
-      Category.findByIdAndUpdate(id, {isActive: true}).then((doc)=>{
-        if (doc) {
-          Category.findById(id).then((doc)=>{
-            resolve(doc);
-          });
-        } else {
-          resolve({error: 'Category  may have already be  deleted'});
-        };
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
   getCategoryDetails: (id) => {
     return new Promise((resolve, reject) => {
       Category.findById(id).then((doc) => {
