@@ -21,67 +21,6 @@ module.exports = {
       });
     });
   },
-  deleteCategory: (id)=>{
-    return new Promise((resolve, reject)=>{
-      Category.findByIdAndRemove(id).then((doc)=>{
-        resolve({image: doc.image, name: doc.name});
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  getCategoryDetails: (id) => {
-    return new Promise((resolve, reject) => {
-      Category.findById(id).then((doc) => {
-        if (doc) {
-          resolve(doc);
-        } else {
-          resolve({error: 'Category  may have already be  deleted'});
-        }
-      }).catch((err) => {
-        reject(err);
-      });
-    });
-  },
-  updateCategory: (id, details)=>{
-    return new Promise((resolve, reject)=>{
-      Category.findByIdAndUpdate(id, details).then((doc)=>{
-        if (doc) {
-          Category.findById(id).then((doc)=>{
-            resolve(doc);
-          });
-        } else {
-          resolve({error: 'Category  may have already be  deleted'});
-        }
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  updateCategoryImage: (id, image)=>{
-    return new Promise((resolve, reject)=>{
-      Category.findByIdAndUpdate(id, {image: image}).then((doc)=>{
-        if (doc) {
-          Category.findById(id).then((doc)=>{
-            resolve(doc);
-          });
-        } else {
-          resolve({error: 'Category  may have already be  deleted'});
-        }
-      }).catch((err)=>{
-        reject(err);
-      });
-    });
-  },
-  getCategoryNames: () => {
-    return new Promise((resolve, reject) => {
-      Category.find({}).select('name -_id').then((docs) => {
-        resolve(docs);
-      }).catch((err) => {
-        reject(err);
-      });
-    });
-  },
 };
 
 

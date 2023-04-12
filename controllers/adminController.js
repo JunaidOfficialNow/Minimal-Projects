@@ -19,16 +19,15 @@ const apis = {
   otp: process.env.ADMIN_OTP_API,
 };
 // eslint-disable-next-line require-jsdoc
-function updateCategory(id, details, res) {
-  categoryHelpers.updateCategory(id, details).then((doc)=> {
-    if (doc.error) {
-      res.json({error: doc.error});
-    } else {
-      res.json({success: true, image: doc.image,
+function updateCategory(id, details, res, next) {
+  Category.findByIdAndUpdate(id, details, {new: true}).then((doc)=> {
+    if (doc) {
+      return res.json({success: true, image: doc.image,
         id: doc.id, date: doc.updatedAt, by: doc.lastEditedBy});
     }
-  }).catch((err) => {
-    res.json({error: err.message});
+    throw new Error('Category may have deleted');
+  }).catch((err)=> {
+    next(err);
   });
 }
 async function deleteDirectory(directory) {
@@ -230,7 +229,7 @@ module.exports = {
     });
   },
   deleteCategory: (req, res) => {
-    categoryHelpers.deleteCategory(req.body.id).then((data)=>{
+    Category.findByIdAndRemove(req.body.id).then((data)=>{
       Design.deleteMany({category: data.name}).then(()=> {
         fs.unlink('public/uploads/category/'+data.image, (error)=> {
           if (error) {
@@ -269,18 +268,17 @@ module.exports = {
       next(err);
     });
   },
-  getCategoryDetails: (req, res) => {
-    categoryHelpers.getCategoryDetails(req.body.id).then((category)=> {
-      if (category.error) {
-        res.json({error: category.error});
-      } else {
-        res.json({success: true, category: category});
-      };
+  getCategoryDetails: (req, res, next) => {
+    Category.findById(req.body.id).then((doc)=> {
+      if (doc) {
+        return res.json({success: true, category: doc});
+      }
+      throw new Error('Category may have deleted');
     }).catch((err)=>{
-      res.json({error: err.message});
+      next(err);
     });
   },
-  updateCategory: (req, res) => {
+  updateCategory: (req, res, next) => {
     const {name, description, id} = req.body;
     const details = {description: description};
     categoryHelpers.checkCategoryExistsById(id).then((oldName) => {
@@ -300,7 +298,7 @@ module.exports = {
                  'There is trouble in upadating category name now'});
             } else {
               categoryHelpers.checkCategoryExists(name).then(() => {
-                updateCategory(id, details, res);
+                updateCategory(id, details, res, next);
               }).catch(()=> {
                 res.json({error:
                    'Category name is already in use , should be unique'});
@@ -308,32 +306,32 @@ module.exports = {
             }
           });
         } else {
-          updateCategory(id, details, res);
+          updateCategory(id, details, res, next);
         };
       };
     });
   },
-  categoryImageUpdate: (req, res) => {
+  categoryImageUpdate: (req, res, next) => {
     const {id, image} = req.body;
     fs.unlink('public/uploads/category/'+image, (err)=> {
       if (err) {
       }
     });
-    categoryHelpers.updateCategoryImage(id, req.file.filename).then((doc)=>{
-      if (doc.error) {
-        res.json({error: doc.error});
-      } else {
+    Category.findByIdAndUpdate(id, {image: req.file.filename},
+        {new: true}).then((doc)=> {
+      if (doc) {
         res.json({success: true, newImage: doc.image});
       }
+      throw new Error('Category may have already deleted');
     }).catch((err)=>{
-      res.json({error: err.message});
+      next(err);
     });
   },
-  getCategoryNames: (req, res)=> {
-    categoryHelpers.getCategoryNames().then((category)=> {
+  getCategoryNames: (req, res, next)=> {
+    Category.find({}).select('name -_id').then((category)=> {
       res.json({success: true, categories: category});
     }).catch((err)=>{
-      res.json({error: err.message});
+      next(err);
     });
   },
   getDesignCategory: async (req, res) => {
@@ -342,7 +340,7 @@ module.exports = {
         {admin: req.session.admin, category});
   },
   getAddDesignCategory: (req, res) => {
-    categoryHelpers.getCategoryNames().then((category)=> {
+    Category.find({}).select('name -_id').then((category)=> {
       res.render('admins/add-design', {category: category});
     });
   },
