@@ -2,20 +2,20 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const admin = require('../controllers/adminController');
+const index = require('../controllers/admin/index');
 const {csrfProtection, requestMethod} =
  require('../middlewares/commonMiddlewares');
 const middle = require('../middlewares/adminMiddlewares');
 const {uploadOptions, DesignUpload, ProductUpload, BannerUpload} =
  require('../services/multer');
 
-
 router.use(requestMethod);
 
 
 // get requests
-router.get('/', middle.checkUserLogin, middle.checkLogin, admin.getLogin);
+router.get('/', middle.checkUserLogin, middle.checkLogin, index.getLogin);
 router.get('/csrf', middle.verifyLogin, csrfProtection, admin.getCsrf);
-router.get('/logout', middle.verifyLogin, admin.DoLogout);
+router.get('/logout', middle.verifyLogin, index.DoLogout);
 router.get('/home', middle.checkUserLogin, middle.verifyLogin, admin.getHome);
 router.get('/design/category', middle.verifyLogin, admin.getDesignCategory);
 router.get('/design/category/add',
@@ -35,9 +35,9 @@ router.get('/sales-report/:status',
     middle.verifyLogin, admin.downloadSalesReport);
 // Post requests
 
-router.post('/', admin.DoLogin);
-router.post('/verify', admin.verifyOtp);
-router.post('/resendOtp', admin.resendOtp);
+router.post('/', index.DoLogin);
+router.post('/verify', index.verifyOtp);
+router.post('/resendOtp', index.resendOtp);
 router.post('/addCategory',
     middle.verifyLogin,
     csrfProtection,
