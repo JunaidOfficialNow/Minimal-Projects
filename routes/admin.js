@@ -42,14 +42,14 @@ router.post('/addCategory',
     middle.verifyLogin,
     csrfProtection,
     middle.checkCsrf,
-    admin.addCategory);
-router.post('/getUsers', middle.verifyLogin, admin.getUsers);
+    index.addCategory);
+router.post('/getUsers', middle.verifyLogin, index.getUsers);
 router.post('/addCatImage', middle.verifyLogin,
     csrfProtection, middle.checkCsrf,
-    uploadOptions.single('file'), admin.addCatImage);
-router.post('/getCategories', middle.verifyLogin, admin.getCategories);
-router.post('/categoryDetails', middle.verifyLogin, admin.getCategoryDetails);
-router.post('/category/names', middle.verifyLogin, admin.getCategoryNames);
+    uploadOptions.single('file'), index.addCatImage);
+router.post('/getCategories', middle.verifyLogin, index.getCategories);
+router.post('/categoryDetails', middle.verifyLogin, index.getCategoryDetails);
+router.post('/category/names', middle.verifyLogin, index.getCategoryNames);
 router.post('/design/category/add',
     middle.verifyLogin, DesignUpload.single('DesignFile'),
     admin.AddDesignCategory);
@@ -63,14 +63,14 @@ router.post('/order/details', middle.verifyLogin, admin.getOrderDetails);
 
 // put requests
 
-router.put('/block-user', middle.verifyLogin, admin.blockUser);
-router.put('/unblock-user', middle.verifyLogin, admin.unblockUser);
-router.put('/deactivateCategory', middle.verifyLogin, admin.deactivateCategory);
-router.put('/activateCategory', middle.verifyLogin, admin.activateCategory);
+router.put('/block-user', middle.verifyLogin, index.blockUser);
+router.put('/unblock-user', middle.verifyLogin, index.unblockUser);
+router.put('/deactivateCategory', middle.verifyLogin, index.deactivateCategory);
+router.put('/activateCategory', middle.verifyLogin, index.activateCategory);
 router.put('/categoryUpdate', middle.verifyLogin,
-    csrfProtection, middle.checkCsrf, admin.updateCategory);
+    csrfProtection, middle.checkCsrf, index.updateCategory);
 router.put('/categoryImageUpdate', middle.verifyLogin, csrfProtection,
-    middle.checkCsrf, uploadOptions.single('file'), admin.categoryImageUpdate);
+    middle.checkCsrf, uploadOptions.single('file'), index.categoryImageUpdate);
 router.put('/banners', middle.verifyLogin,
     BannerUpload.single('image'), admin.updateBanners);
 
@@ -80,7 +80,7 @@ router.put('/product', middle.verifyLogin,
 router.put('/coupons', middle.verifyLogin, admin.updateCoupons);
 // delete requests
 
-router.delete('/deleteCategory', middle.verifyLogin, admin.deleteCategory);
+router.delete('/deleteCategory', middle.verifyLogin, index.deleteCategory);
 
 // Patch requests
 router.patch('/order/change/status',
