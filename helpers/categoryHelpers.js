@@ -17,7 +17,7 @@ module.exports = {
       Category.findById(id).then((doc)=>{
         if (doc) {
           resolve(doc.name);
-        } else resolve({error: 'Category may have already been deleted'});
+        } else reject(new Error('Category may have been deleted'));
       });
     });
   },

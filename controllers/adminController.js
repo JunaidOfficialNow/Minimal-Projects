@@ -1,5 +1,4 @@
 /* eslint-disable require-jsdoc */
-const categoryHelpers = require('../helpers/categoryHelpers');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Design = require('../models/designModel');
@@ -11,59 +10,6 @@ const User = require('../models/userModel');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 const path = require('path');
-// eslint-disable-next-line require-jsdoc
-function updateCategory(id, details, res, next) {
-  Category.findByIdAndUpdate(id, details, {new: true}).then((doc)=> {
-    if (doc) {
-      return res.json({success: true, image: doc.image,
-        id: doc.id, date: doc.updatedAt, by: doc.lastEditedBy});
-    }
-    throw new Error('Category may have deleted');
-  }).catch((err)=> {
-    next(err);
-  });
-}
-async function deleteDirectory(directory) {
-  try {
-    const folders = await readdirPromised(directory);
-    for (const folder of folders) {
-      const files = await readdirPromised(path.join(directory, folder));
-      for (const file of files) {
-        await unlinkPromised(path.join(directory, folder, file));
-      }
-      await rmdirPromised(path.join(directory, folder));
-    }
-    await rmdirPromised(directory);
-  } catch (err) {
-  }
-}
-
-const readdirPromised = (dir) => {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dir, (err, files) => {
-      if (err) reject(err);
-      resolve(files);
-    });
-  });
-};
-
-const unlinkPromised = (file) => {
-  return new Promise((resolve, reject) => {
-    fs.unlink(file, (err) => {
-      if (err) reject(err);
-      resolve();
-    });
-  });
-};
-
-const rmdirPromised = (dir) => {
-  return new Promise((resolve, reject) => {
-    fs.rmdir(dir, (err) => {
-      if (err) reject(err);
-      resolve();
-    });
-  });
-};
 
 module.exports = {
   getHome: async (req, res, next)=>{
@@ -106,119 +52,6 @@ module.exports = {
     const csrfToken = req.csrfToken();
     req.session.adminCsrf = csrfToken;
     res.json(csrfToken);
-  },
-  getCategories: (req, res, next) => {
-    Category.find({}).then((category)=> {
-      res.json(category);
-    }).catch((err)=>{
-      next(err);
-    });
-  },
-  deleteCategory: (req, res) => {
-    Category.findByIdAndRemove(req.body.id).then((data)=>{
-      Design.deleteMany({category: data.name}).then(()=> {
-        fs.unlink('public/uploads/category/'+data.image, (error)=> {
-          if (error) {
-          }
-        });
-        const directory =
-         path.join(__dirname, '../public', 'uploads', data.name);
-        deleteDirectory(directory);
-        res.json({success: true});
-      }).catch((err) => res.json({error: err.message}));
-    }).catch((error)=>{
-      res.json({error: error.message});
-    });
-  },
-  deactivateCategory: (req, res, next) => {
-    Category.findByIdAndUpdate(req.body.id, {isActive: false},
-        {new: true}).then((doc)=>{
-      if (doc) {
-        res.json({success: true, date: doc.updatedAt, by: doc.lastEditedBy});
-      } else {
-        throw new Error('Category may have already deleted');
-      };
-    }).catch((err) => {
-      next(err);
-    });
-  },
-  activateCategory: (req, res, next) => {
-    Category.findByIdAndUpdate(req.body.id, {isActive: true},
-        {new: true}).then((doc)=>{
-      if (doc) {
-        res.json({success: true, date: doc.updatedAt, by: doc.lastEditedBy});
-      } else {
-        throw new Error('Category may have already deleted');
-      };
-    }).catch((err) => {
-      next(err);
-    });
-  },
-  getCategoryDetails: (req, res, next) => {
-    Category.findById(req.body.id).then((doc)=> {
-      if (doc) {
-        return res.json({success: true, category: doc});
-      }
-      throw new Error('Category may have deleted');
-    }).catch((err)=>{
-      next(err);
-    });
-  },
-  updateCategory: (req, res, next) => {
-    const {name, description, id} = req.body;
-    const details = {description: description};
-    categoryHelpers.checkCategoryExistsById(id).then((oldName) => {
-      if (oldName.error) {
-        res.json({error: oldName.error});
-      } else {
-        if (oldName !== name) {
-          details.name = name;
-          const oldPath =
-           path.join(__dirname, '../public', 'uploads', oldName);
-          const newPath =
-           path.join(__dirname, '../public', 'uploads', name);
-
-          fs.rename(oldPath, newPath, (err) => {
-            if (err) {
-              res.json({error:
-                 'There is trouble in upadating category name now'});
-            } else {
-              categoryHelpers.checkCategoryExists(name).then(() => {
-                updateCategory(id, details, res, next);
-              }).catch(()=> {
-                res.json({error:
-                   'Category name is already in use , should be unique'});
-              });
-            }
-          });
-        } else {
-          updateCategory(id, details, res, next);
-        };
-      };
-    });
-  },
-  categoryImageUpdate: (req, res, next) => {
-    const {id, image} = req.body;
-    fs.unlink('public/uploads/category/'+image, (err)=> {
-      if (err) {
-      }
-    });
-    Category.findByIdAndUpdate(id, {image: req.file.filename},
-        {new: true}).then((doc)=> {
-      if (doc) {
-        res.json({success: true, newImage: doc.image});
-      }
-      throw new Error('Category may have already deleted');
-    }).catch((err)=>{
-      next(err);
-    });
-  },
-  getCategoryNames: (req, res, next)=> {
-    Category.find({}).select('name -_id').then((category)=> {
-      res.json({success: true, categories: category});
-    }).catch((err)=>{
-      next(err);
-    });
   },
   getDesignCategory: async (req, res) => {
     const category = await Design.find({});
