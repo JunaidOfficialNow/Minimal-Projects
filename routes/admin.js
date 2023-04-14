@@ -43,7 +43,7 @@ router.post('/addCategory',
     csrfProtection,
     middle.checkCsrf,
     admin.addCategory);
-router.post('/getUsers', middle.verifyLogin, admin.getUsers);
+router.post('/getUsers', middle.verifyLogin, index.getUsers);
 router.post('/addCatImage', middle.verifyLogin,
     csrfProtection, middle.checkCsrf,
     uploadOptions.single('file'), admin.addCatImage);
@@ -63,8 +63,8 @@ router.post('/order/details', middle.verifyLogin, admin.getOrderDetails);
 
 // put requests
 
-router.put('/block-user', middle.verifyLogin, admin.blockUser);
-router.put('/unblock-user', middle.verifyLogin, admin.unblockUser);
+router.put('/block-user', middle.verifyLogin, index.blockUser);
+router.put('/unblock-user', middle.verifyLogin, index.unblockUser);
 router.put('/deactivateCategory', middle.verifyLogin, admin.deactivateCategory);
 router.put('/activateCategory', middle.verifyLogin, admin.activateCategory);
 router.put('/categoryUpdate', middle.verifyLogin,

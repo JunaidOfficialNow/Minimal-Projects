@@ -7,7 +7,7 @@ module.exports = {
       Category.findOne({name: name}).then((doc)=>{
         if (doc) {
           // eslint-disable-next-line prefer-promise-reject-errors
-          reject();
+          reject(new Error('Category already exists, should be unique'));
         } else resolve();
       });
     });

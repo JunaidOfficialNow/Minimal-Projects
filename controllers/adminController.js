@@ -102,68 +102,10 @@ module.exports = {
       next(error);
     }
   },
-  blockUser: async (req, res, next)=>{
-    User.findByIdAndUpdate(req.body.id, {isBlocked: true}).then((response)=> {
-      if (response) {
-        res.json({success: true});
-      } else {
-        res.json({succcess: false});
-      }
-    }).catch((error)=> next(error));
-  },
-  unblockUser: (req, res, next)=>{
-    User.findByIdAndUpdate(req.body.id, {isBlocked: false}).then((response)=>{
-      res.json({success: true});
-    }).catch((err)=>{
-      next(err);
-    });
-  },
-  getUsers: (req, res, next)=>{
-    User.find().then((users)=>{
-      res.json(users);
-    }).catch((err)=>{
-      next(err);
-    });
-  },
   getCsrf: (req, res, next)=>{
     const csrfToken = req.csrfToken();
     req.session.adminCsrf = csrfToken;
     res.json(csrfToken);
-  },
-  addCategory: (req, res)=>{
-    const {name, description} = req.body;
-    if (name == '' || description == '') {
-      res.json({message: 'All fields are required'});
-    } else {
-      categoryHelpers.checkCategoryExists(name).then(()=>{
-        req.session.addCategory = {name: name, description: description};
-        res.json({success: true});
-      }).catch(()=>{
-        res.json({message: 'Category name already exists, Should be unique.'});
-      });
-    };
-  },
-  addCatImage: (req, res, next)=>{
-    if (!req.file) {
-      return res.status(404).json({error: 'Image is required'});
-    }
-    const addCategory = req.session.addCategory;
-    addCategory.image = req.file.filename;
-    addCategory.lastEditedBy = req.session.admin.firstName;
-    // eslint-disable-next-line max-len
-    fs.mkdir(path.join(__dirname, `../public/static/uploads/${addCategory.name}`),
-        (error)=> {
-          if (error) {
-            res.json({success: false});
-          } else {
-            Category.create(addCategory).then((doc)=>{
-              delete req.session.addCategory;
-              res.json({success: true, doc});
-            }).catch((err)=>{
-              res.json({success: false});
-            });
-          }
-        });
   },
   getCategories: (req, res, next) => {
     Category.find({}).then((category)=> {
