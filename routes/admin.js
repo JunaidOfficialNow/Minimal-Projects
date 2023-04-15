@@ -17,9 +17,9 @@ router.get('/', middle.checkUserLogin, middle.checkLogin, index.getLogin);
 router.get('/csrf', middle.verifyLogin, csrfProtection, admin.getCsrf);
 router.get('/logout', middle.verifyLogin, index.DoLogout);
 router.get('/home', middle.checkUserLogin, middle.verifyLogin, admin.getHome);
-router.get('/design/category', middle.verifyLogin, admin.getDesignCategory);
+router.get('/design/category', middle.verifyLogin, index.getDesignCategory);
 router.get('/design/category/add',
-    middle.verifyLogin, admin.getAddDesignCategory);
+    middle.verifyLogin, index.getAddDesignCategory);
 router.get('/products', middle.verifyLogin, admin.getProductsPage);
 router.get('/product/add', middle.verifyLogin, admin.getAddProductPage);
 router.get('/products/:id', middle.verifyLogin, admin.getEditProductPage);
@@ -52,9 +52,9 @@ router.post('/categoryDetails', middle.verifyLogin, index.getCategoryDetails);
 router.post('/category/names', middle.verifyLogin, index.getCategoryNames);
 router.post('/design/category/add',
     middle.verifyLogin, DesignUpload.single('DesignFile'),
-    admin.AddDesignCategory);
-router.post('/design/code/unique', middle.verifyLogin, admin.checkCodeExists);
-router.post('/get/design/code', middle.verifyLogin, admin.getDesignCodes);
+    index.AddDesignCategory);
+router.post('/design/code/unique', middle.verifyLogin, index.checkCodeExists);
+router.post('/get/design/code', middle.verifyLogin, index.getDesignCodes);
 router.post('/product/add', middle.verifyLogin, admin.addProductName);
 router.post('/add/product/all',
     middle.verifyLogin, ProductUpload.any(), admin.addProductAll);
@@ -88,7 +88,7 @@ router.patch('/order/change/status',
 router.patch('/products/COD', middle.verifyLogin, admin.changeProductCODStatus);
 router.patch('/products/active',
     middle.verifyLogin, admin.changeProductActiveStatus);
-router.patch('/design/status', middle.verifyLogin, admin.changeDesignStatus);
+router.patch('/design/status', middle.verifyLogin, index.changeDesignStatus);
 router.patch('/coupon/status', middle.verifyLogin, admin.changeCouponStatus);
 
 module.exports = router;
