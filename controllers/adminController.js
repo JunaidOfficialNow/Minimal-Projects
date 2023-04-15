@@ -2,14 +2,12 @@
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Design = require('../models/designModel');
-const Category = require('../models/categoryModel');
 const orderHelpers = require('../helpers/orderHelpers');
 const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
 const User = require('../models/userModel');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
-const path = require('path');
 
 module.exports = {
   getHome: async (req, res, next)=>{
@@ -53,60 +51,10 @@ module.exports = {
     req.session.adminCsrf = csrfToken;
     res.json(csrfToken);
   },
-  getDesignCategory: async (req, res) => {
-    const category = await Design.find({});
-    res.render('admins/admin-design',
-        {admin: req.session.admin, category});
-  },
-  getAddDesignCategory: (req, res) => {
-    Category.find({}).select('name -_id').then((category)=> {
-      res.render('admins/add-design', {category: category});
-    });
-  },
-  AddDesignCategory: async (req, res, next) => {
-    try {
-      const {designCode, gender, sizes, colors, expectedPrice,
-        stock, category} = req.body;
-      const details = {
-        designCode: designCode,
-        gender: gender,
-        sizes: sizes,
-        colors: colors,
-        expectedPrice: expectedPrice,
-        stock: stock,
-        category: category,
-        image: req.file.filename,
-        lastEditedBy: req.session.admin.firstName,
-      };
-      const dir = path.join(__dirname,
-          '../public', 'static', 'uploads', category, designCode);
-      fs.mkdir(dir, async (err) => {
-        if (err) {
-        } else {
-          await Design.create(details);
-          res.redirect('/admin/design/category');
-        }
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-  checkCodeExists: (req, res, next)=> {
-    Design.findOne({designCode: req.body.code}).then((doc)=> {
-      if (doc) {
-        res.json({});
-      } else res.json({success: true});
-    }).catch((err)=> next(err));
-  },
   getProductsPage: (req, res, next) => {
     Product.find().then((products)=> {
       res.render('admins/admin-products', {admin: req.session.admin,
         products: products});
-    }).catch((err)=> next(err));
-  },
-  getDesignCodes: (req, res, next) => {
-    Design.distinct('designCode').then((doc)=> {
-      res.json({success: true, codes: doc});
     }).catch((err)=> next(err));
   },
   addProductName: (req, res) => {
@@ -343,27 +291,6 @@ module.exports = {
     } catch (error) {
       next(error);
     }
-  },
-  changeDesignStatus: async (req, res, next)=> {
-    try {
-      const design = await Design.findById(req.body.id);
-      let status;
-      if (design) {
-        design.isActive = !design.isActive;
-        const newDesign = await design.save();
-        status = {status: newDesign.isActive,
-          code: newDesign.designCode};
-      } else {
-        throw new Error('No design document found');
-      }
-      await Product.updateMany(
-          {designCode: status.code},
-          {$set: {isActive: status.status}},
-      );
-      res.json({success: true, status: status.status});
-    } catch (error) {
-      next(error);
-    };
   },
   changeCouponStatus: async (req, res, next)=> {
     try {

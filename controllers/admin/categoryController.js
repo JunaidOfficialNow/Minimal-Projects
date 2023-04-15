@@ -188,6 +188,8 @@ exports.updateCategory = async (req, res, next) => {
 
 exports.categoryImageUpdate = (req, res, next) => {
   const {id, image} = req.body;
+  // need to add some alternatives ot
+  // handle the error cases of deleting the old image
   fs.unlink('public/uploads/category/'+image);
   Category.findByIdAndUpdate(id, {image: req.file.filename},
       {new: true}).then((doc)=> {
