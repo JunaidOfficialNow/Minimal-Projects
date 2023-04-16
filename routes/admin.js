@@ -20,9 +20,9 @@ router.get('/home', middle.checkUserLogin, middle.verifyLogin, admin.getHome);
 router.get('/design/category', middle.verifyLogin, index.getDesignCategory);
 router.get('/design/category/add',
     middle.verifyLogin, index.getAddDesignCategory);
-router.get('/products', middle.verifyLogin, admin.getProductsPage);
-router.get('/product/add', middle.verifyLogin, admin.getAddProductPage);
-router.get('/products/:id', middle.verifyLogin, admin.getEditProductPage);
+router.get('/products', middle.verifyLogin, index.getProductsPage);
+router.get('/product/add', middle.verifyLogin, index.getAddProductPage);
+router.get('/products/:id', middle.verifyLogin, index.getEditProductPage);
 router.get('/coupons', middle.verifyLogin, admin.getCouponsPage);
 router.get('/coupons/:id', middle.verifyLogin, admin.getCoupon);
 router.get('/orders', middle.verifyLogin, admin.getOrdersPage);
@@ -55,9 +55,9 @@ router.post('/design/category/add',
     index.AddDesignCategory);
 router.post('/design/code/unique', middle.verifyLogin, index.checkCodeExists);
 router.post('/get/design/code', middle.verifyLogin, index.getDesignCodes);
-router.post('/product/add', middle.verifyLogin, admin.addProductName);
+router.post('/product/add', middle.verifyLogin, index.addProductName);
 router.post('/add/product/all',
-    middle.verifyLogin, ProductUpload.any(), admin.addProductAll);
+    middle.verifyLogin, ProductUpload.any(), index.addProductAll);
 router.post('/coupons/create', middle.verifyLogin, admin.createCoupon);
 router.post('/order/details', middle.verifyLogin, admin.getOrderDetails);
 
@@ -75,7 +75,7 @@ router.put('/banners', middle.verifyLogin,
     BannerUpload.single('image'), admin.updateBanners);
 
 router.put('/product', middle.verifyLogin,
-    ProductUpload.any(), admin.updateProduct);
+    ProductUpload.any(), index.updateProduct);
 
 router.put('/coupons', middle.verifyLogin, admin.updateCoupons);
 // delete requests
@@ -85,9 +85,9 @@ router.delete('/deleteCategory', middle.verifyLogin, index.deleteCategory);
 // Patch requests
 router.patch('/order/change/status',
     middle.verifyLogin, admin.changeOrderStatus);
-router.patch('/products/COD', middle.verifyLogin, admin.changeProductCODStatus);
+router.patch('/products/COD', middle.verifyLogin, index.changeProductCODStatus);
 router.patch('/products/active',
-    middle.verifyLogin, admin.changeProductActiveStatus);
+    middle.verifyLogin, index.changeProductActiveStatus);
 router.patch('/design/status', middle.verifyLogin, index.changeDesignStatus);
 router.patch('/coupon/status', middle.verifyLogin, admin.changeCouponStatus);
 
