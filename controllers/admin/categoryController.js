@@ -80,10 +80,10 @@ exports.addCatImage = (req, res, next)=>{
     addCategory.image = req.file.filename;
     addCategory.lastEditedBy = req.session.admin.firstName;
     // eslint-disable-next-line max-len
-    fs.mkdir(path.join(__dirname, `../public/static/uploads/${addCategory.name}`),
+    fs.mkdir(path.join(__dirname, `../../public/static/uploads/${addCategory.name}`),
         (error)=> {
           if (error) {
-            res.json({success: false});
+            throw new Error('Oops! Something went wrong');
           } else {
             Category.create(addCategory).then((doc)=>{
               delete req.session.addCategory;
