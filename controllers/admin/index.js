@@ -3,6 +3,7 @@ const userManagement = require('./userController');
 const categoryManagement = require('./categoryController');
 const designCategoryManagement = require('./designController');
 const productManagement = require('./productController');
+const couponManagement = require('./couponController');
 
 module.exports = {
   ...auth,
@@ -10,4 +11,5 @@ module.exports = {
   ...categoryManagement,
   ...designCategoryManagement,
   ...productManagement,
+  ...couponManagement,
 };

@@ -2,7 +2,6 @@
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const orderHelpers = require('../helpers/orderHelpers');
-const Coupon = require('../models/couponModel');
 const Banner = require('../models/bannerModel');
 const User = require('../models/userModel');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -49,21 +48,6 @@ module.exports = {
     const csrfToken = req.csrfToken();
     req.session.adminCsrf = csrfToken;
     res.json(csrfToken);
-  },
-  getCouponsPage: (req, res, next) => {
-    Coupon.find().then((coupons)=> {
-      res.render('admins/admin-coupons', {admin: req.session.admin, coupons});
-    }).catch((error)=> {
-      next(error);
-    });
-  },
-  createCoupon: (req, res, next)=> {
-    req.body.lastEditedBy = req.session.admin.firstName;
-    Coupon.create(req.body).then(()=> {
-      res.json({success: true});
-    }).catch((error)=> {
-      next(error);
-    });
   },
   getOrdersPage: async (req, res)=> {
     try {
@@ -176,36 +160,6 @@ module.exports = {
       } else {
         throw new Error('No records to download');
       };
-    } catch (error) {
-      next(error);
-    }
-  },
-  changeCouponStatus: async (req, res, next)=> {
-    try {
-      const coupon = await Coupon.findById(req.body.id);
-      if (coupon) {
-        coupon.isActive = !coupon.isActive;
-        const newCoupon = await coupon.save();
-        return res.json({success: true, status: newCoupon.isActive});
-      }
-      new Error('Coupon not found');
-    } catch (error) {
-      next(error);
-    };
-  },
-  getCoupon: async (req, res, next)=> {
-    try {
-      const coupon = await Coupon.findById(req.params.id);
-      res.json({success: true, coupon});
-    } catch (error) {
-      next(error);
-    }
-  },
-  updateCoupons: async (req, res, next)=> {
-    try {
-      const {id, ...details} = req.body;
-      await Coupon.findByIdAndUpdate(id, details);
-      res.json({success: true});
     } catch (error) {
       next(error);
     }
