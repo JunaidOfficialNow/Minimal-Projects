@@ -1,5 +1,4 @@
 /* eslint-disable require-jsdoc */
-const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const orderHelpers = require('../helpers/orderHelpers');
 const Banner = require('../models/bannerModel');
@@ -48,63 +47,6 @@ module.exports = {
     const csrfToken = req.csrfToken();
     req.session.adminCsrf = csrfToken;
     res.json(csrfToken);
-  },
-  getOrdersPage: async (req, res)=> {
-    try {
-      const orders = await Order.find({}).populate({
-        path: 'products.product',
-        model: Product,
-      }).populate({
-        path: 'userId',
-        model: User,
-      }).sort({createdAt: -1});
-      res.render('admins/admin-orders', {admin: req.session.admin,
-        page: 'orders', orders});
-    } catch (error) {
-      next(error);
-    }
-  },
-  getOrderDetails: async (req, res, next)=> {
-    try {
-      const order = await Order.findById(req.body.id).populate({
-        path: 'products.product',
-        model: Product,
-      }).populate({
-        path: 'userId',
-        model: User,
-      });
-      if (order) {
-        return res.json({success: true, order});
-      }
-      return res.json({success: false});
-    } catch (error) {
-      next(error);
-    }
-  },
-  getOrderDetailsPage: async (req, res, next)=> {
-    try {
-      const order = await Order.findById(req.params.id).populate({
-        path: 'products.product',
-        model: Product,
-      }).populate({
-        path: 'userId',
-        model: User,
-      });
-      if (order) {
-        res.render('admins/view-order', {admin: req.session.admin,
-          order: order});
-      }
-    } catch (error) {
-      next(error);
-    }
-  },
-  changeOrderStatus: (req, res)=> {
-    const {id, status} = req.body;
-    Order.findByIdAndUpdate(id, {status: status}).then(()=> {
-      res.json({success: true});
-    }).catch((err)=> {
-      next(err);
-    });
   },
   getBannersPage: async (req, res) => {
     const banners = await Banner.find();

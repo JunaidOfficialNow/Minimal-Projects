@@ -23,10 +23,10 @@ router.get('/design/category/add',
 router.get('/products', middle.verifyLogin, index.getProductsPage);
 router.get('/product/add', middle.verifyLogin, index.getAddProductPage);
 router.get('/products/:id', middle.verifyLogin, index.getEditProductPage);
-router.get('/coupons', middle.verifyLogin, admin.getCouponsPage);
-router.get('/coupons/:id', middle.verifyLogin, admin.getCoupon);
-router.get('/orders', middle.verifyLogin, admin.getOrdersPage);
-router.get('/order/details/:id', middle.verifyLogin, admin.getOrderDetailsPage);
+router.get('/coupons', middle.verifyLogin, index.getCouponsPage);
+router.get('/coupons/:id', middle.verifyLogin, index.getCoupon);
+router.get('/orders', middle.verifyLogin, index.getOrdersPage);
+router.get('/order/details/:id', middle.verifyLogin, index.getOrderDetailsPage);
 router.get('/banners', middle.verifyLogin, admin.getBannersPage);
 router.get('/banners/:name', middle.verifyLogin, admin.getEditBannersPage);
 router.get('/banners/name/:name', middle.verifyLogin, admin.checkNameExists);
@@ -58,8 +58,8 @@ router.post('/get/design/code', middle.verifyLogin, index.getDesignCodes);
 router.post('/product/add', middle.verifyLogin, index.addProductName);
 router.post('/add/product/all',
     middle.verifyLogin, ProductUpload.any(), index.addProductAll);
-router.post('/coupons/create', middle.verifyLogin, admin.createCoupon);
-router.post('/order/details', middle.verifyLogin, admin.getOrderDetails);
+router.post('/coupons/create', middle.verifyLogin, index.createCoupon);
+router.post('/order/details', middle.verifyLogin, index.getOrderDetails);
 
 // put requests
 
@@ -77,18 +77,18 @@ router.put('/banners', middle.verifyLogin,
 router.put('/product', middle.verifyLogin,
     ProductUpload.any(), index.updateProduct);
 
-router.put('/coupons', middle.verifyLogin, admin.updateCoupons);
+router.put('/coupons', middle.verifyLogin, index.updateCoupons);
 // delete requests
 
 router.delete('/deleteCategory', middle.verifyLogin, index.deleteCategory);
 
 // Patch requests
 router.patch('/order/change/status',
-    middle.verifyLogin, admin.changeOrderStatus);
+    middle.verifyLogin, index.changeOrderStatus);
 router.patch('/products/COD', middle.verifyLogin, index.changeProductCODStatus);
 router.patch('/products/active',
     middle.verifyLogin, index.changeProductActiveStatus);
 router.patch('/design/status', middle.verifyLogin, index.changeDesignStatus);
-router.patch('/coupon/status', middle.verifyLogin, admin.changeCouponStatus);
+router.patch('/coupon/status', middle.verifyLogin, index.changeCouponStatus);
 
 module.exports = router;
