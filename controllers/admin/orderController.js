@@ -1,6 +1,8 @@
 const Order = require('../../models/orderModel');
 const Product = require('../../models/productModel');
 const User = require('../../models/userModel');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const fs = require('fs');
 
 exports.getOrdersPage = async (req, res)=> {
   try {
@@ -62,4 +64,36 @@ exports.changeOrderStatus = (req, res, next)=> {
     next(err);
   });
 };
+
+exports.downloadOrdersReport = async (req, res, next)=> {
+  try {
+    const orders = await Order.find({status: req.params.status});
+    if (orders.length > 0) {
+      const csvWriter = createCsvWriter({
+        path: 'orders.csv',
+        header: [
+          {id: 'orderId', title: 'Order ID'},
+          {id: 'userId', title: 'Customer ID'},
+          {id: 'status', title: 'Status'},
+          {id: 'paymentMethod', title: 'payment'},
+          {id: 'coupon', title: 'Coupon'},
+          {id: 'discount', title: 'dicount'},
+          {id: 'subTotal', title: 'Sub Total'},
+          {id: 'totalAmount', title: 'Total Amount'},
+        ],
+      });
+      await csvWriter.writeRecords(orders);
+      res.download('orders.csv', () => {
+        fs.unlink('orders.csv', (err) => {
+          if (err) next(err);
+        });
+      });
+    } else {
+      throw new Error('No records to download');
+    };
+  } catch (error) {
+    next(error);
+  }
+};
+
 
