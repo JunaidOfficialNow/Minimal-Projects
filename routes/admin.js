@@ -1,7 +1,7 @@
 const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
-const admin = require('../controllers/adminController');
+const getCsrf = require('../helpers/csrfHelpers');
 const index = require('../controllers/admin/index');
 const {csrfProtection, requestMethod} =
  require('../middlewares/commonMiddlewares');
@@ -14,9 +14,10 @@ router.use(requestMethod);
 
 // get requests
 router.get('/', middle.checkUserLogin, middle.checkLogin, index.getLogin);
-router.get('/csrf', middle.verifyLogin, csrfProtection, admin.getCsrf);
+router.get('/csrf', middle.verifyLogin, csrfProtection, getCsrf);
 router.get('/logout', middle.verifyLogin, index.DoLogout);
-router.get('/home', middle.checkUserLogin, middle.verifyLogin, admin.getHome);
+router.get('/home', middle.checkUserLogin, middle.verifyLogin,
+    index.getDashboard);
 router.get('/design/category', middle.verifyLogin, index.getDesignCategory);
 router.get('/design/category/add',
     middle.verifyLogin, index.getAddDesignCategory);
@@ -27,12 +28,12 @@ router.get('/coupons', middle.verifyLogin, index.getCouponsPage);
 router.get('/coupons/:id', middle.verifyLogin, index.getCoupon);
 router.get('/orders', middle.verifyLogin, index.getOrdersPage);
 router.get('/order/details/:id', middle.verifyLogin, index.getOrderDetailsPage);
-router.get('/banners', middle.verifyLogin, admin.getBannersPage);
-router.get('/banners/:name', middle.verifyLogin, admin.getEditBannersPage);
-router.get('/banners/name/:name', middle.verifyLogin, admin.checkNameExists);
-router.get('/sales-and-revenue', middle.verifyLogin, admin.salesAndRevenue);
+router.get('/banners', middle.verifyLogin, index.getBannersPage);
+router.get('/banners/:name', middle.verifyLogin, index.getEditBannersPage);
+router.get('/banners/name/:name', middle.verifyLogin, index.checkNameExists);
+router.get('/sales-and-revenue', middle.verifyLogin, index.salesAndRevenue);
 router.get('/sales-report/:status',
-    middle.verifyLogin, admin.downloadSalesReport);
+    middle.verifyLogin, index.downloadOrdersReport);
 // Post requests
 
 router.post('/', index.DoLogin);
@@ -72,7 +73,7 @@ router.put('/categoryUpdate', middle.verifyLogin,
 router.put('/categoryImageUpdate', middle.verifyLogin, csrfProtection,
     middle.checkCsrf, uploadOptions.single('file'), index.categoryImageUpdate);
 router.put('/banners', middle.verifyLogin,
-    BannerUpload.single('image'), admin.updateBanners);
+    BannerUpload.single('image'), index.updateBanners);
 
 router.put('/product', middle.verifyLogin,
     ProductUpload.any(), index.updateProduct);
