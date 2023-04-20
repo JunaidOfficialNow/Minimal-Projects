@@ -2,7 +2,7 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const getCsrf = require('../helpers/csrfHelpers');
-const index = require('../controllers/admin/index');
+const index = require('../controllers/admin');
 const {csrfProtection, requestMethod} =
  require('../middlewares/commonMiddlewares');
 const middle = require('../middlewares/adminMiddlewares');
