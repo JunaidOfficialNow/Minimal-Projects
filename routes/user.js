@@ -2,6 +2,7 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const user = require('../controllers/userController');
+const index = require('../controllers/user');
 const {ProfileUpload} = require('../services/multer');
 const {checkLogin, verifyLogin, checkAdminLoggedIn} =
  require('../middlewares/userMiddlewares');
@@ -9,8 +10,8 @@ const {checkLogin, verifyLogin, checkAdminLoggedIn} =
 
 // get requests
 router.get('/', checkAdminLoggedIn, user.getHomePage);
-router.get('/login', checkAdminLoggedIn, checkLogin, user.getLoginPage);
-router.get('/logout', verifyLogin, user.DoLogout);
+router.get('/login', checkAdminLoggedIn, checkLogin, index.getLoginPage);
+router.get('/logout', verifyLogin, index.DoLogout);
 router.get('/shop', user.getShopPage);
 router.get('/product/:id', user.GetProductPage);
 router.get('/my-profile', verifyLogin, user.GetProfilePage);
@@ -29,11 +30,11 @@ router.get('/wishlist', verifyLogin, user.getWishlist);
 router.get('/checkout/check/address', verifyLogin, user.checkAddress);
 
 // post requests
-router.post('/signup/email', user.handleEmail);
-router.post('/signup/otp', user.handleOtp);
-router.post('/signup/resend-otp', user.handleResendOtp);
-router.post('/signup/names', user.handleNames);
-router.post('/signup/password', user.handlePassword);
+router.post('/signup/email', index.handleEmail);
+router.post('/signup/otp', index.handleOtp);
+router.post('/signup/resend-otp', index.handleResendOtp);
+router.post('/signup/names', index.handleNames);
+router.post('/signup/password', index.handlePassword);
 router.post('/address', verifyLogin, user.addAddress);
 router.post('/get/address', verifyLogin, user.getAddress);
 router.post('/add/to/cart', verifyLogin, user.addToCart);
@@ -49,7 +50,7 @@ router.post('/order/details', verifyLogin, user.getOrderDetails);
 router.post('/forgotPassword', user.forgotPassword);
 router.post('/wishlist', verifyLogin, user.addWishlist);
 // post requests
-router.post('/login', user.DoLogin);
+router.post('/login', index.DoLogin);
 
 
 // route endpoints
