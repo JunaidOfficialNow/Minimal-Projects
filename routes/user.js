@@ -24,10 +24,10 @@ router.get('/products', index.getCertainProducts);
 router.get('/search/:type/:value', index.getSearchResults);
 router.get('/results/:type/:value', index.getResults);
 router.get('/email-check', verifyLogin, user.checkEmail);
-router.get('/addresses/:id', verifyLogin, user.getOneEditAddress);
+router.get('/addresses/:id', verifyLogin, index.getOneEditAddress);
 router.get('/password/:password', user.checkPasswordExists);
 router.get('/wishlist', verifyLogin, user.getWishlist);
-router.get('/checkout/check/address', verifyLogin, user.checkAddress);
+router.get('/checkout/check/address', verifyLogin, index.checkAddress);
 
 // post requests
 router.post('/signup/email', index.handleEmail);
@@ -35,17 +35,17 @@ router.post('/signup/otp', index.handleOtp);
 router.post('/signup/resend-otp', index.handleResendOtp);
 router.post('/signup/names', index.handleNames);
 router.post('/signup/password', index.handlePassword);
-router.post('/address', verifyLogin, user.addAddress);
-router.post('/get/address', verifyLogin, user.getAddress);
+router.post('/address', verifyLogin, index.addAddress);
+router.post('/get/address', verifyLogin, index.getAddress);
 router.post('/add/to/cart', verifyLogin, user.addToCart);
 router.post('/checkout', verifyLogin, user.checkout);
-router.post('/checkout/get/one/address', verifyLogin, user.getOneAddress);
-router.post('/checkout/get/address', verifyLogin, user.getAddress);
+router.post('/checkout/get/one/address', verifyLogin, index.getOneAddress);
+router.post('/checkout/get/address', verifyLogin, index.getAddress);
 router.post('/checkout/add/coupon', verifyLogin, user.addCoupon);
 router.post('/checkout/payment/online', verifyLogin, user.createPaymentOnline);
 router.post('/checkout/verify/payment', verifyLogin, user.verifyPayment);
 router.post('/checkout/check/stock', verifyLogin, user.verifyStock);
-router.post('/checkout/address', verifyLogin, user.addAddress);
+router.post('/checkout/address', verifyLogin, index.addAddress);
 router.post('/order/details', verifyLogin, user.getOrderDetails);
 router.post('/forgotPassword', user.forgotPassword);
 router.post('/wishlist', verifyLogin, user.addWishlist);
@@ -60,7 +60,7 @@ router.route('/reset-password/:token')
 
 // delete requests
 
-router.delete('/delete/address', verifyLogin, user.deleteAddress);
+router.delete('/delete/address', verifyLogin, index.deleteAddress);
 router.delete('/delete/account', verifyLogin, user.deleteAccount);
 router.delete('/cart/remove/from/cart', verifyLogin, user.removeFromCart);
 
@@ -72,7 +72,7 @@ router.put('/cart/increment/quantity', verifyLogin, user.incrementQuantity);
 router.put('/cart/decrement/quantity', verifyLogin, user.decrementQuantity);
 router.put('/cart/change/size', verifyLogin, user.changeSize);
 router.put('/profile', verifyLogin, user.editProfile);
-router.put('/addresses', verifyLogin, user.editAddress);
+router.put('/addresses', verifyLogin, index.editAddress);
 
 // patch requests
 
