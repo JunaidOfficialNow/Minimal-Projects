@@ -16,7 +16,7 @@ router.get('/shop', index.getShopPage);
 router.get('/product/:id', index.getProductPage);
 router.get('/my-profile', verifyLogin, user.getProfilePage);
 router.get('/get/image/:image', verifyLogin, user.GetImage);
-router.get('/cart', verifyLogin, user.getCart);
+router.get('/cart', verifyLogin, index.getCart);
 router.get('/checkout/:token', verifyLogin, user.getCheckout);
 router.get('/order/success/:orderId', verifyLogin, user.getSuccessOrder);
 router.get('/my-orders', verifyLogin, user.getOrderPage);
@@ -37,7 +37,7 @@ router.post('/signup/names', index.handleNames);
 router.post('/signup/password', index.handlePassword);
 router.post('/address', verifyLogin, index.addAddress);
 router.post('/get/address', verifyLogin, index.getAddress);
-router.post('/add/to/cart', verifyLogin, user.addToCart);
+router.post('/add/to/cart', verifyLogin, index.addToCart);
 router.post('/checkout', verifyLogin, user.checkout);
 router.post('/checkout/get/one/address', verifyLogin, index.getOneAddress);
 router.post('/checkout/get/address', verifyLogin, index.getAddress);
@@ -62,15 +62,15 @@ router.route('/reset-password/:token')
 
 router.delete('/delete/address', verifyLogin, index.deleteAddress);
 router.delete('/delete/account', verifyLogin, user.deleteAccount);
-router.delete('/cart/remove/from/cart', verifyLogin, user.removeFromCart);
+router.delete('/cart/remove/from/cart', verifyLogin, index.removeFromCart);
 
 // put requests
 
 router.put('/add/image', verifyLogin,
     ProfileUpload.any(), user.addImage);
-router.put('/cart/increment/quantity', verifyLogin, user.incrementQuantity);
-router.put('/cart/decrement/quantity', verifyLogin, user.decrementQuantity);
-router.put('/cart/change/size', verifyLogin, user.changeSize);
+router.put('/cart/increment/quantity', verifyLogin, index.incrementQuantity);
+router.put('/cart/decrement/quantity', verifyLogin, index.decrementQuantity);
+router.put('/cart/change/size', verifyLogin, index.changeSize);
 router.put('/profile', verifyLogin, user.editProfile);
 router.put('/addresses', verifyLogin, index.editAddress);
 
