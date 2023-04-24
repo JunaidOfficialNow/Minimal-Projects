@@ -26,7 +26,7 @@ router.get('/results/:type/:value', index.getResults);
 router.get('/email-check', verifyLogin, user.checkEmail);
 router.get('/addresses/:id', verifyLogin, index.getOneEditAddress);
 router.get('/password/:password', user.checkPasswordExists);
-router.get('/wishlist', verifyLogin, user.getWishlist);
+router.get('/wishlist', verifyLogin, index.getWishlist);
 router.get('/checkout/check/address', verifyLogin, index.checkAddress);
 
 // post requests
@@ -48,7 +48,7 @@ router.post('/checkout/check/stock', verifyLogin, user.verifyStock);
 router.post('/checkout/address', verifyLogin, index.addAddress);
 router.post('/order/details', verifyLogin, user.getOrderDetails);
 router.post('/forgotPassword', user.forgotPassword);
-router.post('/wishlist', verifyLogin, user.addWishlist);
+router.post('/wishlist', verifyLogin, index.addWishlist);
 // post requests
 router.post('/login', index.DoLogin);
 
@@ -77,7 +77,7 @@ router.put('/addresses', verifyLogin, index.editAddress);
 // patch requests
 
 router.patch('/order/change/status', verifyLogin, user.changeStatusOrder);
-router.patch('/wishlist', verifyLogin, user.removeFromWishlist);
+router.patch('/wishlist', verifyLogin, index.removeFromWishlist);
 
 /* ----------------------------------------- */
 
