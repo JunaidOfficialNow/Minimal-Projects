@@ -39,6 +39,13 @@
       Please login to continue
     </div>
     <% } %>
+
+    <% if (messages) { %>
+      <div class="popup" style="border-color: red;color: red;right: 26%;">
+        <%= messages %>
+      </div>
+      <% } %>
+
    
   <div class="main">
     <div class="container b-container" id="b-container">

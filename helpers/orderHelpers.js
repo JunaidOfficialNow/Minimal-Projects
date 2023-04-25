@@ -1,69 +1,4 @@
 const Order = require('../models/orderModel');
-const Product = require('../models/productModel');
-const User = require('../models/userModel');
-
-const createOrder = async function(details) {
-  return Order.create(details).then((order)=> {
-    return Promise.resolve(order);
-  }).catch((error)=> {
-    return Promise.reject(error);
-  });
-};
-
-const getOrder = async function(orderId) {
-  return await Order.findOne({orderId: orderId}).populate({
-    path: 'products.product',
-    model: Product,
-  });
-};
-
-const getOrders = async function(userId) {
-  return await Order.find({userId: userId})
-      .populate({
-        path: 'products.product',
-        model: Product,
-      }).sort({createdAt: -1});
-};
-
-const getOneOrder = async function(id) {
-  return await Order.findById(id).populate({
-    path: 'products.product',
-    model: Product,
-  });
-};
-
-const getOneOrderAdmin = async function(id) {
-  return await Order.findById(id).populate({
-    path: 'products.product',
-    model: Product,
-  }).populate({
-    path: 'userId',
-    model: User,
-  });
-};
-
-const getAllOrders = async () => {
-  return await Order.find({}).populate({
-    path: 'products.product',
-    model: Product,
-  }).populate({
-    path: 'userId',
-    model: User,
-  }).sort({createdAt: -1});
-};
-
-const changeOrderStatus = async function(id, status) {
-  return await Order.findByIdAndUpdate(id, {status: status}).then(()=> {
-    return Promise.resolve();
-  });
-};
-
-const getLimitedOrders = async function() {
-  return await Order.find({}).populate({
-    path: 'userId',
-    model: User,
-  }).sort({createdAt: -1}).limit(5);
-};
 
 const todaySale = async function() {
   const today = new Date();
@@ -218,26 +153,10 @@ const sizeAndSaleReport = async function() {
   });
 };
 
-const getSalesReport= async function(status) {
-  try {
-    return await Order.find({status: status});
-  } catch (error) {
-    return Promise.reject(error);
-  };
-};
 
 module.exports = {
-  createOrder,
-  getOrder,
-  getOrders,
-  getOneOrder,
-  getAllOrders,
-  getOneOrderAdmin,
-  changeOrderStatus,
   todaySale,
   totalSale,
   salesAndRevenueChart,
   sizeAndSaleReport,
-  getLimitedOrders,
-  getSalesReport,
 };

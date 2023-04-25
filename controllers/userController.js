@@ -1,17 +1,14 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const sendEmail = require('../services/email-otp');
-const userHelpers = require('../helpers/userHelpers');
-const productHelpers = require('../helpers/productHelpers');
-const designHelpers = require('../helpers/designHelpers');
-const addressHelpers = require('../helpers/addressHelpers');
-const categoryHelpers = require('../helpers/categoryHelpers');
-const bannerHelpers = require('../helpers/bannerHelpers');
-const wishlistHelpers = require('../helpers/wishlistHelpers');
-const cartHelpers = require('../helpers/cartHelpers');
-const couponHelpers = require('../helpers/couponHelpers');
-const orderHelpers = require('../helpers/orderHelpers');
+const Order = require('../models/orderModel');
+const Cart = require('../models/cartModel');
+const Product = require('../models/productModel');
+const Coupon = require('../models/couponModel');
+const Banner = require('../models/bannerModel');
 const Razorpay = require('razorpay');
+const Address = require('../models/addressModel');
+const User = require('../models/userModel');
 
 const instance = new Razorpay({
   key_id: process.env.RAZ_KEY_ID,
@@ -21,262 +18,60 @@ const instance = new Razorpay({
 
 module.exports = {
   getHomePage: async (req, res, next) => {
-    const products = await productHelpers.getNewProducts();
-    const banners = await bannerHelpers.getBanners();
+    const products = await Product.find().sort({createdAt: -1}).limit(8);
+    const banners = await Banner.find();
     res.render('users/user-home',
         {user: req.session.user, page: 'home', products, banners});
   },
-  getLoginPage: (req, res)=>{
-    const reset = req.session.passwordReset;
-    const signin = req.session.signin;
-    delete req.session.passwordReset;
-    delete req.session.signin;
-    res.render('users/user-login', {reset, signin});
-  },
-  handleEmail: (req, res)=>{
-    const email = req.body.email;
-    userHelpers.checkEmailExist(email).then((user)=>{
-      if (user) {
-        res.json({user: true});
-      } else {
-        sendEmail.sendOtp(email).then((otp)=>{
-          console.log(otp);
-          req.session.userDetails = {
-            email: email,
-            otp: otp,
-          };
-          res.json({success: true});
-        }).catch((err)=>{
-          console.log(err);
-          res.json({success: false});
-        });
-      };
-    });
-  },
-  handleOtp: (req, res)=>{
-    if (req.body.otp == req.session.userDetails.otp) {
-      delete req.session.userDetails.otp;
-      res.json({success: true});
-    } else {
-      res.json({success: false});
-    };
-  },
-  handleNames: (req, res, next)=>{
-    const lastName = req.body.lastName;
-    req.session.userDetails.firstName = req.body.firstName;
-    req.session.userDetails.lastName = lastName;
-    if (lastName.length > 0) {
-      req.session.userDetails.isLastNameAdded = true;
-    }
-    res.json({});
-  },
-  handlePassword: async (req, res, next)=>{
-    const pass = await bcrypt.hash(req.body.password, 10);
-    const userDetails = req.session.userDetails;
-    userDetails.hashPassword = pass;
-    userHelpers.addUser(userDetails).then((user)=>{
-      delete req.session.userDetails;
-      req.session.user = user;
-      res.json({success: true});
-    }).catch((err)=>{
-      console.log(err);
-      res.json({success: false});
-    });
-  },
-  handleResendOtp: (req, res, next)=>{
-    sendEmail.resendOtp(req.session.userDetails.email).then((otp)=>{
-      console.log(otp);
-      req.session.userDetails.otp = otp;
-      res.json({success: true});
-    }).catch((err)=>{
-      res.json({success: false});
-    });
-  },
-  DoLogin: (req, res, next)=>{
-    const {email, password} = req.body;
-    userHelpers.checkEmailExist(email).then(async (user)=>{
-      if (user) {
-        if (user.isBlocked) {
-          res.json({blocked: true});
-        } else {
-          const passMatch = await bcrypt.compare(password, user.hashPassword);
-          if (passMatch) {
-            req.session.user = user;
-            res.json({success: true});
-          } else {
-            res.json({user: true});
-          }
-        };
-      } else {
-        res.json({success: false});
-      }
-    });
-  },
-  DoLogout: (req, res, next)=>{
-    req.session.destroy();
-    res.redirect('/');
-  },
-  getShopPage: async (req, res)=> {
-    const categoryNames = await categoryHelpers.getCategoryNames();
-    const colors = await designHelpers.getColors();
-    const sizes = await designHelpers.getSizes();
-    productHelpers.getProductsCount().then((count)=> {
-      productHelpers.getLimitedProducts(req.query.page).then((products)=>{
-        res.render('users/user-product', {user: req.session.user,
-          products, count: count, page: 'shop',
-          categoryNames, colors: colors.slice(0, 10), sizes});
-      }).catch((error)=>{
-        console.error(error);
-      });
-    });
-  },
-  GetProductPage: async (req, res, next)=> {
-    try {
-      const product = await productHelpers.getProductDetails(req.params.id);
-      const colors= await designHelpers.getDesignColors(product.designCode);
-      const categoryRelatedProducts =
-         await productHelpers.getCategoryRelatedProducts(product.category);
-      const colorRelatedProduct =
-       await productHelpers.getColorRelatedProduct(product.broadColor);
-      const designRelatedProduct =
-       await productHelpers.getDesignRelatedProduct(product.designCode);
-      res.render('users/single-product', {user: req.session.user,
-        product: product, colors: colors[0].colors, page: 'shop',
-        categoryRelatedProducts, colorRelatedProduct, designRelatedProduct});
-    } catch (error) {
-      next(error);
-    };
-  },
-  GetProfilePage: (req, res)=> {
+  getProfilePage: (req, res)=> {
     res.render('users/user-profile', {page: 'profile', user: req.session.user});
   },
-  addAddress: (req, res)=> {
-    const {id, address} = req.body;
-    addressHelpers.addAddress(id, address).then((result)=>{
-      if (result.new) {
-        userHelpers.changeAddressStatus(id).then(()=> {
-          req.session.user.isAddressAdded = true;
-          res.json({success: true, new: true, address: result.doc});
-        });
-      } else {
-        res.json({success: true, address: result.doc});
-      }
-    }).catch((err)=>{
-      res.json({error: err.message});
-    });
-  },
-  getAddress: (req, res) => {
-    addressHelpers.getAddress(req.body.id).then((address)=> {
-      res.json(address);
-    }).catch((error)=> {
-      res.json({error: error.message});
-    });
-  },
-  deleteAddress: (req, res) => {
-    const {id, addressId} = req.body;
-    addressHelpers.deleteAddress(id, addressId).then(()=> {
+  addImage: async (req, res, next)=> {
+    try {
+      const doc = await User.findById(req.session.user._id);
+      doc.profilePicture = req.files[0].filename;
+      doc.isProfilePictureAdded = true;
+      await doc.save();
+      req.session.user.profilePicture = req.files[0].filename;
+      req.session.user.isProfilePictureAdded = true;
       res.json({success: true});
-    }).catch((err) => {
-      res.json({error: err.message});
-    });
-  },
-  addImage: (req, res)=> {
-    userHelpers
-        .addProfileImage(req.files[0].filename, req.session.user._id)
-        .then(()=> {
-          req.session.user.profilePicture = req.files[0].filename;
-          req.session.user.isProfilePictureAdded = true;
-          res.json({success: true});
-        });
+    } catch (error) {
+      next(error);
+    }
   },
   GetImage: (req, res) => {
     res.sendFile(`../profiles/${req.params.image}`, {root: __dirname});
   },
-  deleteAccount: (req, res) => {
-    userHelpers.deleteAccount(req.body.id).then(()=> {
-      addressHelpers.deleteAccount(req.body.id);
+  deleteAccount: async (req, res) => {
+    try {
+      const id = req.body.id;
+      await User.findByIdAndDelete(id);
+      await Address.findByIdAndDelete(id);
       delete req.session.user;
       res.json({success: true});
-    });
-  },
-  getCart: (req, res, next)=> {
-    cartHelpers.getCart(req.session.user._id).then((products)=> {
-      const token = crypto.randomBytes(8).toString('hex').slice(0, 8);
-      req.session.checkOutToken = token;
-      console.log(req.session, 76543);
-      res.render('users/user-cart',
-          {user: req.session.user, page: 'cart', products: products, token});
-    }).catch((err)=> {
-      next(err);
-    });
-  },
-  addToCart: (req, res)=> {
-    const {proId, userId} = req.body;
-    cartHelpers.addToCart(proId, userId).then((result)=> {
-      if (result.product) {
-        res.json({success: true, product: true});
-      } else {
-        userHelpers.incCartCount(userId).then(()=> {
-          req.session.user.cartCount += 1;
-          res.json({success: true});
-        });
-      }
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
-  },
-  removeFromCart: (req, res) => {
-    cartHelpers.removeFromCart(req.body.id, req.session.user._id).then(()=> {
-      userHelpers.decCartCount(req.session.user._id).then(()=> {
-        req.session.user.cartCount += -1;
-        res.json({success: true});
-      }).catch((err)=> {
-        res.json({error: err.message});
-      });
-    });
-  },
-  incrementQuantity: (req, res) => {
-    cartHelpers.
-        changeQuantity(req.session.user._id, req.body.id, 1)
-        .then(() => res.json({success: true}));
-  },
-  decrementQuantity: (req, res)=> {
-    cartHelpers.
-        changeQuantity(req.session.user._id, req.body.id, -1)
-        .then(() => res.json({success: true}));
-  },
-  changeSize: (req, res)=>{
-    const {id, size} = req.body;
-    cartHelpers.changeSize(id, size, req.session.user._id).then(()=> {
-      res.json({success: true});
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
-  },
-  getCheckout: (req, res, next) => {
-    if (req.session.checkOutToken === req.params.token) {
-      const user = req.session.user;
-      addressHelpers.getAddress(user._id).then((address)=> {
-        cartHelpers.getCart(user._id).then((products)=> {
-          res.render('users/user-checkout', {
-            user,
-            page: 'checkout',
-            address: address[0],
-            products,
-          });
-        });
-      });
-    } else {
-      res.redirect('/cart');
+    } catch (error) {
+      next(error);
     }
   },
-  getOneAddress: (req, res)=> {
-    const {address, userId} = req.body;
-    addressHelpers.getOneAddress(address, userId).then((address)=> {
-      res.json(address);
-    }).catch((error)=> {
-      res.json({error: error.message});
-    });
+  getCheckout: async (req, res, next) => {
+    try {
+      if (req.session.checkOutToken === req.params.token) {
+        const user = req.session.user;
+        const address = await Address.findById(user._id);
+        const cart = await Cart.findById(user._id).populate({
+          path: 'products._id',
+          model: Product,
+        });
+        res.render('users/user-checkout',
+            {user, page: 'checkout',
+              address: address?.addresses[0],
+              products: cart?.products ?? []});
+      } else {
+        res.redirect('/cart');
+      }
+    } catch (error) {
+      next(error);
+    }
   },
   checkout: async (req, res, next) =>{
     try {
@@ -289,9 +84,19 @@ module.exports = {
         req.session.orderId = orderId;
       }
       if (coupon !== 'No coupon applied') {
-        await couponHelpers.changeStock(coupon, -1);
+        await Coupon.updateOne({couponCode: coupon},
+            {$inc: {usageLimit: -1}});
       }
-      const products = await cartHelpers.getCart(req.session.user._id);
+      const cart = await Cart.findById(req.session.user._id).populate({
+        path: 'products._id',
+        model: Product,
+      });
+      const products= cart?.products ?? [];
+      // clearing cart items
+      if (cart) {
+        cart.products = [];
+        await cart.save();
+      }
       const details = {
         orderId: req.session.orderId,
         userId: req.session.user._id,
@@ -302,19 +107,23 @@ module.exports = {
         discount,
         coupon,
         products: products.map((item) => ({
-          product: item._id._id,
-          quantity: item.quantity,
-          size: item.size,
-          price: Number(item._id.price),
+          product: item?._id?._id,
+          quantity: item?.quantity,
+          size: item?.size,
+          price: Number(item?._id?.price),
         })),
       };
       details.products.forEach(async (item)=> {
         const {product, quantity, size} = item;
-        await productHelpers.changeStock(product, -(Number(quantity)), size);
+        const filter = {_id: product};
+        const update = {$inc: {'stock': -(Number(quantity)),
+          'sizes.$[elem].stock': -(Number(quantity))}};
+        const options = {arrayFilters: [{'elem.size': size}]};
+        await Product.updateOne( filter, update, options);
       });
-      await orderHelpers.createOrder(details);
-      await cartHelpers.clearCart(req.session.user._id);
-      await userHelpers.changeCartCount(req.session.user._id);
+      await Order.create(details);
+      await User.findByIdAndUpdate(req.session.user._id,
+          {$set: {cartCount: 0}});
       req.session.user.cartCount = 0;
       res.redirect(`/order/success/${req.session.orderId}`);
     } catch (error) {
@@ -324,7 +133,7 @@ module.exports = {
   addCoupon: async (req, res) => {
     const {coupon, total} = req.body;
     try {
-      const couponData = await couponHelpers.getCoupon(coupon);
+      const couponData = await Coupon.findOne({couponCode: coupon});
       if (!couponData) {
         return res.json({success: false});
       }
@@ -352,11 +161,15 @@ module.exports = {
       }
       const discount =
        Math.min(Number(total) * (discountPercentage / 100), offerUpto);
-      await cartHelpers.addCoupon(couponCode, discount, req.session.user._id);
+      const cart = await Cart.findById(req.session.user._id);
+      if (cart) {
+        cart.coupon = couponCode;
+        cart.discount = discount;
+        await cart.save();
+      }
       return res.json({success: true, discount, couponCode});
     } catch (err) {
-      console.error(err);
-      return res.json({success: false});
+      next(err);
     }
   },
   createPaymentOnline: (req, res)=> {
@@ -399,7 +212,11 @@ module.exports = {
   getSuccessOrder: async (req, res, next)=> {
     if (req.session.orderId === req.params.orderId) {
       delete req.session.orderId;
-      const order = await orderHelpers.getOrder(req.params.orderId);
+      const order =
+         await Order.findOne({orderId: req.params.orderId}).populate({
+           path: 'products.product',
+           model: Product,
+         });
       if (order) {
         res.render('users/order-success', {user: req.session.user,
           order: order,
@@ -410,118 +227,80 @@ module.exports = {
     }
   },
   verifyStock: async (req, res, next) => {
-    const products = await cartHelpers.getCart(req.session.user._id);
-    const results = await Promise.all(products.map(async (product) => {
-      const stock =
-       await productHelpers.getStock(product._id._id, product.size);
-      if (Number(stock) < Number(product.quantity)) {
-        return product._id.name;
+    try {
+      const cart = await Cart.findById(req.session.user._id).populate({
+        path: 'products._id',
+        model: Product,
+      });
+      const products = cart?.products ?? [];
+      const results = await Promise.all(products.map(async (product) => {
+        const productEach = await Product.findById(product._id._id);
+        let stock = 0;
+        if (productEach) {
+          const matchingSize =
+          productEach.sizes.find((size) => size.size === product.size);
+          if (matchingSize) {
+            stock = matchingSize.stock;
+          }
+        }
+        if (Number(stock) < Number(product.quantity)) {
+          return product._id.name;
+        } else {
+          return null;
+        }
+      }));
+      const insufficientProducts = results.filter((result) => result !== null);
+      if (insufficientProducts.length > 0) {
+        return res.json({success: false, products: insufficientProducts});
       } else {
-        return null;
+        return res.json({success: true});
       }
-    }));
-    const insufficientProducts = results.filter((result) => result !== null);
-    if (insufficientProducts.length > 0) {
-      return res.json({success: false, products: insufficientProducts});
-    } else {
-      return res.json({success: true});
+    } catch (error) {
+      next(error);
     }
   },
   getOrderPage: async (req, res)=> {
-    const orders = await orderHelpers.getOrders(req.session.user._id);
+    const orders = await Order.find({userId: req.session.user._id})
+        .populate({
+          path: 'products.product',
+          model: Product,
+        }).sort({createdAt: -1});
     res.render('users/my-orders',
         {user: req.session.user, page: 'order', orders});
   },
   getOrderDetails: async (req, res)=> {
-    const order = await orderHelpers.getOneOrder(req.body.id);
+    const order = await Order.findById(req.body.id).populate({
+      path: 'products.product',
+      model: Product,
+    });
     if (order) {
       return res.json({success: true, order});
     }
     return res.json({success: false});
   },
-  changeStatusOrder: (req, res)=> {
-    const {id, status, products} = req.body;
-    if (status === 'Cancelled') {
-      products.forEach((product)=>{
-        // eslint-disable-next-line max-len
-        productHelpers.changeStock(product.product._id, Number(product.quantity), product.size);
-      });
-    }
-    orderHelpers.changeOrderStatus(id, status).then(()=> {
+  changeStatusOrder: async (req, res, next)=> {
+    try {
+      const {id, status, products} = req.body;
+      if (status === 'Cancelled') {
+        products.forEach(async (product)=>{
+          // eslint-disable-next-line max-len
+          const filter = {_id: product.product._id};
+          const update = {$inc: {'stock': Number(product.quantity),
+            'sizes.$[elem].stock': Number(product.quantity)}};
+          const options = {arrayFilters: [{'elem.size': product.size}]};
+          await Product.updateOne( filter, update, options);
+        });
+      }
+      await Order.findByIdAndUpdate(id, {status: status});
       res.json({success: true});
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
-  },
-  getCertainProducts: async (req, res)=> {
-    const {category, color, size, min, max} = req.query;
-    const details = {};
-    if (max.trim().length > 0 && min.trim().length > 0) {
-      details.price = {$lte: Number(max.trim()), $gte: Number(min.trim())};
-    };
-    if (category.trim().length > 0 && category.trim() != 'ALL') {
-      details.category = category.trim();
+    } catch (error) {
+      next(error);
     }
-    if (color.trim().length > 0 && color.trim() != 'ALL') {
-      details.exactColor = color.trim();
-    }
-    if (size.trim().length > 0 && size.trim() != 'ALL') {
-      details.sizes = {$elemMatch: {size: size.trim()}};
-    }
-    const products = await productHelpers.filterProducts(details);
-    res.json({success: true, products, user: req.session?.user?._id});
-  },
-  getSearchResults: async (req, res) => {
-    const {type, value} = req.params;
-    if (type === 'category') {
-      const categories = await productHelpers.getCategoryNames(value);
-      return res.json({success: true, categories});
-    }
-    if (type === 'products') {
-      const products = await productHelpers.getProductsNames(value);
-      return res.json({success: true, products: products.slice(0, 5)});
-    }
-    if (type === 'colors') {
-      const colors = await productHelpers.getColorsNames(value);
-      return res.json({success: true, colors});
-    }
-    if (type === 'genders') {
-      const genders = await productHelpers.getGendersNames(value);
-      return res.json({success: true, genders});
-    }
-    res.json({success: true});
-  },
-  getResults: async (req, res) => {
-    const {type, value} = req.params;
-    const page = req.query.page;
-    let products;
-    let count;
-    if (type === 'products') {
-      products = await productHelpers.getProductsProducts(value, page);
-      count = await productHelpers.getProductsProductsCount(value);
-    } else if (type === 'category') {
-      products = await productHelpers.getCategoryProducts(value, page);
-      count = await productHelpers.getCategoryProductsCount(value);
-    } else if (type === 'colors') {
-      products = await productHelpers.getColorsProducts(value, page);
-      count = await productHelpers.getColorsProductsCount(value);
-    } else if (type === 'genders') {
-      products = await productHelpers.getGendersProducts(value, page);
-      count = await productHelpers.getGendersProductsCount(value);
-    };
-    const categoryNames = await categoryHelpers.getCategoryNames();
-    const colors = await designHelpers.getColors();
-    const sizes = await designHelpers.getSizes();
-    const pageName = `results/${type}/${value}`;
-    const user = req.session.user;
-    res.render('users/user-product', {user,
-      products, count, page: pageName,
-      categoryNames, colors: colors.slice(0, 10), sizes});
   },
   editProfile: async (req, res, next) => {
     try {
       const {email, phoneNo, firstName, lastName} = req.body;
-      await userHelpers.editProfile(req.session.user._id, req.body);
+      await User.findByIdAndUpdate(req.session.user._id, req.body);
       req.session.user.email = email;
       req.session.user.phoneNo = phoneNo;
       req.session.user.firstName = firstName;
@@ -531,50 +310,32 @@ module.exports = {
       next(error);
     }
   },
-  checkEmail: async (req, res)=> {
-    const email = await userHelpers.checkEmailExist(req.query.email);
-    if (email) {
-      return res.json({success: false});
-    }
-    return res.json({success: true});
-  },
-  getOneEditAddress: async (req, res, next) => {
-    try {
-      const address =
-      await addressHelpers.getOneAddress(req.params.id, req.session.user._id);
-      if (address) {
-        return res.json({success: true, address});
-      }
-      return res.json({success: false});
-    } catch (error) {
-      next(error);
-    }
-  },
-  editAddress: (req, res, next)=> {
-    const {id, ...address} = req.body;
-    addressHelpers.editAddress(id, address).then(()=> {
-      res.json({success: true});
-    }).catch((err)=> {
-      next(err);
-    });
+  checkEmail: async (req, res, next)=> {
+    User.findOne({email: req.query.email})
+        .then((email)=> {
+          if (email) {
+            return res.json({success: false});
+          }
+          return res.json({success: true});
+        }).catch((error)=> next(error));
   },
   forgotPassword: async (req, res, next)=> {
     try {
-      const user = await userHelpers.checkEmailExist(req.body.email);
+      const user = await User.findOne({email: req.body.email});
       if (!user) {
         return res.json({success: false, user: true});
       }
       const token = crypto.randomBytes(20).toString('hex');
       await sendEmail.sendUrl(req.body.email, token);
-      await userHelpers.saveToken(req.body.email, token);
+      user.token = token;
+      await user.save();
       res.json({success: true});
     } catch (error) {
-      console.log(error);
       next(error);
     };
   },
   getResetPassword: async (req, res, next)=> {
-    const user = await userHelpers.checkToken(req.params.token);
+    const user = await User.findOne({token: req.params.token});
     if (user) {
       req.session.resetToken = req.params.token;
       return res.render('users/reset-password');
@@ -582,18 +343,19 @@ module.exports = {
     next(new Error('Invalid token'));
   },
   ResetPassword: async (req, res, next)=> {
-    const user = await userHelpers.checkToken(req.session.resetToken);
+    const user = await User.findOne({token: req.session.resetToken});
     if (user) {
       const password = await bcrypt.hash(req.body.password, 10);
-      await userHelpers.resetPassword(req.session.resetToken, password);
+      const update = {hashPassword: password, $unset: {token: 1}};
+      await User.updateOne({token: req.session.resetToken}, update);
       delete req.session.resetToken;
       req.session.passwordReset = true;
-      res.redirect('/login');
+      return res.redirect('/login');
     }
     next(new Error('Invalid token'));
   },
   checkPasswordExists: async (req, res, next)=> {
-    const user = await userHelpers.checkToken(req.session.resetToken);
+    const user = await User.findOne({token: req.session.resetToken});
     if (user) {
       const result = await bcrypt
           .compare(req.params.password, user.hashPassword);
@@ -603,45 +365,6 @@ module.exports = {
       return res.json({success: true});
     }
     next(new Error('Invalid token'));
-  },
-  getWishlist: async (req, res)=> {
-    try {
-      const products = await wishlistHelpers.getWishlist(req.session.user._id);
-      res.render('users/wishlist',
-          {user: req.session.user, page: 'wishlist', products});
-    } catch (error) {
-      next(error);
-    }
-  },
-  addWishlist: (req, res, next)=> {
-    const {proId, userId} = req.body;
-    wishlistHelpers.addToWishlist(proId, userId).then((result)=> {
-      if (result.product) {
-        res.json({success: true, product: true});
-      } else {
-        res.json({success: true});
-      }
-    }).catch((err)=> {
-      res.json({error: err.message});
-    });
-  },
-  removeFromWishlist: (req, res, next) => {
-    wishlistHelpers
-        .removeFromWishlist(req.body.id, req.session.user._id).then(()=> {
-          res.json({success: true});
-        }).catch((err)=> {
-          next(err);
-        });
-  },
-  checkAddress: async (req, res, next)=> {
-    try {
-      const result = await addressHelpers.checkAddress(req.session.user._id);
-      if (result) {
-        res.json({success: true});
-      } else res.json({success: false});
-    } catch (error) {
-      next(error);
-    }
   },
 };
 
