@@ -258,9 +258,12 @@ module.exports = {
       const user = req.session.user;
       addressHelpers.getAddress(user._id).then((address)=> {
         cartHelpers.getCart(user._id).then((products)=> {
-          res.render('users/user-checkout',
-              {user, page: 'checkout',
-                address: address[0], products});
+          res.render('users/user-checkout', {
+            user,
+            page: 'checkout',
+            address: address[0],
+            products,
+          });
         });
       });
     } else {
