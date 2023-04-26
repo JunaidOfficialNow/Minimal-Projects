@@ -19,7 +19,7 @@ router.get('/get/image/:image', verifyLogin, user.GetImage);
 router.get('/cart', verifyLogin, index.getCart);
 router.get('/checkout/:token', verifyLogin, user.getCheckout);
 router.get('/order/success/:orderId', verifyLogin, user.getSuccessOrder);
-router.get('/my-orders', verifyLogin, user.getOrderPage);
+router.get('/my-orders', verifyLogin, index.getOrderPage);
 router.get('/products', index.getCertainProducts);
 router.get('/search/:type/:value', index.getSearchResults);
 router.get('/results/:type/:value', index.getResults);
@@ -46,7 +46,7 @@ router.post('/checkout/payment/online', verifyLogin, user.createPaymentOnline);
 router.post('/checkout/verify/payment', verifyLogin, user.verifyPayment);
 router.post('/checkout/check/stock', verifyLogin, user.verifyStock);
 router.post('/checkout/address', verifyLogin, index.addAddress);
-router.post('/order/details', verifyLogin, user.getOrderDetails);
+router.post('/order/details', verifyLogin, index.getOrderDetails);
 router.post('/forgotPassword', user.forgotPassword);
 router.post('/wishlist', verifyLogin, index.addWishlist);
 // post requests
@@ -76,7 +76,7 @@ router.put('/addresses', verifyLogin, index.editAddress);
 
 // patch requests
 
-router.patch('/order/change/status', verifyLogin, user.changeStatusOrder);
+router.patch('/order/change/status', verifyLogin, index.changeStatusOrder);
 router.patch('/wishlist', verifyLogin, index.removeFromWishlist);
 
 /* ----------------------------------------- */
