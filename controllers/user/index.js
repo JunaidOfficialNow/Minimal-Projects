@@ -4,6 +4,7 @@ const addressManagement = require('./addressController');
 const cartManagement = require('./cartController');
 const wishlistManagement = require('./wishlistController');
 const orderManagement = require('./orderController');
+const profileManagement = require('./profileController');
 
 module.exports = {
   ...authManagement,
@@ -12,5 +13,6 @@ module.exports = {
   ...cartManagement,
   ...wishlistManagement,
   ...orderManagement,
+  ...profileManagement,
 };
 

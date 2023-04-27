@@ -23,36 +23,6 @@ module.exports = {
     res.render('users/user-home',
         {user: req.session.user, page: 'home', products, banners});
   },
-  getProfilePage: (req, res)=> {
-    res.render('users/user-profile', {page: 'profile', user: req.session.user});
-  },
-  addImage: async (req, res, next)=> {
-    try {
-      const doc = await User.findById(req.session.user._id);
-      doc.profilePicture = req.files[0].filename;
-      doc.isProfilePictureAdded = true;
-      await doc.save();
-      req.session.user.profilePicture = req.files[0].filename;
-      req.session.user.isProfilePictureAdded = true;
-      res.json({success: true});
-    } catch (error) {
-      next(error);
-    }
-  },
-  GetImage: (req, res) => {
-    res.sendFile(`../profiles/${req.params.image}`, {root: __dirname});
-  },
-  deleteAccount: async (req, res) => {
-    try {
-      const id = req.body.id;
-      await User.findByIdAndDelete(id);
-      await Address.findByIdAndDelete(id);
-      delete req.session.user;
-      res.json({success: true});
-    } catch (error) {
-      next(error);
-    }
-  },
   getCheckout: async (req, res, next) => {
     try {
       if (req.session.checkOutToken === req.params.token) {
@@ -255,19 +225,6 @@ module.exports = {
       } else {
         return res.json({success: true});
       }
-    } catch (error) {
-      next(error);
-    }
-  },
-  editProfile: async (req, res, next) => {
-    try {
-      const {email, phoneNo, firstName, lastName} = req.body;
-      await User.findByIdAndUpdate(req.session.user._id, req.body);
-      req.session.user.email = email;
-      req.session.user.phoneNo = phoneNo;
-      req.session.user.firstName = firstName;
-      req.session.user.lastName = lastName;
-      res.json({success: true});
     } catch (error) {
       next(error);
     }

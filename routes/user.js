@@ -14,8 +14,8 @@ router.get('/login', checkAdminLoggedIn, checkLogin, index.getLoginPage);
 router.get('/logout', verifyLogin, index.DoLogout);
 router.get('/shop', index.getShopPage);
 router.get('/product/:id', index.getProductPage);
-router.get('/my-profile', verifyLogin, user.getProfilePage);
-router.get('/get/image/:image', verifyLogin, user.GetImage);
+router.get('/my-profile', verifyLogin, index.getProfilePage);
+router.get('/get/image/:image', verifyLogin, index.getImage);
 router.get('/cart', verifyLogin, index.getCart);
 router.get('/checkout/:token', verifyLogin, user.getCheckout);
 router.get('/order/success/:orderId', verifyLogin, user.getSuccessOrder);
@@ -61,17 +61,17 @@ router.route('/reset-password/:token')
 // delete requests
 
 router.delete('/delete/address', verifyLogin, index.deleteAddress);
-router.delete('/delete/account', verifyLogin, user.deleteAccount);
+router.delete('/delete/account', verifyLogin, index.deleteAccount);
 router.delete('/cart/remove/from/cart', verifyLogin, index.removeFromCart);
 
 // put requests
 
 router.put('/add/image', verifyLogin,
-    ProfileUpload.any(), user.addImage);
+    ProfileUpload.any(), index.addProfilePhoto);
 router.put('/cart/increment/quantity', verifyLogin, index.incrementQuantity);
 router.put('/cart/decrement/quantity', verifyLogin, index.decrementQuantity);
 router.put('/cart/change/size', verifyLogin, index.changeSize);
-router.put('/profile', verifyLogin, user.editProfile);
+router.put('/profile', verifyLogin, index.editProfile);
 router.put('/addresses', verifyLogin, index.editAddress);
 
 // patch requests
