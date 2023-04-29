@@ -6,6 +6,8 @@ const wishlistManagement = require('./wishlistController');
 const orderManagement = require('./orderController');
 const profileManagement = require('./profileController');
 const checkoutManagement = require('./checkoutController');
+const accountManagement = require('./accountController');
+const userManagement = require('./userController');
 
 module.exports = {
   ...authManagement,
@@ -16,5 +18,7 @@ module.exports = {
   ...orderManagement,
   ...profileManagement,
   ...checkoutManagement,
+  ...accountManagement,
+  ...userManagement,
 };
 
