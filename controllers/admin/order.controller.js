@@ -1,6 +1,6 @@
-const Order = require('../../models/orderModel');
-const Product = require('../../models/productModel');
-const User = require('../../models/userModel');
+const Order = require('../../models/order.model');
+const Product = require('../../models/product.model');
+const User = require('../../models/user.model');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 

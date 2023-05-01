@@ -9,7 +9,7 @@ db.connect()
     .then(async ()=>{
       require('./middlewareConfig')(app, express);
       require('./routeConfig')(app);
-      require('../config/server');
+      require('../config/server.config');
     })
     .catch((err)=>{
       console.error(err);

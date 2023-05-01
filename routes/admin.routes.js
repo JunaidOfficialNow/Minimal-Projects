@@ -1,13 +1,13 @@
 const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
-const getCsrf = require('../helpers/csrfHelpers');
+const getCsrf = require('../controllers/shared/csrf.controller');
 const index = require('../controllers/admin');
 const {csrfProtection, requestMethod} =
- require('../middlewares/commonMiddlewares');
-const middle = require('../middlewares/adminMiddlewares');
+ require('../middlewares/common.middlewares');
+const middle = require('../middlewares/admin.middlewares');
 const {uploadOptions, DesignUpload, ProductUpload, BannerUpload} =
- require('../helpers/multer');
+ require('../utils/file-uploads/multer.helpers');
 
 router.use(requestMethod);
 

@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
-const categoryRepo = require('../../repositories/categoryRepo');
-const Category = require('../../models/categoryModel');
-const Design = require('../../models/designModel');
+const categoryRepo = require('../../repositories/category.repository');
+const Category = require('../../models/category.model');
+const Design = require('../../models/design.model');
 const fs = require('fs');
 const path = require('path');
 

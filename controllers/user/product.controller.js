@@ -1,6 +1,6 @@
-const Product = require('../../models/productModel');
-const Design = require('../../models/designModel');
-const Category = require('../../models/categoryModel');
+const Product = require('../../models/product.model');
+const Design = require('../../models/design.model');
+const Category = require('../../models/category.model');
 const mongoose = require('mongoose');
 
 exports.getShopPage = async (req, res, next)=> {

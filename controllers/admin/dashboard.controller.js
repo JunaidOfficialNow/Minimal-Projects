@@ -1,6 +1,6 @@
-const Order = require('../../models/orderModel');
-const orderRepo = require('../../repositories/orderRepo');
-const User = require('../../models/userModel');
+const Order = require('../../models/order.model');
+const orderRepo = require('../../repositories/order.repository');
+const User = require('../../models/user.model');
 
 exports.getDashboard = async (req, res, next)=>{
   try {

@@ -1,6 +1,6 @@
-const Product = require('../../models/productModel');
-const Banner = require('../../models/bannerModel');
-const User = require('../../models/userModel');
+const Product = require('../../models/product.model');
+const Banner = require('../../models/banner.model');
+const User = require('../../models/user.model');
 
 exports.getHomePage = async (req, res, next) => {
   const products = await Product.find().sort({createdAt: -1}).limit(8);

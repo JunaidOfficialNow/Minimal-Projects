@@ -1,5 +1,5 @@
-const User = require('../../models/userModel');
-const Address = require('../../models/addressModel');
+const User = require('../../models/user.model');
+const Address = require('../../models/address.model');
 
 exports.getProfilePage = (req, res)=> {
   res.render('users/user-profile', {page: 'profile', user: req.session.user});

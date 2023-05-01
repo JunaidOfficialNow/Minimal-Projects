@@ -1,4 +1,4 @@
-const Order = require('../models/orderModel');
+const Order = require('../models/order.model');
 
 const todaySale = async function() {
   const today = new Date();

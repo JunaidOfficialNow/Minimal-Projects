@@ -2,9 +2,9 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const user = require('../controllers/user');
-const {ProfileUpload} = require('../services/multer');
+const {ProfileUpload} = require('../utils/file-uploads/multer.helpers');
 const {checkLogin, verifyLogin, checkAdminLoggedIn} =
- require('../middlewares/userMiddlewares');
+ require('../middlewares/user.middlewares');
 
 
 // get requests

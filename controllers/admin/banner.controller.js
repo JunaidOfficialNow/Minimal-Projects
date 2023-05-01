@@ -1,4 +1,4 @@
-const Banner = require('../../models/bannerModel');
+const Banner = require('../../models/banner.model');
 
 
 exports.getBannersPage = async (req, res) => {

@@ -1,4 +1,4 @@
-const User = require('../../models/userModel');
+const User = require('../../models/user.model');
 
 exports.blockUser = async (req, res, next)=>{
   User.findByIdAndUpdate(req.body.id, {isBlocked: true}).then((response)=> {

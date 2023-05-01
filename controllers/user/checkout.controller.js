@@ -1,8 +1,8 @@
-const Address = require('../../models/addressModel');
-const Cart = require('../../models/cartModel');
-const Product = require('../../models/productModel');
-const Coupon = require('../../models/couponModel');
-const Order = require('../../models/orderModel');
+const Address = require('../../models/address.model');
+const Cart = require('../../models/cart.model');
+const Product = require('../../models/product.model');
+const Coupon = require('../../models/coupon.model');
+const Order = require('../../models/order.model');
 
 const crypto = require('crypto');
 const Razorpay = require('razorpay');

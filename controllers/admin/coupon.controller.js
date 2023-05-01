@@ -1,4 +1,4 @@
-const Coupon = require('../../models/couponModel');
+const Coupon = require('../../models/coupon.model');
 
 exports.getCouponsPage = (req, res, next) => {
   Coupon.find().then((coupons)=> {

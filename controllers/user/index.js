@@ -1,13 +1,13 @@
-const authManagement = require('./authController');
-const productManagement = require('./productController');
-const addressManagement = require('./addressController');
-const cartManagement = require('./cartController');
-const wishlistManagement = require('./wishlistController');
-const orderManagement = require('./orderController');
-const profileManagement = require('./profileController');
-const checkoutManagement = require('./checkoutController');
-const accountManagement = require('./accountController');
-const userManagement = require('./userController');
+const authManagement = require('./auth.controller');
+const productManagement = require('./product.controller');
+const addressManagement = require('./address.controller');
+const cartManagement = require('./cart.controller');
+const wishlistManagement = require('./wishlist.controller');
+const orderManagement = require('./order.controller');
+const profileManagement = require('./profile.controller');
+const checkoutManagement = require('./checkout.controller');
+const accountManagement = require('./account.controller');
+const userManagement = require('./user.controller');
 
 module.exports = {
   ...authManagement,

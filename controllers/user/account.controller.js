@@ -1,5 +1,5 @@
-const sendEmail = require('../../helpers/email-otp');
-const User = require('../../models/userModel');
+const sendEmail = require('../../utils/emails/email.helpers');
+const User = require('../../models/user.model');
 const bcrypt = require('bcrypt');
 
 exports.handleEmail = async (req, res, next)=>{
