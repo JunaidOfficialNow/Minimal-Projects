@@ -1,5 +1,5 @@
 const Order = require('../../models/orderModel');
-const orderHelpers = require('../../helpers/orderHelpers');
+const orderRepo = require('../../repositories/orderRepo');
 const User = require('../../models/userModel');
 
 exports.getDashboard = async (req, res, next)=>{
@@ -8,8 +8,8 @@ exports.getDashboard = async (req, res, next)=>{
       path: 'userId',
       model: User,
     }).sort({createdAt: -1}).limit(5);
-    let todaySale = await orderHelpers.todaySale();
-    let totalSale = await orderHelpers.totalSale();
+    let todaySale = await orderRepo.todaySale();
+    let totalSale = await orderRepo.totalSale();
     if (todaySale.length === 0) {
       todaySale = [{todaySales: 0, todayRevenue: 0}];
     }
@@ -32,8 +32,8 @@ exports.getDashboard = async (req, res, next)=>{
 
 exports.salesAndRevenue = async (req, res, next) => {
   try {
-    const sales = await orderHelpers.salesAndRevenueChart();
-    const size = await orderHelpers.sizeAndSaleReport();
+    const sales = await orderRepo.salesAndRevenueChart();
+    const size = await orderRepo.sizeAndSaleReport();
     res.json({success: true, sales, size});
   } catch (error) {
     next(error);

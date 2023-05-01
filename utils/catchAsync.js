@@ -1,1 +1,1 @@
-module.exports = function catchAsync() {};
+module.exports = function catchAsync() { };

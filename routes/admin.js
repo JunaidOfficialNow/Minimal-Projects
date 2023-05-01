@@ -7,7 +7,7 @@ const {csrfProtection, requestMethod} =
  require('../middlewares/commonMiddlewares');
 const middle = require('../middlewares/adminMiddlewares');
 const {uploadOptions, DesignUpload, ProductUpload, BannerUpload} =
- require('../services/multer');
+ require('../helpers/multer');
 
 router.use(requestMethod);
 

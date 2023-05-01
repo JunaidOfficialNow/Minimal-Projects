@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-const categoryHelpers = require('../../helpers/categoryHelpers');
+const categoryRepo = require('../../repositories/categoryRepo');
 const Category = require('../../models/categoryModel');
 const Design = require('../../models/designModel');
 const fs = require('fs');
@@ -64,7 +64,7 @@ exports.addCategory = (req, res, next)=>{
   if (name == '' || description == '') {
     res.json({message: 'All fields are required'});
   } else {
-    categoryHelpers.checkCategoryExists(name).then(()=>{
+    categoryRepo.checkCategoryExists(name).then(()=>{
       req.session.addCategory = {name: name, description: description};
       res.json({success: true});
     }).catch((error)=>next(error));
@@ -162,7 +162,7 @@ exports.updateCategory = async (req, res, next) => {
   try {
     const {name, description, id} = req.body;
     const details = {description};
-    const oldName = await categoryHelpers.checkCategoryExistsById(id);
+    const oldName = await categoryRepo.checkCategoryExistsById(id);
     if (oldName !== name) {
       details.name = name;
       const oldPath =
@@ -173,7 +173,7 @@ exports.updateCategory = async (req, res, next) => {
         if (err) {
           throw new Error('There is trouble updating category name  now');
         } else {
-          categoryHelpers.checkCategoryExists(name).then(() => {
+          categoryRepo.checkCategoryExists(name).then(() => {
             updateCategory(id, details, res, next);
           });
         }

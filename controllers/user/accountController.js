@@ -1,4 +1,4 @@
-const sendEmail = require('../../services/email-otp');
+const sendEmail = require('../../helpers/email-otp');
 const User = require('../../models/userModel');
 const bcrypt = require('bcrypt');
 

@@ -1,5 +1,5 @@
 const Admin = require('../../models/adminModel');
-const sendEmail = require('../../services/email-otp');
+const sendEmail = require('../../helpers/email-otp');
 const bcrypt = require('bcrypt');
 const apis = {
   login: process.env.ADMIN_LOGIN_API,
