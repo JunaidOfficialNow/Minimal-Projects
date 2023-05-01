@@ -1,6 +1,6 @@
-const adminRouter = require('../routes/admin');
-const userRouter = require('../routes/user');
-const shopRouter = require('../routes/shop');
+const adminRouter = require('../routes/admin.routes');
+const userRouter = require('../routes/user.routes');
+const shopRouter = require('../routes/shop.routes');
 
 module.exports = (app) =>{
   app.use('/', userRouter);

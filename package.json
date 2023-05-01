@@ -6,8 +6,8 @@
   "author": "junaid",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon main/app.js",
-    "debug": "ndb main/app.js"
+    "start": "nodemon app.js",
+    "debug": "ndb app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

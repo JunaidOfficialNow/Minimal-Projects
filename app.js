@@ -1,15 +1,15 @@
 const express = require('express');
 
 const app = express();
-const db = require('../config/db');
+const db = require('./config/db.config');
 require('dotenv').config();
 
 
 db.connect()
     .then(async ()=>{
-      require('./middlewareConfig')(app, express);
-      require('./routeConfig')(app);
-      require('../config/server.config');
+      require('./config/middleware.config')(app, express);
+      require('./config/route.config')(app);
+      require('./config/server.config');
     })
     .catch((err)=>{
       console.error(err);
