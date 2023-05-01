@@ -6,7 +6,7 @@
   "author": "junaid",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon src/app.js",
     "debug": "ndb app.js"
   },
   "dependencies": {
