@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 const Category = require('../models/category.model');
 
+
 class CategoryRepository {
   checkCategoryExists(name) {
     return new Promise((resolve, reject)=>{
@@ -23,6 +24,5 @@ class CategoryRepository {
     });
   }
 }
-
 
 module.exports = new CategoryRepository();
