@@ -1,20 +1,17 @@
 const Order = require('../../models/order.model');
-const Product = require('../../models/product.model');
-const User = require('../../models/user.model');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 
-exports.getOrdersPage = async (req, res)=> {
+const orderRepo = require('../../repositories/order.repository');
+
+exports.getOrdersPage = async (req, res, next)=> {
   try {
-    const orders = await Order.find({}).populate({
-      path: 'products.product',
-      model: Product,
-    }).populate({
-      path: 'userId',
-      model: User,
-    }).sort({createdAt: -1});
-    res.render('admins/admin-orders', {admin: req.session.admin,
-      page: 'orders', orders});
+    const orders = await orderRepo.getAllorders();
+    res.render('admins/admin-orders', {
+      admin: req.session.admin,
+      page: 'orders',
+      orders,
+    });
   } catch (error) {
     next(error);
   }
@@ -22,13 +19,7 @@ exports.getOrdersPage = async (req, res)=> {
 
 exports.getOrderDetails = async (req, res, next)=> {
   try {
-    const order = await Order.findById(req.body.id).populate({
-      path: 'products.product',
-      model: Product,
-    }).populate({
-      path: 'userId',
-      model: User,
-    });
+    const order = await orderRepo.getOrderById(req.body.id);
     if (order) {
       return res.json({success: true, order});
     }
@@ -40,13 +31,7 @@ exports.getOrderDetails = async (req, res, next)=> {
 
 exports.getOrderDetailsPage = async (req, res, next)=> {
   try {
-    const order = await Order.findById(req.params.id).populate({
-      path: 'products.product',
-      model: Product,
-    }).populate({
-      path: 'userId',
-      model: User,
-    });
+    const order = await orderRepo.getOrderById(req.params.id);
     if (order) {
       res.render('admins/view-order', {admin: req.session.admin,
         order: order});
