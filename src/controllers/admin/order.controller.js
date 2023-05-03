@@ -1,11 +1,11 @@
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
-const orderRepo = require('../../repositories/order.repository');
+const OrderServices = require('../../services/order.services');
 
 exports.getOrdersPage = async (req, res, next)=> {
   try {
-    const orders = await orderRepo.getAllorders();
+    const orders = await OrderServices.getAllOrders();
     res.render('admins/admin-orders', {
       admin: req.session.admin,
       page: 'orders',
@@ -18,7 +18,7 @@ exports.getOrdersPage = async (req, res, next)=> {
 
 exports.getOrderDetails = async (req, res, next)=> {
   try {
-    const order = await orderRepo.getOrderById(req.body.id);
+    const order = await OrderServices.getOrderById(req.body.id);
     if (order) {
       return res.json({success: true, order});
     }
@@ -30,10 +30,12 @@ exports.getOrderDetails = async (req, res, next)=> {
 
 exports.getOrderDetailsPage = async (req, res, next)=> {
   try {
-    const order = await orderRepo.getOrderById(req.params.id);
+    const order = await OrderServices.getOrderById(req.params.id);
     if (order) {
-      res.render('admins/view-order', {admin: req.session.admin,
-        order: order});
+      res.render('admins/view-order', {
+        admin: req.session.admin,
+        order,
+      });
     }
   } catch (error) {
     next(error);
@@ -42,42 +44,25 @@ exports.getOrderDetailsPage = async (req, res, next)=> {
 
 exports.changeOrderStatus = (req, res, next)=> {
   const {id, status} = req.body;
-  orderRepo.changeOrderStatus(id, status).then(()=> {
+  OrderServices.changeOrderStatus(id, status).then(()=> {
     res.json({success: true});
   }).catch((err)=> {
     next(err);
   });
 };
 
-exports.downloadOrdersReport = async (req, res, next)=> {
-  try {
-    const orders = orderRepo.getOrdersByStatus(req.params.status);
-    if (orders.length > 0) {
-      const csvWriter = createCsvWriter({
-        path: 'orders.csv',
-        header: [
-          {id: 'orderId', title: 'Order ID'},
-          {id: 'userId', title: 'Customer ID'},
-          {id: 'status', title: 'Status'},
-          {id: 'paymentMethod', title: 'payment'},
-          {id: 'coupon', title: 'Coupon'},
-          {id: 'discount', title: 'dicount'},
-          {id: 'subTotal', title: 'Sub Total'},
-          {id: 'totalAmount', title: 'Total Amount'},
-        ],
+exports.downloadOrdersReport = catchAsync(async (req, res, next)=> {
+  const orders = await OrderServices.getOrdersByStatus(req.params.status);
+  if (orders.length > 0) {
+    const path = await OrderServices.getOrderReportCSV(orders);
+    res.download(path, () => {
+      fs.unlink(path, (err) => {
+        if (err) next(err);
       });
-      await csvWriter.writeRecords(orders);
-      res.download('orders.csv', () => {
-        fs.unlink('orders.csv', (err) => {
-          if (err) next(err);
-        });
-      });
-    } else {
-      throw new Error('No records to download');
-    };
-  } catch (error) {
-    next(error);
-  }
-};
+    });
+  } else {
+    throw new Error('No records to download');
+  };
+});
 
 
