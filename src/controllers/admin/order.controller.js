@@ -1,4 +1,3 @@
-const Order = require('../../models/order.model');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 
@@ -43,7 +42,7 @@ exports.getOrderDetailsPage = async (req, res, next)=> {
 
 exports.changeOrderStatus = (req, res, next)=> {
   const {id, status} = req.body;
-  Order.findByIdAndUpdate(id, {status: status}).then(()=> {
+  orderRepo.changeOrderStatus(id, status).then(()=> {
     res.json({success: true});
   }).catch((err)=> {
     next(err);
@@ -52,7 +51,7 @@ exports.changeOrderStatus = (req, res, next)=> {
 
 exports.downloadOrdersReport = async (req, res, next)=> {
   try {
-    const orders = await Order.find({status: req.params.status});
+    const orders = orderRepo.getOrdersByStatus(req.params.status);
     if (orders.length > 0) {
       const csvWriter = createCsvWriter({
         path: 'orders.csv',

@@ -24,6 +24,15 @@ exports.getOrderById = async (id) => {
   });
 };
 
+exports.changeOrderStatus = async (id, status) => {
+  return Order.findByIdAndUpdate(id, {status: status});
+};
+
+exports.getOrdersByStatus = async (status) => {
+  return await Order.find({status});
+};
+
+
 exports.todaySale= async ()=> {
   const today = new Date();
   const startOfDay =
