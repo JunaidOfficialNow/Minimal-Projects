@@ -1,9 +1,12 @@
 /* eslint-disable require-jsdoc */
-const categoryRepo = require('../../repositories/category.repository');
 const Category = require('../../models/category.model');
 const Design = require('../../models/design.model');
 const fs = require('fs');
 const path = require('path');
+
+const CategoryServices = require('../../services/category.services');
+
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
 function updateCategory(id, details, res, next) {
   Category.findByIdAndUpdate(id, details, {new: true}).then((doc)=> {
@@ -59,42 +62,36 @@ const rmdirPromised = (dir) => {
   });
 };
 
-exports.addCategory = (req, res, next)=>{
+exports.addCategory = catchAsync(async (req, res, next)=>{
   const {name, description} = req.body;
   if (name == '' || description == '') {
     res.json({message: 'All fields are required'});
   } else {
-    categoryRepo.checkCategoryExists(name).then(()=>{
-      req.session.addCategory = {name: name, description: description};
-      res.json({success: true});
-    }).catch((error)=>next(error));
+    await CategoryServices.checkCategoryExistsByName(name);
+    req.session.addCategory = {name: name, description: description};
+    res.json({success: true});
   };
-};
+});
 
-exports.addCatImage = (req, res, next)=>{
-  try {
-    if (!req.file) {
-      throw new Error('Image is required');
-    }
-    const addCategory = req.session.addCategory;
-    addCategory.image = req.file.filename;
-    addCategory.lastEditedBy = req.session.admin.firstName;
-    // eslint-disable-next-line max-len
-    fs.mkdir(path.join(__dirname, `../../public/static/uploads/${addCategory.name}`),
-        (error)=> {
-          if (error) {
-            throw new Error('Oops! Something went wrong');
-          } else {
-            Category.create(addCategory).then((doc)=>{
-              delete req.session.addCategory;
-              res.json({success: true, doc});
-            });
-          }
-        });
-  } catch (error) {
-    next(error);
+exports.addCatImage = catchAsync(async (req, res, next)=>{
+  if (!req.file) {
+    throw new Error('Image is required');
   }
-};
+  const addCategory = req.session.addCategory;
+  addCategory.image = req.file.filename;
+  addCategory.lastEditedBy = req.session.admin.firstName;
+  // eslint-disable-next-line max-len
+  fs.mkdir(path.join(__dirname, `../../public/static/uploads/${addCategory.name}`),
+      async (error)=> {
+        if (error) {
+          throw new Error('Oops! Something went wrong');
+        } else {
+          const doc = await CategoryServices.createCategory(addCategory);
+          delete req.session.addCategory;
+          res.json({success: true, doc});
+        }
+      });
+});
 
 exports.getCategories = (req, res, next) => {
   Category.find({}).then((category)=> {
@@ -162,7 +159,7 @@ exports.updateCategory = async (req, res, next) => {
   try {
     const {name, description, id} = req.body;
     const details = {description};
-    const oldName = await categoryRepo.checkCategoryExistsById(id);
+    const oldName = await CategoryServices.getOldCategoryName(id);
     if (oldName !== name) {
       details.name = name;
       const oldPath =
@@ -173,7 +170,7 @@ exports.updateCategory = async (req, res, next) => {
         if (err) {
           throw new Error('There is trouble updating category name  now');
         } else {
-          categoryRepo.checkCategoryExists(name).then(() => {
+          CategoryServices.checkCategoryExistsByName(name).then(() => {
             updateCategory(id, details, res, next);
           });
         }
