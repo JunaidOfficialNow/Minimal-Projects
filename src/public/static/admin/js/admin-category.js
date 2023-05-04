@@ -180,7 +180,7 @@ categoryBtn.addEventListener('click', function() {
                   categoryBtn.innerHTML = 'Add product';
                   categoryBtnCount++;
                 } else {
-                  categoryFormError.innerHTML = data.message;
+                  categoryFormError.innerHTML = data.error.message;
                   categoryFormError.style.display = 'block';
                 }
               });

@@ -12,7 +12,7 @@ const Categorystorage = multer.diskStorage({
     let uploadError = new Error('invalid image type');
     uploadError.status = 400;
     // eslint-disable-next-line max-len
-    const dir = path.join( './public', 'static', 'uploads', 'category');
+    const dir = path.join( 'src', './public', 'static', 'uploads', 'category');
 
     if (isValid) {
       uploadError = null;
@@ -35,7 +35,7 @@ const DesignStorage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, './public/static/uploads/designs');
+    cb(uploadError, './src/public/static/uploads/designs');
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');
@@ -55,7 +55,7 @@ const ProductStorage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, `./public/static/uploads/${category}/${designCode}`);
+    cb(uploadError, `./src/public/static/uploads/${category}/${designCode}`);
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');
@@ -73,7 +73,7 @@ const ProfileStorage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, `./public/static/uploads/profiles`);
+    cb(uploadError, `./src/public/static/uploads/profiles`);
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');
@@ -92,7 +92,7 @@ const BannerStorage = multer.diskStorage({
     if (isValid) {
       uploadError = null;
     }
-    cb(uploadError, `./public/static/uploads/banners`);
+    cb(uploadError, `./src/public/static/uploads/banners`);
   },
   filename: function(req, file, cb) {
     const filename = file.originalname.split(' ').join('-');

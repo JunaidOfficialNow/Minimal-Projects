@@ -1,6 +1,7 @@
 const Order = require('../../models/order.model');
-const orderRepo = require('../../repositories/order.repository');
 const User = require('../../models/user.model');
+
+const OrderServices = require('../../services/order.services');
 
 exports.getDashboard = async (req, res, next)=>{
   try {
@@ -8,8 +9,8 @@ exports.getDashboard = async (req, res, next)=>{
       path: 'userId',
       model: User,
     }).sort({createdAt: -1}).limit(5);
-    let todaySale = await orderRepo.todaySale();
-    let totalSale = await orderRepo.totalSale();
+    let todaySale = await OrderServices.todaySale();
+    let totalSale = await OrderServices.totalSale();
     if (todaySale.length === 0) {
       todaySale = [{todaySales: 0, todayRevenue: 0}];
     }
