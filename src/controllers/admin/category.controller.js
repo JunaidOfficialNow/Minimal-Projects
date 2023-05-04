@@ -1,10 +1,10 @@
 /* eslint-disable require-jsdoc */
 const Category = require('../../models/category.model');
-const Design = require('../../models/design.model');
 const fs = require('fs');
 const path = require('path');
 
-const CategoryServices = require('../../services/category.services');
+const categoryServices = require('../../services/category.services');
+const designServices = require('../../services/design.services');
 
 const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
@@ -67,7 +67,7 @@ exports.addCategory = catchAsync(async (req, res, next)=>{
   if (name == '' || description == '') {
     res.json({message: 'All fields are required'});
   } else {
-    await CategoryServices.checkCategoryExistsByName(name);
+    await categoryServices.checkCategoryExistsByName(name);
     req.session.addCategory = {name: name, description: description};
     res.json({success: true});
   };
@@ -86,63 +86,58 @@ exports.addCatImage = catchAsync(async (req, res, next)=>{
         if (error) {
           throw new Error('Oops! Something went wrong');
         } else {
-          const doc = await CategoryServices.createCategory(addCategory);
+          const doc = await categoryServices.createCategory(addCategory);
           delete req.session.addCategory;
           res.json({success: true, doc});
         }
       });
 });
 
-exports.getCategories = (req, res, next) => {
-  Category.find({}).then((category)=> {
-    res.json(category);
-  }).catch((err)=>{
-    next(err);
-  });
-};
+exports.getCategories = catchAsync(async (req, res, next) => {
+  const category = await categoryServices.getAllCategories();
+  res.json(category);
+});
 
-exports.deleteCategory = async (req, res, next) => {
-  try {
-    const data = await Category.findByIdAndRemove(req.body.id);
-    await Design.deleteMany({category: data.name});
-    fs.unlink('public/uploads/category/'+data.image, (error)=> {
-      if (error) {
-      }
+
+// need to move this functions of deleteCategory to somewher in the future.
+exports.deleteCategory = catchAsync(async (req, res, next) => {
+  const data = await categoryServices.deleteCategory(req.body.id);
+  await designServices.deleteAllOfTheCategory(data.name);
+  fs.unlink('src/public/uploads/category/'+data.image, (error)=> {
+    if (error) {
+    }
+  });
+  const directory =
+    path.join(__dirname, '../public', 'uploads', data.name);
+  deleteDirectory(directory);
+  res.json({success: true});
+});
+
+exports.deactivateCategory = catchAsync(async (req, res, next) => {
+  const doc = await categoryServices.updateCategoryStatus(req.body.id, false);
+  if (doc) {
+    res.json({
+      success: true,
+      date: doc.updatedAt,
+      by: doc.lastEditedBy,
     });
-    const directory =
-      path.join(__dirname, '../public', 'uploads', data.name);
-    deleteDirectory(directory);
-    res.json({success: true});
-  } catch (error) {
-    next(error);
-  }
-};
+  } else {
+    throw new Error('Category may have already been deleted');
+  };
+});
 
-exports.deactivateCategory = (req, res, next) => {
-  Category.findByIdAndUpdate(req.body.id, {isActive: false},
-      {new: true}).then((doc)=>{
-    if (doc) {
-      res.json({success: true, date: doc.updatedAt, by: doc.lastEditedBy});
-    } else {
-      throw new Error('Category may have already deleted');
-    };
-  }).catch((err) => {
-    next(err);
-  });
-};
-
-exports.activateCategory = (req, res, next) => {
-  Category.findByIdAndUpdate(req.body.id, {isActive: true},
-      {new: true}).then((doc)=>{
-    if (doc) {
-      res.json({success: true, date: doc.updatedAt, by: doc.lastEditedBy});
-    } else {
-      throw new Error('Category may have already deleted');
-    };
-  }).catch((err) => {
-    next(err);
-  });
-};
+exports.activateCategory = catchAsync(async (req, res, next) => {
+  const doc = await categoryServices.updateCategoryStatus(req.body.id, true);
+  if (doc) {
+    res.json({
+      success: true,
+      date: doc.updatedAt,
+      by: doc.lastEditedBy,
+    });
+  } else {
+    throw new Error('Category may have already deleted');
+  };
+});
 
 exports.getCategoryDetails = (req, res, next) => {
   Category.findById(req.body.id).then((doc)=> {
@@ -170,7 +165,7 @@ exports.updateCategory = async (req, res, next) => {
         if (err) {
           throw new Error('There is trouble updating category name  now');
         } else {
-          CategoryServices.checkCategoryExistsByName(name).then(() => {
+          categoryServices.checkCategoryExistsByName(name).then(() => {
             updateCategory(id, details, res, next);
           });
         }

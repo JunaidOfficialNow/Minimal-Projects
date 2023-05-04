@@ -21,6 +21,21 @@ class CategoryRepository {
   async createCategory(data) {
     return await this.model.create(data);
   }
+
+  async getAllCategories() {
+    return await this.mode.find({});
+  }
+
+  async deleteCategory(id) {
+    return await this.model.findByIdAndRemove(id);
+  }
+
+  async updateCategoryStatus(id, status) {
+    return await this.model.findByIdAndUpdate(id,
+        {isActive: status},
+        {new: true},
+    );
+  }
 }
 
 module.exports = CategoryRepository;

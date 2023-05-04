@@ -19,6 +19,18 @@ class CategoryServices {
   async createCategory(data) {
     return await this.repo.createCategory(data);
   }
+
+  async getAllCategories() {
+    return await this.repo.getAllCategories();
+  }
+
+  async deleteCategory(id) {
+    return await this.repo.deleteCategory(id);
+  }
+
+  async updateCategoryStatus(id, status) {
+    return await this.repo.updateCategoryStatus(id, status);
+  }
 };
 
 module.exports = new CategoryServices(new CategoryRepository(categoryModel));
