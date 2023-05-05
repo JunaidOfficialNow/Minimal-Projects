@@ -9,11 +9,18 @@ class CategoryServices {
   }
 
   async checkCategoryExistsByName(name) {
-    return await this.repo.checkCategoryExistsByName(name);
+    const doc = await this.repo.getCategoryByName(name);
+    if (doc) {
+      throw new Error('Category already exists, should be unique');
+    };
   };
 
   async getOldCategoryName(id) {
-    return this.repo.getOldCategoryName(id);
+    const doc = await this.repo.getCategoryById(id);
+    if (doc) {
+      return doc.name;
+    }
+    throw new Error('Category may have been deleted');
   }
 
   async createCategory(data) {
@@ -24,13 +31,29 @@ class CategoryServices {
     return await this.repo.getAllCategories();
   }
 
+  async getAllCategoryNames() {
+    return await this.repo.getAllCategoryNames();
+  }
+
   async deleteCategory(id) {
-    return await this.repo.deleteCategory(id);
+    return await this.repo.deleteCategoryById(id);
   }
 
   async updateCategoryStatus(id, status) {
-    return await this.repo.updateCategoryStatus(id, status);
+    return await this.repo.updateCategoryById(
+        id,
+        {isActive: status},
+        {new: true},
+    );
   }
+
+  async getCategoryDetails(id) {
+    const doc = await this.repo.getCategoryById(id);
+    if (doc) {
+      return doc;
+    }
+    throw new Error('Category may have already been deleted');
+  };
 };
 
 module.exports = new CategoryServices(new CategoryRepository(categoryModel));

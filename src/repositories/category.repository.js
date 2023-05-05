@@ -5,17 +5,12 @@ class CategoryRepository {
   constructor(model) {
     this.model = model;
   }
-  async checkCategoryExistsByName(name) {
-    const doc = await this.model.findOne({name: name});
-    if (doc) {
-      throw new Error('Category already exists, should be unique');
-    };
+  async getCategoryByName(name) {
+    return await this.model.findOne({name: name});
   }
 
-  async getOldCategoryName(id) {
-    const doc = await this.model.findById(id);
-    if (doc) return doc.name;
-    throw new Error('Category may have been deleted');
+  async getCategoryById(id) {
+    return await this.model.findById(id);
   }
 
   async createCategory(data) {
@@ -23,18 +18,19 @@ class CategoryRepository {
   }
 
   async getAllCategories() {
-    return await this.mode.find({});
+    return await this.model.find({});
   }
 
-  async deleteCategory(id) {
+  async getAllCategoryNames() {
+    return await this.model.find({}).select('name -_id');
+  }
+
+  async deleteCategoryById(id) {
     return await this.model.findByIdAndRemove(id);
   }
 
-  async updateCategoryStatus(id, status) {
-    return await this.model.findByIdAndUpdate(id,
-        {isActive: status},
-        {new: true},
-    );
+  async updateCategoryById(id, updates, options) {
+    return await this.model.findByIdAndUpdate(id, updates, options);
   }
 }
 

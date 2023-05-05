@@ -139,22 +139,16 @@ exports.activateCategory = catchAsync(async (req, res, next) => {
   };
 });
 
-exports.getCategoryDetails = (req, res, next) => {
-  Category.findById(req.body.id).then((doc)=> {
-    if (doc) {
-      return res.json({success: true, category: doc});
-    }
-    throw new Error('Category may have deleted');
-  }).catch((err)=>{
-    next(err);
-  });
-};
+exports.getCategoryDetails = catchAsync(async (req, res, next) => {
+  const category = await categoryServices.getCategoryDetails(req.body.id);
+  return res.json({success: true, category});
+});
 
 exports.updateCategory = async (req, res, next) => {
   try {
     const {name, description, id} = req.body;
     const details = {description};
-    const oldName = await CategoryServices.getOldCategoryName(id);
+    const oldName = await categoryServices.getOldCategoryName(id);
     if (oldName !== name) {
       details.name = name;
       const oldPath =
@@ -182,7 +176,7 @@ exports.categoryImageUpdate = (req, res, next) => {
   const {id, image} = req.body;
   // need to add some alternatives ot
   // handle the error cases of deleting the old image
-  fs.unlink('public/uploads/category/'+image);
+  fs.unlink('src/public/uploads/category/'+image);
   Category.findByIdAndUpdate(id, {image: req.file.filename},
       {new: true}).then((doc)=> {
     if (doc) {
@@ -194,10 +188,7 @@ exports.categoryImageUpdate = (req, res, next) => {
   });
 };
 
-exports.getCategoryNames = (req, res, next)=> {
-  Category.find({}).select('name -_id').then((category)=> {
-    res.json({success: true, categories: category});
-  }).catch((err)=>{
-    next(err);
-  });
-};
+exports.getCategoryNames = catchAsync(async (req, res, next)=> {
+  const categories = await categoryServices.getAllCategoryNames();
+  res.json({success: true, categories});
+});

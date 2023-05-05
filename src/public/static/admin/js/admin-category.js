@@ -554,7 +554,7 @@ function editCategory(id) {
       categoryEditDescriptionInput.value = data.category.description;
       categoryEditImage.src = `/static/uploads/category/${data.category.image}`;
     } else {
-      alert(data.error);
+      alert(data.error.message);
     }
   });
 }
