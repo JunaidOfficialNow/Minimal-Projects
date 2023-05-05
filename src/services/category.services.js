@@ -31,6 +31,10 @@ class CategoryServices {
     return await this.repo.getAllCategories();
   }
 
+  async getAllCategoryNames() {
+    return await this.repo.getAllCategoryNames();
+  }
+
   async deleteCategory(id) {
     return await this.repo.deleteCategoryById(id);
   }
