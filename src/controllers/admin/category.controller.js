@@ -139,16 +139,10 @@ exports.activateCategory = catchAsync(async (req, res, next) => {
   };
 });
 
-exports.getCategoryDetails = (req, res, next) => {
-  Category.findById(req.body.id).then((doc)=> {
-    if (doc) {
-      return res.json({success: true, category: doc});
-    }
-    throw new Error('Category may have deleted');
-  }).catch((err)=>{
-    next(err);
-  });
-};
+exports.getCategoryDetails = catchAsync(async (req, res, next) => {
+  const category = await categoryServices.getCategoryDetails(req.body.id);
+  return res.json({success: true, category});
+});
 
 exports.updateCategory = async (req, res, next) => {
   try {
