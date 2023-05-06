@@ -3,6 +3,14 @@
 const categoryModel = require('../models/category.model');
 const CategoryRepository = require('../repositories/category.repository');
 
+// eslint-disable-next-line max-len
+const CategoryNotFoundException = require('../utils/error-handlers/categoryNotFound.handler');
+
+
+const fs = require('fs');
+const path = require('path');
+const deleteDirectory = require('../utils/deleteDirectory.util');
+
 class CategoryServices {
   constructor(repo) {
     this.repo = repo;
@@ -20,7 +28,7 @@ class CategoryServices {
     if (doc) {
       return doc.name;
     }
-    throw new Error('Category may have been deleted');
+    throw new CategoryNotFoundException();
   }
 
   async createCategory(data) {
@@ -40,11 +48,15 @@ class CategoryServices {
   }
 
   async updateCategoryStatus(id, status) {
-    return await this.repo.updateCategoryById(
+    const doc = await this.repo.updateCategoryById(
         id,
         {isActive: status},
         {new: true},
     );
+    if (!doc) {
+      throw new CategoryNotFoundException();
+    }
+    return doc;
   }
 
   async getCategoryDetails(id) {
@@ -52,8 +64,41 @@ class CategoryServices {
     if (doc) {
       return doc;
     }
-    throw new Error('Category may have already been deleted');
+    throw new CategoryNotFoundException();
   };
+
+  async catImageUpdate(id, oldImage, image) {
+    // need to add some alternatives ot
+  // handle the error cases of deleting the old image
+    fs.unlink('src/public/static/uploads/category/'+oldImage);
+    const doc = await this.repo.updateCategoryById(id, {image}, {new: true});
+    if (!doc) {
+      throw new CategoryNotFoundException();
+    }
+    return doc.image;
+  }
+
+  async deleteCategory(categoryImage, categoryName) {
+    fs.unlink('src/public/static/uploads/category/'+ categoryImage);
+    deleteDirectory('src/public/static/uploads/'+ categoryName);
+  }
+
+  async editCategory(name, description, id) {
+    const details = {description};
+    const oldName = await this.getOldCategoryName(id);
+    if (oldName !== name) {
+      details.name = name;
+      const oldPath = path.join('src', 'public', 'uploads', oldName);
+      const newPath = path.join('src', 'public', 'uploads', name);
+      await fs.promises.rename(oldPath, newPath);
+      await this.checkCategoryExistsByName(name);
+    }
+    const doc = await this.updateCategoryById(id, details, {new: true});
+    if (!doc) throw new CategoryNotFoundException();
+    return doc;
+  }
 };
 
-module.exports = new CategoryServices(new CategoryRepository(categoryModel));
+module.exports = new CategoryServices(
+    new CategoryRepository(categoryModel),
+);
