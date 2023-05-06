@@ -25,7 +25,7 @@ exports.addCatImage = catchAsync(async (req, res, next)=>{
   const addCategory = req.session.addCategory;
   addCategory.image = req.file.filename;
   addCategory.lastEditedBy = req.session.admin.firstName;
-  const doc = await categoryServices.addCategoryImage(addCategory);
+  const doc = await categoryServices.createCategory(addCategory);
   delete req.session.addCategory;
   res.json({success: true, doc});
 });
@@ -38,9 +38,8 @@ exports.getCategories = catchAsync(async (req, res, next) => {
 
 // need to move this functions of deleteCategory to somewher in the future.
 exports.deleteCategory = catchAsync(async (req, res, next) => {
-  const data = await categoryServices.deleteCategory(req.body.id);
-  await designServices.deleteAllOfTheCategory(data.name);
-  await categoryServices.deleteCategory(data.image, data.name);
+  const categoryName = await categoryServices.deleteCategory(req.body.id);
+  await designServices.deleteAllOfTheCategory(categoryName);
   res.json({success: true});
 });
 

@@ -30,11 +30,6 @@ class CategoryServices {
     }
     throw new CategoryNotFoundException();
   }
-
-  async createCategory(data) {
-    return await this.repo.createCategory(data);
-  }
-
   async getAllCategories() {
     return await this.repo.getAllCategories();
   }
@@ -44,7 +39,13 @@ class CategoryServices {
   }
 
   async deleteCategory(id) {
-    return await this.repo.deleteCategoryById(id);
+    const category = await this.repo.deleteCategoryById(id);
+    try {
+      fs.unlink('src/public/static/uploads/category/'+ category.image, ()=>{});
+      // bug: files are  not  properly deleted
+      await deleteDirectory('src/public/static/uploads/'+ category.name);
+    } catch (error) {};
+    return category.name;
   }
 
   async updateCategoryStatus(id, status) {
@@ -78,22 +79,19 @@ class CategoryServices {
     return doc.image;
   }
 
-  async deleteCategory(categoryImage, categoryName) {
-    fs.unlink('src/public/static/uploads/category/'+ categoryImage);
-    deleteDirectory('src/public/static/uploads/'+ categoryName);
-  }
 
-  async addCategoryImage(data) {
+  async createCategory(data) {
     try {
       const filePath = path.join(
           'src', 'public', 'static', 'uploads', data.name,
       );
       await fs.promises.mkdir(filePath);
     } catch (error) {
+      // bug: already deleted category file  is not deleting
+      // making can't create  new category with old deleted category name.
       throw new Error('There is a trouble creating the category');
     }
-
-    return await this.createCategory(data);
+    return await this.repo.createCategory(data);
   }
 
   async editCategory(name, description, id) {
