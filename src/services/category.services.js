@@ -23,13 +23,6 @@ class CategoryServices {
     };
   };
 
-  async getOldCategoryName(id) {
-    const doc = await this.repo.getCategoryById(id);
-    if (doc) {
-      return doc.name;
-    }
-    throw new CategoryNotFoundException();
-  }
   async getAllCategories() {
     return await this.repo.getAllCategories();
   }
@@ -71,7 +64,9 @@ class CategoryServices {
   async catImageUpdate(id, oldImage, image) {
     // need to add some alternatives ot
   // handle the error cases of deleting the old image
-    fs.unlink('src/public/static/uploads/category/'+oldImage);
+    try {
+      fs.unlink('src/public/static/uploads/category/'+oldImage, ()=> {});
+    } catch (error) {}
     const doc = await this.repo.updateCategoryById(id, {image}, {new: true});
     if (!doc) {
       throw new CategoryNotFoundException();
@@ -96,7 +91,8 @@ class CategoryServices {
 
   async editCategory(name, description, id) {
     const details = {description};
-    const oldName = await this.getOldCategoryName(id);
+    const data = await this.repo.getCategoryName(id);
+    const oldName = data.name;
     if (oldName !== name) {
       details.name = name;
       const oldPath = path.join('src', 'public', 'static', 'uploads', oldName);

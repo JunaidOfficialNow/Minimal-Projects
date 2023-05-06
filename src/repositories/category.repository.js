@@ -25,6 +25,10 @@ class CategoryRepository {
     return await this.model.find({}).select('name -_id');
   }
 
+  async getCategoryName(id) {
+    return await this.model.findById(id).select('name -_id');
+  }
+
   async deleteCategoryById(id) {
     return await this.model.findByIdAndRemove(id);
   }
