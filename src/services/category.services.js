@@ -83,6 +83,19 @@ class CategoryServices {
     deleteDirectory('src/public/static/uploads/'+ categoryName);
   }
 
+  async addCategoryImage(data) {
+    try {
+      const filePath = path.join(
+          'src', 'public', 'static', 'uploads', data.name,
+      );
+      await fs.promises.mkdir(filePath);
+    } catch (error) {
+      throw new Error('There is a trouble creating the category');
+    }
+
+    return await this.createCategory(data);
+  }
+
   async editCategory(name, description, id) {
     const details = {description};
     const oldName = await this.getOldCategoryName(id);

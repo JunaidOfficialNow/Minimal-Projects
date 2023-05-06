@@ -1,6 +1,4 @@
 /* eslint-disable require-jsdoc */
-const fs = require('fs');
-const path = require('path');
 
 const categoryServices = require('../../services/category.services');
 const designServices = require('../../services/design.services');
@@ -27,17 +25,9 @@ exports.addCatImage = catchAsync(async (req, res, next)=>{
   const addCategory = req.session.addCategory;
   addCategory.image = req.file.filename;
   addCategory.lastEditedBy = req.session.admin.firstName;
-  // eslint-disable-next-line max-len
-  fs.mkdir(path.join(__dirname, `../../public/static/uploads/${addCategory.name}`),
-      async (error)=> {
-        if (error) {
-          throw new Error('Oops! Something went wrong');
-        } else {
-          const doc = await categoryServices.createCategory(addCategory);
-          delete req.session.addCategory;
-          res.json({success: true, doc});
-        }
-      });
+  const doc = await categoryServices.addCategoryImage(addCategory);
+  delete req.session.addCategory;
+  res.json({success: true, doc});
 });
 
 exports.getCategories = catchAsync(async (req, res, next) => {
