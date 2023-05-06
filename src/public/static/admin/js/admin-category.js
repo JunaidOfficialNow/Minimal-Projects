@@ -434,7 +434,7 @@ editUpdateBtn.addEventListener('click', () =>{
               elements[2].innerHTML = name;
               elements[3].innerHTML = description;
             } else {
-              alert(data.error);
+              alert(data.error.message);
             }
           });
         });
@@ -466,7 +466,7 @@ function deleteCategory(id) {
       });
       indexNo--;
       // alert('Success');
-    } else alert(data.error);
+    } else alert(data.error.message);
   });
 };
 
@@ -498,7 +498,7 @@ function deactivateCategory(id, deactivateOption, dropdownMenu) {
        `on ${date.toLocaleDateString()}
        at ${date.toLocaleTimeString()} <br> by ${data.by}`;
     } else {
-      alert(data.error);
+      alert(data.error.message);
     }
   });
 }
@@ -531,7 +531,7 @@ function activateCategory(id, activateOption, dropdownMenu) {
         `on ${date.toLocaleDateString()}
         at ${date.toLocaleTimeString()} <br> by ${data.by}`;
     } else {
-      alert(data.error);
+      alert(data.error.message);
     }
   });
 }
