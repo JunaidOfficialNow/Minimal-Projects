@@ -88,12 +88,16 @@ class CategoryServices {
     const oldName = await this.getOldCategoryName(id);
     if (oldName !== name) {
       details.name = name;
-      const oldPath = path.join('src', 'public', 'uploads', oldName);
-      const newPath = path.join('src', 'public', 'uploads', name);
-      await fs.promises.rename(oldPath, newPath);
+      const oldPath = path.join('src', 'public', 'static', 'uploads', oldName);
+      const newPath = path.join('src', 'public', 'static', 'uploads', name);
       await this.checkCategoryExistsByName(name);
+      try {
+        await fs.promises.rename(oldPath, newPath);
+      } catch (error) {
+        throw new Error('There is  some trouble in updating the category name');
+      }
     }
-    const doc = await this.updateCategoryById(id, details, {new: true});
+    const doc = await this.repo.updateCategoryById(id, details, {new: true});
     if (!doc) throw new CategoryNotFoundException();
     return doc;
   }
