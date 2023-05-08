@@ -29,13 +29,13 @@ exports.addProductAll = catchAsync(async (req, res, next)=> {
   //  the sizes array from the frontend  itselt;
   const dto = {name, designCode, gender, sizes, exactColor, broadColor, price,
     stock, category} = req.body;
-  dto[sizes] = sizes.map((size)=> {
+  dto.sizes = sizes.map((size)=> {
     return {size: size,
       stock: req.body[`stockOf${size}`],
     };
   });
-  dto[images] = Object.values(req.files).map((file) => file.filename);
-  dto[lastEditedBy] = req.session.admin.firstName;
+  dto.images = Object.values(req.files).map((file) => file.filename);
+  dto.lastEditedBy = req.session.admin.firstName;
   await productServices.createNewProduct(dto);
   res.json({success: true});
 });
@@ -57,21 +57,34 @@ exports.getEditProductPage = catchAsync(async (req, res, next)=> {
 
 exports.updateProduct = catchAsync(async (req, res, next)=> {
   // destructuring and repository layer need  to be checked
-  const dto = {name,
-    designCode, gender, sizes, exactColor, broadColor, price,
-    stock, category} = req.body;
-  dto[sizes] = sizes.map((size)=> {
+  const dto = {
+    name,
+    designCode,
+    gender,
+    sizes,
+    exactColor,
+    broadColor,
+    price,
+    stock,
+    category,
+  } = req.body;
+
+  dto.lastEditedBy = req.session.admin.firstName;
+
+  dto.sizes = sizes.map((size)=> {
     return {size: size,
       stock: req.body[`stockOf${size}`],
     };
   });
+
   const images = Object.values(req.files).map((file) => file.filename);
-  dto[lastEditedBy] = req.session.admin.firstName;
+
   await productServices.updateProduct(
       req.body.id,
       dto,
       images,
   );
+
   res.json({success: true});
 });
 

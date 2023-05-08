@@ -41,7 +41,7 @@ class ProductServices {
   }
 
   async updateProduct(id, updates, images) {
-    const doc = this.#repo.updateOneById(id, updates, {new: true});
+    const doc = await this.#repo.updateOneById(id, updates, {new: true});
     images.forEach((image)=> {
       doc.images.push(image);
     });
