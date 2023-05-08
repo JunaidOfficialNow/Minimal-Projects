@@ -43,13 +43,12 @@ productFormBtn.addEventListener('click', function() {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      name: name,
-      designCode: designCode,
-    }),
+    body: JSON.stringify({name, designCode}),
   }).then((response)=> response.json()).then((data)=> {
     if (data.success) {
       window.location.href = '/admin/product/add';
+    } else {
+      alert(data.error.message);
     }
   });
 });
@@ -59,9 +58,7 @@ productFormBtn.addEventListener('click', function() {
 function changeCODStatus(element, id) {
   fetch('/admin/products/COD', {
     method: 'PATCH',
-    body: JSON.stringify({
-      id: id,
-    }),
+    body: JSON.stringify({id}),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -75,6 +72,8 @@ function changeCODStatus(element, id) {
         cell.innerHTML = 'Not Available';
         element.innerHTML = 'Enable COD';
       }
+    } else {
+      alert(data.error.message);
     }
   });
 };
@@ -83,9 +82,7 @@ function changeCODStatus(element, id) {
 function changeActiveStatus(element, id) {
   fetch('/admin/products/active', {
     method: 'PATCH',
-    body: JSON.stringify({
-      id: id,
-    }),
+    body: JSON.stringify({id}),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -99,6 +96,8 @@ function changeActiveStatus(element, id) {
         cell.innerHTML = 'Deactivated';
         element.innerHTML = 'Activate';
       }
+    } else {
+      alert(data.error.message);
     }
   });
 };
