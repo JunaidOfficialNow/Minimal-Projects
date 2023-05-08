@@ -30,8 +30,12 @@ class DesignServices {
     await this.#repo.createNewDesign(data);
   }
 
+  async getDesignByCode(designCode) {
+    return await this.#repo.getDesignByCode(designCode);
+  }
+
   async checkCodeExists(designCode) {
-    const doc = await this.#repo.getDesignByCode(designCode);
+    const doc = await this.getDesignByCode(designCode);
     if (doc) throw new Error(`Design ${designCode} already exists`);
   }
 
