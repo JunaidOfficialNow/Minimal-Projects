@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  app:
+    build: ./
+    container_name: app_c
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+    volumes:
+      - ./:/app
+      - /app/node_modules
+  mongodb:
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
