@@ -21,7 +21,8 @@ const email = {
       };
       transporter.sendMail(mailOption, (err, info)=>{
         if (err) {
-          reject(err);
+          // eslint-disable-next-line max-len
+          reject(new Error('There is a trouble sending mail now, try again later'));
         } else {
           resolve(otp);
         }
@@ -39,7 +40,8 @@ const email = {
       };
       transporter.sendMail(mailOption, (err, info)=>{
         if (err) {
-          reject(err);
+          // eslint-disable-next-line max-len
+          reject(new Error('There is a trouble sending mail now, try again later'));
         } else {
           resolve(otp);
         }
@@ -57,7 +59,8 @@ const email = {
       };
       transporter.sendMail(mailOption, (err, info)=>{
         if (err) {
-          reject(err);
+          // eslint-disable-next-line max-len
+          reject(new Error('There is a trouble sending mail now, try again later'));
         } else {
           resolve();
         }

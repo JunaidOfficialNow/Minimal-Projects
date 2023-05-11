@@ -57,7 +57,6 @@
     function login() {
         switch (count) {
             case 1:
-                console.log(1)
                 let emailVal = email.value;
                 let passVal = pass.value;
                 if (emailVal == '' || passVal == '') {
@@ -90,21 +89,13 @@
                             pass.style.display = 'none';
                             loginBtn.innerHTML = 'Verify otp';
                             count++;
-                        } else if (data.otp) {
-                            loginError.innerHTML = 'There is a trouble sending otp, Please try again later';
-                            loginError.style.visibility = 'visible';
-
-                        } else if (data.admin) {
-                            loginError.innerHTML = 'Password Incorrect';
-                            loginError.style.visibility = 'visible';
-                            pass.value = null;
-
                         } else {
-                            loginError.innerHTML = `No such admin with ${emailVal} mail`;
+                            loginError.innerHTML = data.error.message;
                             loginError.style.visibility = 'visible';
                             pass.value = null;
-                            email.value = null;
                         }
+                           
+
                     })
                 }
                 break;
