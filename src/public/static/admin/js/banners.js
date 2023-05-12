@@ -55,9 +55,8 @@ bannerName.addEventListener("change", function() {
         fetch(`/admin/banners/name/${bannerName.value}`, {
             method: 'GET',
         }).then((response)=> response.json()).then((data)=> {
-            if (data.exists) {
-                alert('That name allreayd exists');
-            }
+            if (data.success) {}
+						else alert(data.error.message);
         } );
     }
    
