@@ -1,5 +1,3 @@
-const Banner = require('../../models/banner.model');
-
 const bannerServices = require('../../services/banner.services');
 
 const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
@@ -29,6 +27,7 @@ exports.updateBanners = catchAsync(async (req, res, next)=> {
 });
 
 exports.checkNameExists = catchAsync(async (req, res, next)=> {
+  // there is a bug that will send 500 error page if name exists;
   await bannerServices.checkBannerExistsByName(req.params.name);
   return res.json({success: true});
 });

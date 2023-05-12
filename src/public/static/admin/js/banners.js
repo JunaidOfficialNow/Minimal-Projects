@@ -53,6 +53,7 @@ window.addEventListener('DOMContentLoaded', function () {
 bannerName.addEventListener("change", function() {
     if (oldName !== bannerName.value) {
         fetch(`/admin/banners/name/${bannerName.value}`, {
+					  Origin: 'fetch',
             method: 'GET',
         }).then((response)=> response.json()).then((data)=> {
             if (data.success) {}
