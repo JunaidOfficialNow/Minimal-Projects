@@ -1,37 +1,36 @@
 const Banner = require('../../models/banner.model');
 
+const bannerServices = require('../../services/banner.services');
 
-exports.getBannersPage = async (req, res) => {
-  const banners = await Banner.find();
-  res.render('admins/banners.ejs',
-      {admin: req.session.admin, banners});
-};
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
-exports.getEditBannersPage = async (req, res) => {
-  const banner = await Banner.findOne({name: req.params.name});
-  res.render('admins/edit-banner', {admin: req.session.admin, banner});
-};
 
-exports.updateBanners = async (req, res, next)=> {
-  try {
-    if (req.file) {
-      req.body.image = req.file.filename;
-    }
-    const {id, ...details} = req.body;
-    await Banner.findByIdAndUpdate(id, details);
-    res.redirect('/admin/banners');
-  } catch (error) {
-    next(error);
-  }
-};
+exports.getBannersPage =catchAsync(async (req, res, next) => {
+  const banners = await bannerServices.getAllBanners();
+  res.render('admins/banners.ejs', {
+    admin: req.session.admin,
+    banners,
+  });
+});
 
-exports.checkNameExists = (req, res, next)=> {
-  Banner.findOne({name: req.params.name}).then((banner)=> {
-    if (banner) {
-      return res.json({exists: true});
-    }
-    return res.json({exists: false});
-  }).catch((err)=> next(err));
-};
+exports.getEditBannersPage = catchAsync(async (req, res, next) => {
+  const banner = await bannerServices.getBannerByName(req.params.name);
+  res.render('admins/edit-banner', {
+    admin: req.session.admin,
+    banner,
+  });
+});
+
+exports.updateBanners = catchAsync(async (req, res, next)=> {
+  if (req.file) req.body.image = req.file.filename;
+  const {id, ...details} = req.body;
+  await bannerServices.updateBannerById(id, details);
+  res.redirect('/admin/banners');
+});
+
+exports.checkNameExists = catchAsync(async (req, res, next)=> {
+  await bannerServices.checkBannerExistsByName(req.params.name);
+  return res.json({success: true});
+});
 
 
