@@ -20,6 +20,7 @@ module.exports = (app) =>{
       res.render('500', {message: err.message});
     };
   });
+
   app.all('*', (req, res)=> {
     res.render('404.ejs');
   });
