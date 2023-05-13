@@ -1,53 +1,35 @@
-const Coupon = require('../../models/coupon.model');
+const couponServices = require('../../services/coupon.services');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
-exports.getCouponsPage = (req, res, next) => {
-  Coupon.find().then((coupons)=> {
-    res.render('admins/admin-coupons', {admin: req.session.admin, coupons});
-  }).catch((error)=> {
-    next(error);
+
+exports.getCouponsPage = catchAsync(async (req, res, next) => {
+  const coupons = await couponServices.getAllCoupons();
+  res.render('admins/admin-coupons', {
+    admin: req.session.admin,
+    coupons,
   });
-};
+});
 
-exports.createCoupon = (req, res, next)=> {
+exports.createCoupon = catchAsync(async (req, res, next)=> {
   req.body.lastEditedBy = req.session.admin.firstName;
-  Coupon.create(req.body).then(()=> {
-    res.json({success: true});
-  }).catch((error)=> {
-    next(error);
-  });
-};
+  await couponServices.createNewCoupon(req.body);
+  res.json({success: true});
+});
 
-exports.changeCouponStatus = async (req, res, next)=> {
-  try {
-    const coupon = await Coupon.findById(req.body.id);
-    if (coupon) {
-      coupon.isActive = !coupon.isActive;
-      const newCoupon = await coupon.save();
-      return res.json({success: true, status: newCoupon.isActive});
-    }
-    throw new Error('Coupon not found');
-  } catch (error) {
-    next(error);
-  };
-};
+exports.changeCouponStatus = catchAsync(async (req, res, next)=> {
+  const status = await couponServices.updateCouponStatus(req.body.id);
+  res.json({success: true, status});
+});
 
-exports.getCoupon = async (req, res, next)=> {
-  try {
-    const coupon = await Coupon.findById(req.params.id);
-    res.json({success: true, coupon});
-  } catch (error) {
-    next(error);
-  }
-};
+exports.getCoupon = catchAsync(async (req, res, next)=> {
+  const coupon = await couponServices.getCouponById(req.params.id);
+  res.json({success: true, coupon});
+});
 
-exports.updateCoupons = async (req, res, next)=> {
-  try {
-    const {id, ...details} = req.body;
-    await Coupon.findByIdAndUpdate(id, details);
-    res.json({success: true});
-  } catch (error) {
-    next(error);
-  }
-};
+exports.updateCoupons = catchAsync(async (req, res, next)=> {
+  const {id, ...details} = req.body;
+  await couponServices.updateCouponById(id, details);
+  res.json({success: true});
+});
 
 
