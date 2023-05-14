@@ -1,29 +1,19 @@
-const User = require('../../models/user.model');
+const userServices = require('../../services/user.services');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
-exports.blockUser = async (req, res, next)=>{
-  User.findByIdAndUpdate(req.body.id, {isBlocked: true}).then((response)=> {
-    if (response) {
-      res.json({success: true});
-    } else {
-      res.json({succcess: false});
-    }
-  }).catch((error)=> next(error));
-};
+exports.blockUser = catchAsync(async (req, res, next)=>{
+  await userServices.updateUserBlockStatus(req.body.id, true);
+  res.json({success: true});
+});
 
-exports.unblockUser = (req, res, next)=>{
-  User.findByIdAndUpdate(req.body.id, {isBlocked: false}).then((response)=>{
-    res.json({success: true});
-  }).catch((err)=>{
-    next(err);
-  });
-};
+exports.unblockUser =catchAsync(async (req, res, next)=>{
+  await userServices.updateUserBlockStatus(req.body.id, false);
+  res.json({success: true});
+});
 
-exports.getUsers = (req, res, next)=>{
-  User.find().then((users)=>{
-    res.json(users);
-  }).catch((err)=>{
-    next(err);
-  });
-};
+exports.getUsers = catchAsync(async (req, res, next)=>{
+  const users = await userServices.getAllUsers();
+  res.json(users);
+});
 
 
