@@ -42,11 +42,11 @@ exports.getDesignCodes = catchAsync(async (req, res, next) => {
 });
 
 exports.changeDesignStatus = catchAsync(async (req, res, next)=> {
-  const data = await designServices.updateDesignStatus(req.body.id);
-  await productServices.updateProductsStatusByDesign(
-      data.designCode,
-      data.isActive,
-  );
+  const {
+    designCode,
+    isActive,
+  } = await designServices.updateDesignStatus(req.body.id);
+  await productServices.updateProductsStatusByDesign(designCode, isActive);
   res.json({success: true, status: data.isActive});
 });
 
