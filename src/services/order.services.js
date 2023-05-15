@@ -9,27 +9,32 @@ const OrderRepository = require('../repositories/order.repository');
 
 
 class OrderServices {
+  #repo;
   constructor(orderRepo) {
-    this.repo = orderRepo;
+    this.#repo = orderRepo;
   }
 
   async getAllOrders() {
-    return await this.repo.getAllOrders();
+    return await this.#repo.getAllOrders();
   }
 
   async getOrderById(id) {
-    return this.repo.getOrderById(id);
+    const order = await this.#repo.getOrderById(id);
+    if (!order) throw new Error(`Order ${id} not found`);
+    return order;
   }
 
   async changeOrderStatus(id, status) {
-    return this.repo.changeOrderStatus(id, status);
+    return await this.#repo.changeOrderStatus(id, status);
   }
 
   async getOrdersByStatus(status) {
-    return this.repo.getOrderByStatus(status);
+    return await this.#repo.getOrderByStatus(status);
   }
 
-  async getOrderReportCSV(orders) {
+  async getOrderReportCSV(status) {
+    const orders = await this.getOrdersByStatus(status);
+    if (!orders.length) throw new Error('No records to download');
     const path = 'orders.csv';
     const header = [
       {id: 'orderId', title: 'Order ID'},
@@ -60,18 +65,18 @@ class OrderServices {
         23, 59, 59,
     );
 
-    return this.repo.todaySale(startOfDay, endOfDay);
+    return await this.#repo.todaySale(startOfDay, endOfDay);
   }
 
   async totalSale() {
-    return this.repo.totalSale();
+    return await this.#repo.totalSale();
   }
 
   async salesAndRevenueChart() {
     const sevenMonthsAgo = new Date();
     sevenMonthsAgo.setMonth(sevenMonthsAgo.getMonth() - 7);
     sevenMonthsAgo.setHours(0, 0, 0, 0);
-    return this.repo.salesAndRevenueChart(sevenMonthsAgo);
+    return await this.#repo.salesAndRevenueChart(sevenMonthsAgo);
   }
 
   async sizeAndSaleReport() {
@@ -80,7 +85,7 @@ class OrderServices {
         currentDate.getFullYear(),
         currentDate.getMonth() - 6, 1,
     );
-    return this.repo.sizeAndSaleReport(sevenMonthsAgo);
+    return await this.#repo.sizeAndSaleReport(sevenMonthsAgo);
   }
 };
 
