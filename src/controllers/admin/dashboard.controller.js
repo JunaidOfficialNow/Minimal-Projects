@@ -1,43 +1,22 @@
-const Order = require('../../models/order.model');
-const User = require('../../models/user.model');
+const reportsServices = require('../../services/reports.services');
+const orderServices = require('../../services/order.services');
 
-const OrderServices = require('../../services/order.services');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
-exports.getDashboard = async (req, res, next)=>{
-  try {
-    let recentOrders = await Order.find({}).populate({
-      path: 'userId',
-      model: User,
-    }).sort({createdAt: -1}).limit(5);
-    let todaySale = await OrderServices.todaySale();
-    let totalSale = await OrderServices.totalSale();
-    if (todaySale.length === 0) {
-      todaySale = [{todaySales: 0, todayRevenue: 0}];
-    }
+exports.getDashboard = catchAsync(async (req, res, next)=>{
+  const recentOrders = await orderServices.getRecentOrders();
+  const {todaySale, totalSale} = await reportsServices.getDashboardDatas();
 
-    if (totalSale.length === 0) {
-      totalSale = [{totalSales: 0, totalRevenue: 0}];
-    };
+  res.render('admins/admin-home', {
+    admin: req.session.admin,
+    todaySale,
+    totalSale,
+    recentOrders,
+  });
+});
 
-    if (recentOrders.length === 0) {
-      recentOrders = [];
-    };
-
-    res.render('admins/admin-home',
-        {admin: req.session.admin,
-          todaySale, totalSale, recentOrders});
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.salesAndRevenue = async (req, res, next) => {
-  try {
-    const sales = await orderRepo.salesAndRevenueChart();
-    const size = await orderRepo.sizeAndSaleReport();
-    res.json({success: true, sales, size});
-  } catch (error) {
-    next(error);
-  }
-};
+exports.salesAndRevenue = catchAsync(async (req, res, next) => {
+  const {sales, size} = await reportsServices.getSalesAndRevenueDatas();
+  res.json({success: true, sales, size});
+});
 
