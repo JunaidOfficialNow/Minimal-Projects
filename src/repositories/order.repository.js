@@ -1,41 +1,73 @@
 /* eslint-disable require-jsdoc */
 
+const orderModel = require('../models/order.model');
+const productModel = require('../models/product.model');
+const userModel = require('../models/user.model');
+
 class OrderRepository {
+  static instance;
+  #model;
+  #productModel;
+  #userModel;
   constructor(model, productModel, userModel) {
-    this.model = model;
-    this.productModel = productModel;
-    this.userModel = userModel;
+    this.#model = model;
+    this.#productModel = productModel;
+    this.#userModel = userModel;
   }
+
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new OrderRepository(
+          orderModel,
+          productModel,
+          userModel,
+      );
+    }
+    return this.instance;
+  }
+
+  async getRecentOrders() {
+    return await this.#model
+        .find()
+        .populate({
+          path: 'userId',
+          model: this.userModel,
+        })
+        .sort({createdAt: -1})
+        .limit(5);
+  }
+
+
   async getAllOrders() {
-    return await this.model.find({}).populate({
+    return await this.#model.find({}).populate({
       path: 'products.product',
-      model: this.productModel,
+      model: this.#productModel,
     }).populate({
       path: 'userId',
-      model: this.userModel,
+      model: this.#userModel,
     }).sort({createdAt: -1});
   };
 
   async getOrderById(id) {
-    return await this.model.findById(id).populate({
+    return await this.#model.findById(id).populate({
       path: 'products.product',
-      model: this.productModel,
+      model: this.#productModel,
     }).populate({
       path: 'userId',
-      model: this.userModel,
+      model: this.#userModel,
     });
   };
 
   async changeOrderStatus(id, status) {
-    return this.model.findByIdAndUpdate(id, {status: status});
+    return this.#model.findByIdAndUpdate(id, {status: status});
   }
 
   async getOrderByStatus(status) {
-    return await this.model.find({status});
+    return await this.#model.find({status});
   }
 
   async todaySale(startOfDay, endOfDay) {
-    return this.model.aggregate([
+    return await this.#model.aggregate([
       {
         $match: {
           status: {$nin: ['Cancelled', 'Returned', 'Refunded']},
@@ -60,7 +92,7 @@ class OrderRepository {
   }
 
   async totalSale() {
-    return await this.model.aggregate([
+    return await this.#model.aggregate([
       {
         $match: {
           status: {$nin: ['Cancelled', 'Returned', 'Refunded']},
@@ -81,7 +113,7 @@ class OrderRepository {
   }
 
   async salesAndRevenueChart(sevenMonthsAgo) {
-    return await this.model.aggregate([
+    return await this.#model.aggregate([
       {
         $match: {
           status: {$nin: ['Cancelled', 'Returned', 'Refunded']},
@@ -137,7 +169,7 @@ class OrderRepository {
   }
 
   async sizeAndSaleReport(sevenMonthsAgo) {
-    return await this.model.aggregate([
+    return await this.#model.aggregate([
       {
         $match: {
           status: {$nin: ['Cancelled', 'Returned', 'Refunded']},

@@ -12,27 +12,28 @@ const path = require('path');
 const deleteDirectory = require('../utils/deleteDirectory.util');
 
 class CategoryServices {
+  #repo;
   constructor(repo) {
-    this.repo = repo;
+    this.#repo = repo;
   }
 
   async checkCategoryExistsByName(name) {
-    const doc = await this.repo.getCategoryByName(name);
+    const doc = await this.#repo.getCategoryByName(name);
     if (doc) {
       throw new Error('Category already exists, should be unique');
     };
   };
 
   async getAllCategories() {
-    return await this.repo.getAllCategories();
+    return await this.#repo.getAllCategories();
   }
 
   async getAllCategoryNames() {
-    return await this.repo.getAllCategoryNames();
+    return await this.#repo.getAllCategoryNames();
   }
 
   async deleteCategory(id) {
-    const category = await this.repo.deleteCategoryById(id);
+    const category = await this.#repo.deleteCategoryById(id);
     try {
       fs.unlink('src/public/static/uploads/category/'+ category.image, ()=>{});
       // bug: files are  not  properly deleted
@@ -42,7 +43,7 @@ class CategoryServices {
   }
 
   async updateCategoryStatus(id, status) {
-    const doc = await this.repo.updateCategoryById(
+    const doc = await this.#repo.updateCategoryById(
         id,
         {isActive: status},
         {new: true},
@@ -54,7 +55,7 @@ class CategoryServices {
   }
 
   async getCategoryDetails(id) {
-    const doc = await this.repo.getCategoryById(id);
+    const doc = await this.#repo.getCategoryById(id);
     if (doc) {
       return doc;
     }
@@ -67,7 +68,7 @@ class CategoryServices {
     try {
       fs.unlink('src/public/static/uploads/category/'+oldImage, ()=> {});
     } catch (error) {}
-    const doc = await this.repo.updateCategoryById(id, {image}, {new: true});
+    const doc = await this.#repo.updateCategoryById(id, {image}, {new: true});
     if (!doc) {
       throw new CategoryNotFoundException();
     }
@@ -86,12 +87,12 @@ class CategoryServices {
       // making can't create  new category with old deleted category name.
       throw new Error('There is a trouble creating the category');
     }
-    return await this.repo.createCategory(data);
+    return await this.#repo.createCategory(data);
   }
 
   async editCategory(name, description, id) {
     const details = {description};
-    const data = await this.repo.getCategoryName(id);
+    const data = await this.#repo.getCategoryName(id);
     const oldName = data.name;
     if (oldName !== name) {
       details.name = name;
@@ -104,7 +105,7 @@ class CategoryServices {
         throw new Error('There is  some trouble in updating the category name');
       }
     }
-    const doc = await this.repo.updateCategoryById(id, details, {new: true});
+    const doc = await this.#repo.updateCategoryById(id, details, {new: true});
     if (!doc) throw new CategoryNotFoundException();
     return doc;
   }
