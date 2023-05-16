@@ -6,7 +6,7 @@ exports.blockUser = catchAsync(async (req, res, next)=>{
   res.json({success: true});
 });
 
-exports.unblockUser =catchAsync(async (req, res, next)=>{
+exports.unblockUser = catchAsync(async (req, res, next)=>{
   await userServices.updateUserBlockStatus(req.body.id, false);
   res.json({success: true});
 });
