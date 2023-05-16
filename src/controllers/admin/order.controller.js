@@ -2,6 +2,7 @@ const fs = require('fs');
 const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
 const orderServices = require('../../services/order.services');
+const reportsServices = require('../../services/reports.services');
 
 exports.getOrdersPage = catchAsync(async (req, res, next)=> {
   const orders = await orderServices.getAllOrders();
@@ -32,7 +33,7 @@ exports.changeOrderStatus = catchAsync(async (req, res, next)=> {
 });
 
 exports.downloadOrdersReport = catchAsync(async (req, res, next)=> {
-  const path = await orderServices.getOrderReportCSV(req.params.status);
+  const path = await reportsServices.getOrderReportCSV(req.params.status);
   res.download(path, () => {
     fs.unlink(path, (err) => {
       if (err) next(err);

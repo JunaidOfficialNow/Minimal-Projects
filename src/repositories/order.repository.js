@@ -1,11 +1,40 @@
 /* eslint-disable require-jsdoc */
 
+const orderModel = require('../models/order.model');
+const productModel = require('../models/product.model');
+const userModel = require('../models/user.model');
+
 class OrderRepository {
+  static instance;
   constructor(model, productModel, userModel) {
     this.model = model;
     this.productModel = productModel;
     this.userModel = userModel;
   }
+
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new OrderRepository(
+          orderModel,
+          productModel,
+          userModel,
+      );
+    }
+    return this.instance;
+  }
+
+  async getRecentOrders() {
+    return await this.model
+        .find()
+        .populate({
+          path: 'userId',
+          model: this.userModel,
+        })
+        .sort({createdAt: -1})
+        .limit(5);
+  }
+
+
   async getAllOrders() {
     return await this.model.find({}).populate({
       path: 'products.product',
