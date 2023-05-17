@@ -12,6 +12,22 @@ class UserRepository {
   async getAllUsers() {
     return await this.#model.find();
   }
+
+  async getUserByEmail(email) {
+    return await this.#model.findOne({email});
+  }
+
+  async addNewUser(data) {
+    return await this.#model.create(data);
+  }
+
+  async getUserByToken(token) {
+    return await this.#model.findOne({token});
+  }
+
+  async saveDocument(doc) {
+    return await doc.save();
+  }
 }
 
 module.exports = UserRepository;

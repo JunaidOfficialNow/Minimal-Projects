@@ -1,34 +1,23 @@
-const sendEmail = require('../../utils/emails/email.helpers');
-const User = require('../../models/user.model');
-const bcrypt = require('bcrypt');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
+const userServices = require('../../services/user.services');
 
-exports.handleEmail = async (req, res, next)=>{
-  try {
-    const {email} = req.body;
-    const user = await User.findOne({email: email});
-    if (user) {
-      res.json({user: true});
-    } else {
-      const otp = await sendEmail.sendOtp(email);
-      console.log(otp);
-      req.session.userDetails = {email, otp};
-      res.json({success: true});
-    };
-  } catch (error) {
-    next(error);
-  }
-};
+exports.handleEmail = catchAsync(async (req, res, next)=>{
+  const {email} = req.body;
+  const otp = await userServices.handleEmail(email);
+  req.session.userDetails = {email, otp};
+  res.json({success: true});
+});
 
-exports.handleOtp = (req, res)=>{
+exports.handleOtp = catchAsync(async (req, res)=>{
   if (req.body.otp == req.session.userDetails.otp) {
     delete req.session.userDetails.otp;
     res.json({success: true});
   } else {
-    res.json({success: false});
+    throw new Error('Otp does not match');
   };
-};
+});
 
-exports.handleNames = (req, res, next)=>{
+exports.handleNames = catchAsync(async (req, res, next)=>{
   const lastName = req.body.lastName;
   req.session.userDetails.firstName = req.body.firstName;
   // need  to check if the last name is null or not to use nullish operator
@@ -37,80 +26,48 @@ exports.handleNames = (req, res, next)=>{
     req.session.userDetails.isLastNameAdded = true;
   }
   res.json({});
-};
+});
 
-exports.handlePassword = async (req, res, next)=>{
-  try {
-    const pass = await bcrypt.hash(req.body.password, 10);
-    const userDetails = req.session.userDetails;
-    userDetails.hashPassword = pass;
-    const user = await User.create(userDetails);
-    delete req.session.userDetails;
-    req.session.user = user;
-    res.json({success: true});
-  } catch (error) {
-    next(error);
-  };
-};
+exports.handlePassword = catchAsync(async (req, res, next)=>{
+  const user = await userServices.createAccount(
+      req.session.userDetails,
+      req.body.password,
+  );
+  delete req.session.userDetails;
+  req.session.user = user;
+  res.json({success: true});
+});
 
-exports.handleResendOtp = (req, res, next)=>{
-  sendEmail.resendOtp(req.session.userDetails.email).then((otp)=>{
-    console.log(otp);
-    req.session.userDetails.otp = otp;
-    res.json({success: true});
-  }).catch((err)=>{
-    res.json({success: false});
-  });
-};
+exports.handleResendOtp = catchAsync( async (req, res, next)=>{
+  const otp = await userServices.resendOtp(req.session.userDetails.email);
+  console.log(otp);
+  req.session.userDetails.otp = otp;
+  res.json({success: true});
+});
 
-exports.getResetPassword = async (req, res, next)=> {
-  const user = await User.findOne({token: req.params.token});
-  if (user) {
-    req.session.resetToken = req.params.token;
-    return res.render('users/reset-password');
-  }
-  next(new Error('Invalid token'));
-};
+exports.getResetPassword = catchAsync(async (req, res, next)=> {
+  await userServices.verifyToken(req.params.token);
+  req.session.resetToken = req.params.token;
+  res.render('users/reset-password');
+});
 
 
-exports.resetPassword = async (req, res, next)=> {
-  const user = await User.findOne({token: req.session.resetToken});
-  if (user) {
-    const password = await bcrypt.hash(req.body.password, 10);
-    const update = {hashPassword: password, $unset: {token: 1}};
-    await User.updateOne({token: req.session.resetToken}, update);
-    delete req.session.resetToken;
-    req.session.passwordReset = true;
-    return res.redirect('/login');
-  }
-  next(new Error('Invalid token'));
-};
+exports.resetPassword = catchAsync(async (req, res, next)=> {
+  await userServices.resetPassword(req.session.resetToken, req.body.password);
+  delete req.session.resetToken;
+  req.session.passwordReset = true;
+  res.redirect('/login');
+});
 
-exports.checkPasswordExists = async (req, res, next)=> {
-  const user = await User.findOne({token: req.session.resetToken});
-  if (user) {
-    const result = await bcrypt
-        .compare(req.params.password, user.hashPassword);
-    if (result) {
-      return res.json({success: true, exists: true});
-    };
-    return res.json({success: true});
-  }
-  next(new Error('Invalid token'));
-};
+exports.checkPasswordExists = catchAsync(async (req, res, next)=> {
+  await userServices.validatePassword(
+      req.session.resetToken,
+      req.params.password,
+  );
+  return res.json({success: true});
+});
 
-exports.sendPasswordResetToken = async (req, res, next)=> {
-  try {
-    const user = await User.findOne({email: req.body.email});
-    if (!user) {
-      return res.json({success: false, user: true});
-    }
-    const token = crypto.randomBytes(20).toString('hex');
-    await sendEmail.sendUrl(req.body.email, token);
-    user.token = token;
-    await user.save();
-    res.json({success: true});
-  } catch (error) {
-    next(error);
-  };
-};
+exports.sendPasswordResetToken = catchAsync(async (req, res, next)=> {
+  await userServices.sendResetToken(req.body.email);
+  res.json({success: true});
+});
