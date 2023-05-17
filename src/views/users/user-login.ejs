@@ -220,12 +220,7 @@
             loading.style.visibility = 'hidden';
             btn.disabled = false;
             btn.style.background = '#4b70e2';
-            if (data.user) {
-              error.innerHTML = 'Email is already in use';
-              error.style.visibility = 'visible';
-              btn.innerHTML = 'Verify email';
-              input1.value = null;
-            } else if (data.success) {
+            if (data.success) {
               input1.value = null;
               input1.type = 'number';
               input1.placeholder = 'Enter otp sent to your email';
@@ -234,12 +229,11 @@
 
               startTimer();
             } else {
-              btn.innerHTML = 'Verify email';
-              error.innerHTML = 'There is some trouble in sending otp, Please try again later';
+              error.innerHTML = data.error.message;
               error.style.visibility = 'visible';
+              btn.innerHTML = 'Verify email';
               input1.value = null;
             }
-
           })
         } else {
           input1.value = null;
@@ -276,7 +270,7 @@
               btn.innerHTML = 'Submit'
               count++;
             } else {
-              error.innerHTML = 'Otp doesn\'t match';
+              error.innerHTML = data.error.message;
               input1.value = null;
               error.style.visibility = 'visible';
             }
@@ -367,7 +361,7 @@
             }
           }).then(response => response.json()).then(data => {
             if (!data.success) {
-              error.innerHTML = 'Oops! something went wrong while creating account, Please try again later';
+              error.innerHTML = data.error.message;
               error.style.visibility = 'visible';
             } else {
               location.href = '/';
@@ -414,20 +408,11 @@ function keypress(){
         if(data.success){
             location.href ='/';
         } else {
+          //  email.value = null;
              pass.value = null;
-             if(data.blocked) {
-              loginError.innerHTML = 'Your Account has been blocked by the admin';
-              loginError.style.visibility = 'visible';
-             } else if(data.user){
-              loginError.innerHTML = 'Incorrect password';
-              loginError.style.visibility = 'visible';
-              
-             } else {
-           
-              loginError.innerHTML = `Found no user with ${email.value} email, Sign up to continue`;
-              loginError.style.visibility = 'visible';
-              email.value = null;
-             }
+            loginError.innerHTML = data.error.message;
+            loginError.style.visibility = 'visible';
+             
         }
       })
       }else {
@@ -469,8 +454,8 @@ function keypress(){
         loginInfo.innerHTML = 'A link to reset your password is sent to your email address';
         return loginInfo.style.visibility = 'visible';
 
-      } else if(data.user) {
-        loginError.innerHTML = 'No accounts registered with this email address';
+      } else {
+        loginError.innerHTML = data.error.message;
         return loginError.style.visibility = 'visible';
       }
     })
