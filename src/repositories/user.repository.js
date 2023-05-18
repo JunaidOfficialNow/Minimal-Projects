@@ -1,8 +1,18 @@
 /* eslint-disable require-jsdoc */
+
+const userModel = require('../models/user.model');
 class UserRepository {
   #model;
+  static instance;
   constructor(model) {
     this.#model = model;
+  }
+
+  static getInstance() {
+    if (!UserRepository.instance) {
+      UserRepository = new UserRepository(userModel);
+    }
+    return UserRepository.instance;
   }
 
   async updateUserById(id, updates, options) {
