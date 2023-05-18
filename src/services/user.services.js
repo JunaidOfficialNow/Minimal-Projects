@@ -1,5 +1,4 @@
 /* eslint-disable require-jsdoc */
-const userModel = require('../models/user.model');
 const UserRepository = require('../repositories/user.repository');
 
 const emailServices = require('../utils/emails/email.helpers');
@@ -82,6 +81,6 @@ class UserServices {
 }
 
 module.exports = new UserServices(
-    new UserRepository(userModel),
+    UserRepository.getInstance(),
     emailServices,
 );
