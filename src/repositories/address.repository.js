@@ -27,12 +27,19 @@ class AddressRepository {
     return await doc.save();
   }
 
-  async updateAddressById(id, updates, options) {
-    return await this.#model.findByIdAndUpdate(id, updates, options);
+
+  async deleteAddress(id, addressId) {
+    return await this.#model.findByIdAndUpdate(
+        id,
+        {$pull: {addresses: {_id: addressId}}},
+    );
   }
 
-  async updateAddress(queryCriteria, updates, options) {
-    return await this.#model.updateOne(queryCriteria, updates, options);
+  async editAddress(id, editedAddress) {
+    return await this.#model.updateOne(
+        {'addresses._id': id},
+        {'addresses.$': editedAddress},
+    );
   };
 };
 
