@@ -24,7 +24,12 @@ class AddressServices {
       await this.#userRepo.updateUserById(id, {isAddressAdded: true});
       isNew = true;
     }
-    return {isNew, address: doc.addresses.slice(-1)[0]};
+    return {isNew, newAddress: doc.addresses.slice(-1)[0]};
+  }
+
+  async getAllAddresses(id) {
+    const addresses = await this.#repo.getAddressById(id);
+    return addresses ? addresses.addresses : [];
   }
 
   async deleteAddress(id, addressId) {
@@ -37,7 +42,7 @@ class AddressServices {
          addresses
              .addresses
              .find((address)=> address._id.toString()=== addressId);
-    return address;
+    return address || [];
   }
 
   async editAddress(id, editedAddress) {
