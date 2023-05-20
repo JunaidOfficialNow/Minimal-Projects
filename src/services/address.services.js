@@ -11,12 +11,9 @@ class AddressServices {
     this.#userRepo = userRepo;
   }
 
-  async getUserAddressesById(id) {
-    return await this.#repo.getAddressById(id);
-  }
 
   async addNewAddress(id, address) {
-    let doc = await this.getUserAddressesById(id);
+    let doc = await this.#repo.getAddressById(id);
     let isNew;
     if (doc) {
       doc.addresses.push(address);
@@ -27,34 +24,33 @@ class AddressServices {
       await this.#userRepo.updateUserById(id, {isAddressAdded: true});
       isNew = true;
     }
-    return {isNew, address: doc.addresses.slice(-1)[0]};
+    return {isNew, newAddress: doc.addresses.slice(-1)[0]};
+  }
+
+  async getAllAddresses(id) {
+    const addresses = await this.#repo.getAddressById(id);
+    return addresses ? addresses.addresses : [];
   }
 
   async deleteAddress(id, addressId) {
-    return await this.#repo.updateAddressById(
-        id,
-        {$pull: {addresses: {_id: addressId}}},
-    );
+    return await this.#repo.deleteAddress();
   }
 
   async getAddress(addressId, userId) {
-    const addresses = await this.getUserAddressesById(id);
+    const addresses = await this.#repo.getAddressById(userId);
     const address =
          addresses
              .addresses
              .find((address)=> address._id.toString()=== addressId);
-    return address;
+    return address || [];
   }
 
-  async editAddress(id, data) {
-    return await this.updateAddress(
-        {'addresses._id': id},
-        {'addresses.$': address},
-    );
+  async editAddress(id, editedAddress) {
+    return await this.#repo.editAddress(id, editedAddress);
   }
 
   async verifyUserHasAddress(userId) {
-    const addresses = await this.getUserAddressesById(userId);
+    const addresses = await this.#repo.getAddressById(userId);
     if (addresses && addresses.addresses.length) return true;
     return false;
   }

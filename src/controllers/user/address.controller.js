@@ -1,97 +1,50 @@
-const Address = require('../../models/address.model');
+const addressServices = require('../../services/address.services');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
-exports.addAddress = async (req, res, next)=> {
-  try {
-    const {id, address} = req.body;
-    let doc = await Address.findById(id);
-    if (!doc) {
-      doc = await Address.create({_id: id, addresses: [address]});
-      await User.findByIdAndUpdate(id, {isAddressAdded: true});
-      req.session.user.isAddressAdded = true;
-      res.json({success: true, new: true,
-        address: doc.addresses.slice(-1)[0]});
-    } else {
-      doc.addresses.push(address);
-      await doc.save();
-      res.json({success: true, address: doc.addresses.slice(-1)[0]});
-    }
-  } catch (err) {
-    next(err);
-  }
-};
-
-
-exports.getAddress = (req, res, next) => {
-  Address.findById(req.body.id).then((address)=> {
-    if (address) {
-      return res.json(address.addresses);
-    }
-    res.json([]);
-  }).catch((err) => {
-    next(err);
+exports.addAddress = catchAsync(async (req, res, next)=> {
+  const {id, address} = req.body;
+  const {isNew, newAddress} = addressServices.addNewAddress(id, address);
+  res.json({
+    success: true,
+    address: newAddress,
+    new: isNew,
   });
-};
+});
 
-exports.deleteAddress = async (req, res, next) => {
-  try {
-    const {id, addressId} = req.body;
-    await Address.findByIdAndUpdate(id,
-        {$pull: {addresses: {_id: addressId}}});
-    res.json({success: true});
-  } catch (err) {
-    next(err);
-  }
-};
 
-exports.getOneAddress = async (req, res, next)=> {
-  try {
-    const {addressId, userId} = req.body;
-    const address = await Address.findById(userId);
-    const spAddress =
-    address.addresses.find((address)=> address._id.toString() === addressId);
-    res.json(spAddress);
-  } catch (error) {
-    next(error);
-  }
-};
+exports.getAddress = catchAsync(async (req, res, next) => {
+  const address = addressServices.getAllAddresses(req.body.id);
+  res.json(address);
+});
+
+exports.deleteAddress = catchAsync(async (req, res, next) => {
+  const {id, addressId} = req.body;
+  await addressServices.deleteAddress(id, addressId);
+  res.json({success: true});
+});
+
+exports.getOneAddress = catchAsync(async (req, res, next)=> {
+  const {addressId, userId} = req.body;
+  const address = await addressServices.getAddress(addressId, userId);
+  res.json(address);
+});
 
 // need to make these 2 functions one
-exports.getOneEditAddress = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const address = await Address.findById(req.session.user._id);
-    const spAddress =
-     address.addresses.find((address)=> address._id.toString() === id);
-    if (spAddress) {
-      return res.json({success: true, address: spAddress});
-    }
-    return res.json({success: false});
-  } catch (error) {
-    next(error);
-  }
-};
+exports.getOneEditAddress = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const address = await addressServices.getAddress(id, req.session.user._id);
+  res.json({success: address.length ? true : false, address});
+});
 
 
-exports.editAddress = async (req, res, next)=> {
+exports.editAddress = catchAsync(async (req, res, next)=> {
   const {id, ...address} = req.body;
-  await Address.updateOne({'addresses._id': id},
-      {'addresses.$': address}).then(()=> {
-    res.json({success: true});
-  }).catch((err)=> {
-    next(err);
-  });
-};
+  await addressServices.editAddress(id, address);
+  res.json({success: true});
+});
 
-exports.checkAddress = async (req, res, next)=> {
-  try {
-    const address = await Address.findById(req.session.user._id);
-    if (address) {
-      if (address.addresses.length > 0) {
-        return res.json({success: true});
-      }
-    }
-    return res.json({success: false});
-  } catch (error) {
-    next(error);
-  }
-};
+exports.checkAddress = catchAsync(async (req, res, next)=> {
+  const success = await addressServices
+      .verifyUserHasAddress(req.session.user._id);
+  return res.json({success});
+});
