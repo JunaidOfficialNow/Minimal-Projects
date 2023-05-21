@@ -10,7 +10,7 @@ class UserRepository {
 
   static getInstance() {
     if (!UserRepository.instance) {
-      UserRepository = new UserRepository(userModel);
+      UserRepository.instance = new UserRepository(userModel);
     }
     return UserRepository.instance;
   }
