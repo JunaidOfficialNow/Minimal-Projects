@@ -42,7 +42,7 @@ class AuthServices {
   async userLogin(email, password) {
     const user = await this.#userRepo.getUserByEmail(email);
     if (!user) throw new UserNotFound();
-    if (!user.isBlocked) throw new UnAuthorizedException('Account is blocked');
+    if (user.isBlocked) throw new UnAuthorizedException('Account is blocked');
     await this.verifyPassword(password, user.hashPassword);
     return user;
   }
