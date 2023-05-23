@@ -6,9 +6,9 @@ class CartRepository {
   #model;
   #productModel;
   static instance;
-  constructor(model, producModel) {
+  constructor(model, productModel) {
     this.#model = model;
-    this.#productModel = producModel;
+    this.#productModel = productModel;
   }
 
   static getInstance() {
