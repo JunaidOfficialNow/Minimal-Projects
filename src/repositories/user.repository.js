@@ -38,6 +38,13 @@ class UserRepository {
   async saveDocument(doc) {
     return await doc.save();
   }
+
+  async changeCartCount(userId, count) {
+    return await this.#model.findByIdAndUpdate(
+        userId,
+        {$inc: {cartCount: count}},
+    );
+  }
 }
 
 module.exports = UserRepository;

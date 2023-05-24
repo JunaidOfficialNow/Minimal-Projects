@@ -1,66 +1,28 @@
 const Cart = require('../../models/cart.model');
-const Product = require('../../models/product.model');
 const User = require('../../models/user.model');
-const crypto = require('crypto');
+
+const cartServices = require('../../services/cart.services');
+const catchAsnc = require('../../utils/error-handlers/catchAsync.handler');
 
 
-exports.getCart = async (req, res, next)=> {
-  try {
-    const cart = await Cart.findById(req.session.user._id).populate({
-      path: 'products._id',
-      model: Product,
-    });
-    const token = crypto.randomBytes(8).toString('hex').slice(0, 8);
-    req.session.checkOutToken = token;
-    res.render('users/user-cart', {
-      user: req.session.user,
-      page: 'cart',
-      products: cart?.products ?? [],
-      token,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+exports.getCart = catchAsync(async (req, res, next)=> {
+  const {products, token} = cartServices.getCartPage(req.session.user._id);
+  req.session.checkOutToken = token;
+  res.render('users/user-cart', {
+    user: req.session.user,
+    page: 'cart',
+    products,
+    token,
+  });
+});
 
 
-exports.addToCart = async (req, res, next)=> {
-  try {
-    let product;
-    const {proId, userId} = req.body;
-    const cart = await Cart.findById(userId);
-    if (cart) {
-      const result =
-         cart.products.some((product) => product._id.equals(proId));
-      if (result) {
-        product = true;
-      } else {
-        cart.products.push({_id: proId, quantity: 1});
-        await cart.save();
-        product = false;
-      }
-    } else {
-      const newCart = new Cart({
-        _id: userId,
-        products: [{
-          _id: proId,
-          quantity: 1,
-        }],
-      });
-      await newCart.save();
-      product = false;
-    }
-    if (product) {
-      return res.json({success: true, product: true});
-    } else {
-      await User.findByIdAndUpdate(userId, {$inc: {cartCount: 1}});
-      req.session.user.cartCount += 1;
-      return res.json({success: true});
-    }
-  } catch (error) {
-    next(error);
-  }
-};
+exports.addToCart = catchAsnc(async (req, res, next)=> {
+  const {proId, userId} = req.body;
+  const product = await cartServices.addToCart(userId, proId);
+  req.session.user.cartCount += 1;
+  res.json({success: true, product});
+});
 
 exports.removeFromCart = async (req, res, next) => {
   try {
