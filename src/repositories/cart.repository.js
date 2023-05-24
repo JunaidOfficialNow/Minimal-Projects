@@ -53,6 +53,10 @@ class CartRepository {
         {$set: {'products.$.size': size}},
     );
   }
+
+  async saveDocument(doc) {
+    return await doc.save();
+  }
 }
 
 module.exports = CartRepository;
