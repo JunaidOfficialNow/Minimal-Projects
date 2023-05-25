@@ -38,6 +38,19 @@ class CartServices {
     await this.#userRepo.changeCartCount(userId, 1);
     return false;
   }
+
+  async changeQuantity(userId, proId, quantity) {
+    return await this.#repo.changeQuantity(userId, proId, quantity);
+  }
+
+  async changeSize(userId, proId, size) {
+    return await this.#repo.changeSize(userId, proId, size);
+  }
+
+  async removeFromCart(userId, proId) {
+    await this.#repo.removeFromCart(userId, proId);
+    await this.#userRepo.changeCartCount(userId, -1);
+  }
 }
 
 module.exports = new CartServices(

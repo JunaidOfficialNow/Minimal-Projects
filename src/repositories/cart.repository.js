@@ -33,9 +33,9 @@ class CartRepository {
     return await this.#model.create(data);
   }
 
-  async removeFromCart(id, proId) {
+  async removeFromCart(userId, proId) {
     return await this.#model.findByIdAndUpdate(
-        id,
+        userId,
         {$pull: {products: {_id: proId}}},
     );
   }
