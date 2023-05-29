@@ -1,5 +1,3 @@
-/* eslint-disable require-jsdoc */
-const productModel = require('../models/product.model');
 const ProductRepository = require('../repositories/product.repository');
 
 class ProductServices {
@@ -50,5 +48,5 @@ class ProductServices {
 };
 
 module.exports = new ProductServices(
-    new ProductRepository(productModel),
+    ProductRepository.getInstance(),
 );
