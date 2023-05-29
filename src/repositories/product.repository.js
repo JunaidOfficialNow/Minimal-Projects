@@ -1,8 +1,16 @@
-/* eslint-disable require-jsdoc */
+const productModel = require('../models/product.model');
 class ProductRepository {
   #model;
+  static instance;
   constructor(model) {
     this.#model = model;
+  }
+
+  static getInstance() {
+    if (!ProductRepository.instance) {
+      ProductRepository.instance = new ProductRepository(productModel);
+    }
+    return ProductRepository.instance;
   }
 
   async getAllProducts() {
