@@ -1,4 +1,3 @@
-const Address = require('../../models/address.model');
 const Cart = require('../../models/cart.model');
 const Product = require('../../models/product.model');
 const Coupon = require('../../models/coupon.model');
@@ -7,33 +6,28 @@ const Order = require('../../models/order.model');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
 
+const checkoutServices = require('../../services/checkout.services');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
+
 const instance = new Razorpay({
   key_id: process.env.RAZ_KEY_ID,
   key_secret: process.env.RAZ_SECRET_KEY,
 });
 
-exports.getCheckout = async (req, res, next) => {
-  try {
-    if (req.session.checkOutToken === req.params.token) {
-      const user = req.session.user;
-      const address = await Address.findById(user._id);
-      const cart = await Cart.findById(user._id).populate({
-        path: 'products._id',
-        model: Product,
-      });
-      res.render('users/user-checkout', {
-        user,
-        page: 'checkout',
-        address: address?.addresses[0],
-        products: cart?.products ?? [],
-      });
-    } else {
-      res.redirect('/cart');
-    }
-  } catch (error) {
-    next(error);
+exports.getCheckout = catchAsync(async (req, res, next) => {
+  if (req.session.checkOutToken === req.params.token) {
+    const user = req.session.user;
+    const {address, products} = checkoutServices.getCheckout(user._id);
+    res.render('users/user-checkout', {
+      user,
+      page: 'checkout',
+      address,
+      products,
+    });
+  } else {
+    res.redirect('/cart');
   }
-};
+});
 
 // needs to reduce this  function
 exports.placeOrder = async (req, res, next) =>{
