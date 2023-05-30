@@ -26,6 +26,12 @@ class CheckoutServices {
     this.#productRepo = productRepo;
     this.#addressRepo = addressRepo;
   }
+
+  async getCheckout(userId) {
+    const address = await this.#addressRepo.getAddressById(userId);
+    const cart = await this.#cartRepo.getPopulatedCartById(userId);
+    return {address: address?.addresses[0], products: cart?.products ?? []};
+  }
 };
 
 module.exports = new CheckoutServices(
