@@ -1,8 +1,16 @@
-/* eslint-disable require-jsdoc */
+const couponModel = require('../models/coupon.model');
 class CouponRepository {
   #model;
+  static instance;
   constructor(model) {
     this.#model = model;
+  }
+
+  static getInstance() {
+    if (!CouponRepository.instance) {
+      CouponRepository.instance = new CouponRepository(couponModel);
+    }
+    return CouponRepository.instance;
   }
 
   async getAllCoupons() {
