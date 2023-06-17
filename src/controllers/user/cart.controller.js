@@ -1,5 +1,5 @@
 const cartServices = require('../../services/cart.services');
-const catchAsnc = require('../../utils/error-handlers/catchAsync.handler');
+const catchAsync = require('../../utils/error-handlers/catchAsync.handler');
 
 
 exports.getCart = catchAsync(async (req, res, next)=> {
@@ -14,7 +14,7 @@ exports.getCart = catchAsync(async (req, res, next)=> {
 });
 
 
-exports.addToCart = catchAsnc(async (req, res, next)=> {
+exports.addToCart = catchAsync(async (req, res, next)=> {
   const {proId, userId} = req.body;
   const product = await cartServices.addToCart(userId, proId);
   req.session.user.cartCount += 1;
@@ -30,7 +30,7 @@ exports.removeFromCart = catchAsync(async (req, res, next) => {
   res.json({success: true});
 });
 
-exports.incrementQuantity = catchAsnc(async (req, res, next) => {
+exports.incrementQuantity = catchAsync(async (req, res, next) => {
   await cartServices.changeQuantity(
       req.session.user._id,
       req.body.id,
@@ -39,7 +39,7 @@ exports.incrementQuantity = catchAsnc(async (req, res, next) => {
   res.json({success: true});
 });
 
-exports.decrementQuantity = catchAsnc(async (req, res, next)=> {
+exports.decrementQuantity = catchAsync(async (req, res, next)=> {
   await cartServices.changeQuantity(
       req.session.user._id,
       req.body.id,
@@ -48,7 +48,7 @@ exports.decrementQuantity = catchAsnc(async (req, res, next)=> {
   res.json({success: true});
 });
 
-exports.changeSize = catchAsnc(async (req, res, next)=>{
+exports.changeSize = catchAsync(async (req, res, next)=>{
   const {id, size} = req.body;
   await cartServices.changeSize(
       req.session.user._id,
