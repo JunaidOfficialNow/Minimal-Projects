@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/static/css/user-login.css">
+  <link rel="icon" type="image/png"  sizes="96x96" href="/static/favicon/fav.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    .popup {
+      padding: 20px;
+      border: 1px solid;
+      border-color: green;
+      background-color: white;
+      color: #276c27;
+      position: absolute;
+      z-index: 452345;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 10%;
+      right: 14%;
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <% if (reset) { %>
+    <div class="popup">
+      Password reset successfull, Now Login in to your account with your new password
+    </div>
+    <% } %>
+    
+  <% if (signin) { %>
+    <div class="popup" style="border-color: red;color: red;right: 26%;">
+      Please login to continue
+    </div>
+    <% } %>
+
+    <% if (messages) { %>
+      <div class="popup" style="border-color: red;color: red;right: 26%;">
+        <%= messages %>
+      </div>
+      <% } %>
+
+   
+  <div class="main">
+    <div class="container b-container" id="b-container">
+      <form class="form" id="a-form" action="" onsubmit="return false">
+        <h2 class="form_title title">Create Account</h2>
+  
+    
+
+        <input class="form__input" id="input-field1" placeholder="Email" type="email" onkeypress="keypress1()">
+        <input class="form__input" type="text" id="input-field2" placeholder="Second name(optional)"
+          style="display: none;" onkeypress="keypress1()">
+        <small id="error" style="color: red; margin-top: 2px;visibility: hidden;"></small>
+        <small id="timer" style="color: darkblue; margin-top: 2px;visibility: visible;"></small>
+        <small id="loading-info" style="color: darkblue; margin-top: 2px;visibility: hidden;">Please wait, we are
+          verifying and
+          sending otp</small>
+        <a href="" id="resend" style="visibility: hidden;">resend otp</a>
+        <button class="form__button button submit signupbtn" id="formBtn" type="submit">Verify Email</button>
+      </form>
+    </div>
+    <div class="container a-container" id="a-container" style="flex-direction: column;">
+      <form class="form" id="b-form" onsubmit="return false">
+        <h2 class="form_title title">Sign in to Website</h2>
+  
+        <input class="form__input" type="text" placeholder="Email" id="email-input" onkeypress="keypress()">
+        <input class="form__input" type="password" placeholder="Password" id="pass-input" onkeypress="keypress()">
+        <small id="login-error" style="visibility: hidden;color: red;">Fill all credentials to login</small>
+        <small id="login-info" style="visibility: hidden;color:darkblue">Validating your credentials, Please
+          wait..</small>
+        <a class="form__link" id="forgotPassword" style="text-decoration: none;">Forgot your password?</a>
+        <button class="form__button button submit signupbtn" id="login-btn" on onclick="login()">SIGN IN</button>
+      </form>
+    </div>
+    <div class="switch" id="switch-cnt">
+      <div class="switch__circle"></div>
+      <div class="switch__circle switch__circle--t"></div>
+      <div class="switch__container" id="switch-c1">
+        <div class="header__logo">
+          <!-- <a href="./index.html"><img src="img/logo.png" alt=""></a>
+           -->
+          <a href="/"
+              style="font-family: 'Courier New', Courier, monospace; width: 300px; font-weight: 600;margin-top: 6px; font-size: 19px;text-decoration: none; color: black;">
+              Minimal Projects</a>
+
+      </div>
+        <h2 class="switch__title title">Hello Friend !</h2>
+        <p class="switch__description description">Enter your personal details and start journey with us</p>
+        <button class="switch__button button switch-btn">SIGN UP</button>
+      </div>
+      <div class="switch__container is-hidden" id="switch-c2">
+        <div class="header__logo">
+          <!-- <a href="./index.html"><img src="img/logo.png" alt=""></a>
+           -->
+          <a href="/"
+              style="font-family: 'Courier New', Courier, monospace; width: 300px; font-weight: 600;margin-top: 6px; font-size: 19px;text-decoration: none; color: black;">
+              Minimal Projects</a>
+
+      </div>
+        <h2 class="switch__title title">Welcome Back !</h2>
+        <p class="switch__description description">To keep connected with us please login with your personal
+          info</p><button class="switch__button button switch-btn">SIGN IN</button>
+      </div>
+    </div>
+  </div>
+  <script src="/static/js/user-login.js"></script>
+
+</body>
+
+</html>
+<script>
+
+</script>
+<script>
+  let count = 1;
+  let input1 = document.getElementById('input-field1');
+  let input2 = document.getElementById('input-field2');
+  let btn = document.getElementById('formBtn');
+  let error = document.getElementById('error');
+  let loading = document.getElementById('loading-info');
+  let resendBtn = document.getElementById('resend');
+  let timer = document.getElementById('timer');
+  let resendFlag = true;
+  let val;
+  let val2;
+  function validateName(name) {
+        let nameRegExp = /^[A-Za-z\s']+$/;
+        return nameRegExp.test(name);
+    }
+  function startTimer() {
+    let countDownDate = new Date().getTime() + 120000; // 2 minutes in milliseconds
+    let x = setInterval(function () {
+
+      let now = new Date().getTime();
+      let distance = countDownDate - now;
+      let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      if (resendFlag) {
+        timer.style.visibility = 'visible';
+      };
+      timer.innerHTML = 'Didn\'t recieve otp? Resend otp after ' + minutes + ":" + seconds + " minutes";
+      if (distance < 0) {
+        clearInterval(x);
+        timer.style.visibility = 'hidden';
+        if (resendFlag) {
+          resendBtn.style.visibility = 'visible';
+        }
+      }
+    }, 1000);
+  }
+  function isValidEmail(email) {
+    const re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+  function keypress1(){
+    error.style.visibility = 'hidden';
+    if (input1.value.length <= 20) {
+      input1.style.background = '#ecf0f3';
+    }
+    if (input2.value.length <= 20) {
+      input2.style.background = '#ecf0f3';
+    }
+  }
+  resendBtn.addEventListener('click', function (event) {
+    event.preventDefault();
+    loading.style.visibility = 'visible';
+    btn.innerHTML = 'Loading...';
+    btn.disabled = true;
+    btn.style.background = 'lightblue';
+    fetch('/signup/resend-otp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json()).then(data => {
+      btn.innerHTML = 'Verify otp';
+      btn.disabled = false;
+      btn.style.background = '#4b70e2';
+      if (data.success) {
+        loading.innerHTML = 'New otp sent successfully';
+        resendBtn.style.visibility = 'hidden';
+        startTimer();
+      } else {
+        error.innerHTML = 'There is some trouble in sending otp, Please try again later';
+        error.style.visibility = 'visible';
+        loading.style.visibility = 'hidden';
+      }
+    });
+
+  })
+  btn.addEventListener('click', function () {
+    switch (count) {
+      case 1:
+        val = input1.value;
+        if (val === '') {
+          error.innerHTML = 'Email is required';
+          error.style.visibility = 'visible';
+        } else if (isValidEmail(val)) {
+          loading.style.visibility = 'visible';
+          btn.disabled = true;
+          btn.innerHTML = 'Loading...'
+          btn.style.background = 'lightblue';
+          fetch('/signup/email', {
+            method: 'POST',
+            body: JSON.stringify({
+              email: val,
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(response => response.json()).then(data => {
+            loading.style.visibility = 'hidden';
+            btn.disabled = false;
+            btn.style.background = '#4b70e2';
+            if (data.success) {
+              input1.value = null;
+              input1.type = 'number';
+              input1.placeholder = 'Enter otp sent to your email';
+              btn.innerHTML = 'Verify Otp'
+              count++;
+
+              startTimer();
+            } else {
+              error.innerHTML = data.error.message;
+              error.style.visibility = 'visible';
+              btn.innerHTML = 'Verify email';
+              input1.value = null;
+            }
+          })
+        } else {
+          input1.value = null;
+          error.innerHTML = 'Provide a valid email address';
+          error.style.visibility = 'visible';
+        }
+        break;
+      case 2:
+        val = input1.value;
+        if (val == '') {
+          error.innerHTML = 'Provide otp to continue';
+          error.style.visibility = 'visible';
+        } else {
+          fetch('/signup/otp', {
+            method: 'POST',
+            body: JSON.stringify({
+              otp: val,
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(response => response.json()).then(data => {
+            if (data.success) {
+              resendFlag = false;
+              timer.style.visibility = 'hidden';
+              resendBtn.style.visibility = 'hidden';
+              loading.style.visibility = 'hidden';
+              input1.value = null;
+              loading.innerHTML = 'Otp Verified';
+              loading.style.visibility = 'visible';
+              input1.placeholder = 'Enter your first name';
+              input1.type = 'text';
+              input2.style.display = 'block';
+              btn.innerHTML = 'Submit'
+              count++;
+            } else {
+              error.innerHTML = data.error.message;
+              input1.value = null;
+              error.style.visibility = 'visible';
+            }
+
+          });
+        }
+        break;
+      case 3:
+        val = input1.value;
+        val2 = input2.value;
+        const valLength = val.length;
+        const val2Length = val2.length;
+        loading.style.visibility = 'hidden';
+        if (val == '' && val2 == '') {
+          error.innerHTML = 'Atleast first name is required';
+          error.style.visibility = 'visible';
+        } else if (val == '') {
+          error.innerHTML = 'First name is necessary';
+          error.style.visibility = 'visible';
+        } else {
+          if (valLength < 3) {
+            error.innerHTML = 'First name should contain minimum 3 characters';
+            error.style.visibility = 'visible';
+          } else if (valLength > 20 || val2Length > 20) {
+            error.innerHTML = 'Names can\'t be more than 20 characters';
+            error.style.visibility = 'visible';
+            if (valLength > 20) {
+              input1.style.background = 'lightgrey';
+
+            }
+            if (val2Length > 20) {
+              input2.style.background = 'lightgrey';
+            }
+          } else {
+            fetch('/signup/names', {
+              method: 'POST',
+              body: JSON.stringify({
+                firstName: val,
+                lastName: val2,
+              }),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(response => response.json()).then(data => {
+              input1.value = null;
+              input1.placeholder = 'Enter your password';
+              input1.type = 'password'
+              input1.focus();
+              input2.value = null;
+              input2.type = 'password'
+              input2.placeholder = 'Confirm your password';
+              btn.innerHTML = 'Start account';
+              count++;
+            })
+          }
+        }
+        break;
+      case 4:
+        val = input1.value;
+        val2 = input2.value;
+        let passLength = val.length;
+        if (val == '') {
+          error.innerHTML = 'Provide a password to continue';
+          error.style.visibility = 'visible';
+        } else if (passLength < 8) {
+          error.innerHTML = 'Password should be minimum 8 characters';
+          error.style.visibility = 'visible';
+        } else if (passLength > 20) {
+          input1.style.background = 'lightgrey';
+          error.innerHTML = 'Maximum characters should be minimum 20';
+          error.style.visibility = 'visible';
+        } else if (val2 == '') {
+          error.innerHTML = 'Confirm password to continue';
+          error.style.visibility = 'visible';
+        } else if (val != val2) {
+          error.innerHTML = 'Passwords do not match';
+          error.style.visibility = 'visible';
+          input1.value = null;
+          input2.value = null;
+        } else {
+          fetch('/signup/password', {
+            method: 'POST',
+            body: JSON.stringify({
+              password: val2,
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(response => response.json()).then(data => {
+            if (!data.success) {
+              error.innerHTML = data.error.message;
+              error.style.visibility = 'visible';
+            } else {
+              location.href = '/';
+            }
+          })
+        }
+        break;
+    }
+  })
+</script>
+<script>
+  const email = document.getElementById('email-input');
+  const pass = document.getElementById('pass-input');
+  const loginError = document.getElementById('login-error');
+  const loginInfo = document.getElementById('login-info');
+  const loginBtn = document.getElementById('login-btn');
+function keypress(){
+  loginError.style.visibility = 'hidden';
+}
+  function login() {
+    if (email.value == '' || pass.value == '') {
+      loginError.style.visibility = 'visible';
+
+    } else  {
+      if(isValidEmail(email.value)){
+        loginInfo.style.visibility = 'visible';
+      loginBtn.disabled = true;
+      loginBtn.style.background = 'lightblue';
+      loginBtn.innerHTML = 'Loading...';
+      fetch('/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: email.value,
+          password: pass.value,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(response => response.json()).then(data => {
+        loginInfo.style.visibility = 'hidden';
+        loginBtn.disabled = false;
+        loginBtn.style.background = '#4b70e2';
+        loginBtn.innerHTML = 'SIGN IN';
+        if(data.success){
+            location.href ='/';
+        } else {
+          //  email.value = null;
+             pass.value = null;
+            loginError.innerHTML = data.error.message;
+            loginError.style.visibility = 'visible';
+             
+        }
+      })
+      }else {
+        loginError.innerHTML = 'Email is not valid';
+      loginError.style.visibility = 'visible';
+      }
+      
+    } 
+
+  }
+
+</script>
+<script>
+  const forgotPassword = document.getElementById('forgotPassword');
+  forgotPassword.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (!isValidEmail(email.value)) {
+      loginError.innerHTML = 'Please enter a valid email';
+     return loginError.style.visibility = 'visible';
+    }
+    loginInfo.innerHTML = 'Sending reset password link to your email, please wait...'
+      loginInfo.style.visibility = 'visible';
+      loginBtn.disabled = true;
+      loginBtn.style.background = 'lightblue';
+      loginBtn.innerHTML = 'Loading...';
+    fetch('/forgotPassword', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email.value,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response)=> response.json()).then((data)=>  {
+      if (data.success) {
+        loginBtn.disabled = false;
+        loginBtn.style.background = '#4b70e2';
+        loginBtn.innerHTML = 'SIGN IN';
+        loginInfo.innerHTML = 'A link to reset your password is sent to your email address';
+        return loginInfo.style.visibility = 'visible';
+
+      } else {
+        loginError.innerHTML = data.error.message;
+        return loginError.style.visibility = 'visible';
+      }
+    })
+  });
+
+</script>
